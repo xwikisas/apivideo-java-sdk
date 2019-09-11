@@ -38,11 +38,6 @@ class CaptionClientTest {
     }
 
     @Test
-    void upload() throws ResponseException {
-        assertNotNull(captionClient.upload("viSuccess", getClass().getResource("/assets/caption.vtt").getPath(), "en"));
-    }
-
-    @Test
     void updateDefault() throws ResponseException {
         assertNotNull(captionClient.updateDefault("viSuccess", "en", true));
     }

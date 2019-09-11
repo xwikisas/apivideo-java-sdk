@@ -35,11 +35,6 @@ class LiveClientTest {
     }
 
     @Test
-    void uploadThumbnail() throws ResponseException {
-        assertNotNull(liveClient.uploadThumbnail("liSuccess", getClass().getResource("/assets/index.jpeg").getPath()));
-    }
-
-    @Test
     void update() throws ResponseException {
         Live live = new Live();
         live.liveStreamId = "liSuccess";

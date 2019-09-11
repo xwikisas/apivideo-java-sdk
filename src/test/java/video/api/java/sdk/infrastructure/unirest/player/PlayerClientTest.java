@@ -50,11 +50,6 @@ class PlayerClientTest {
     }
 
     @Test
-    void uploadLogo() throws ResponseException {
-        assertNotNull(playerClient.uploadLogo("plSuccess", getClass().getResource("/assets/logo.jpeg").getPath(), "test.fr"));
-    }
-
-    @Test
     void uploadFailureLogo() {
         assertThrows(IllegalArgumentException.class, () -> playerClient.uploadLogo("plSuccess", "Failure Source", "test.fr"));
     }
