@@ -3,20 +3,20 @@ package video.api.java.sdk.infrastructure.unirest.live;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
-import video.api.java.sdk.domain.live.Live;
+import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class LiveClientTest {
-    Live testLive;
-    private LiveClient liveClient;
+class LiveStreamStreamClientTest {
+    LiveStream testLiveStream;
+    private LiveStreamClient liveStreamClient;
 
     @BeforeEach
     void setUp() {
-        liveClient = new LiveClient(
-                new LiveJsonSerializer(),
+        liveStreamClient = new LiveStreamClient(
+                new LiveStreamJsonSerializer(),
                 new RequestExecutor(),
                 ""
         );
@@ -24,44 +24,44 @@ class LiveClientTest {
 
     @Test
     void get() throws ResponseException {
-        assertNotNull(liveClient.get("liSuccess"));
+        assertNotNull(liveStreamClient.get("liSuccess"));
     }
 
     @Test
     void create() throws ResponseException {
-        Live live = new Live();
-        live.liveStreamId = "liSuccess";
-        assertNotNull(liveClient.create(live));
+        LiveStream liveStream = new LiveStream();
+        liveStream.liveStreamId = "liSuccess";
+        assertNotNull(liveStreamClient.create(liveStream));
     }
 
     @Test
     void update() throws ResponseException {
-        Live live = new Live();
-        live.liveStreamId = "liSuccess";
-        live.name         = "Success";
-        assertNotNull(liveClient.update(live));
+        LiveStream liveStream = new LiveStream();
+        liveStream.liveStreamId = "liSuccess";
+        liveStream.name         = "Success";
+        assertNotNull(liveStreamClient.update(liveStream));
     }
 
     @Test
     void delete() throws ResponseException {
-        assertNotNull(liveClient.delete("liSuccess"));
+        assertNotNull(liveStreamClient.delete("liSuccess"));
     }
 
     @Test
     void list() throws ResponseException {
-        assertNotNull(liveClient.list());
+        assertNotNull(liveStreamClient.list());
 
     }
 
     @Test
     void search() throws ResponseException {
-        assertNotNull(liveClient.search(new QueryParams()));
+        assertNotNull(liveStreamClient.search(new QueryParams()));
 
     }
 
     @Test
     void load() throws ResponseException {
         QueryParams queryParams = new QueryParams();
-        assertNotNull(liveClient.load(queryParams));
+        assertNotNull(liveStreamClient.load(queryParams));
     }
 }

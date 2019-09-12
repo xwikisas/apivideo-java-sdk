@@ -7,17 +7,17 @@ import video.api.java.sdk.infrastructure.pagination.PageIterator;
 
 
 public interface LiveClient {
-    Live get(String liveStreamId) throws ResponseException;
+    LiveStream get(String liveStreamId) throws ResponseException;
 
-    Live create(Live live) throws ResponseException;
+    LiveStream create(LiveStream liveStream) throws ResponseException;
 
-    PageIterator<Live> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    PageIterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
-    Live uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException;
+    LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException;
 
-    Live update(Live live) throws ResponseException;
+    LiveStream update(LiveStream liveStream) throws ResponseException;
 
     int delete(String liveStreamId) throws ResponseException;
 
-    PageIterator<Live> list() throws ResponseException, IllegalArgumentException;
+    PageIterator<LiveStream> list() throws ResponseException, IllegalArgumentException;
 }

@@ -2,7 +2,7 @@ package video.api.java.sdk.domain.live;
 
 import video.api.java.sdk.domain.video.models.Assets;
 
-public class Live {
+public class LiveStream {
 
 
     public String  liveStreamId;

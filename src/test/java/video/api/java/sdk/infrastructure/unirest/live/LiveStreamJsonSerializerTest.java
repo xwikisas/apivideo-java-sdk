@@ -3,17 +3,17 @@ package video.api.java.sdk.infrastructure.unirest.live;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import video.api.java.sdk.domain.live.Live;
+import video.api.java.sdk.domain.live.LiveStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LiveJsonSerializerTest {
+class LiveStreamJsonSerializerTest {
 
-    private LiveJsonSerializer liveJsonSerializer;
+    private LiveStreamJsonSerializer liveStreamJsonSerializer;
 
     @BeforeEach
     void setUp() {
-        liveJsonSerializer = new LiveJsonSerializer();
+        liveStreamJsonSerializer = new LiveStreamJsonSerializer();
     }
 
 
@@ -32,8 +32,8 @@ class LiveJsonSerializerTest {
                                                      "        \"thumbnail\": \"https://cdn-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B/thumbnail.jpg\"\n" +
                                                      "    }\n" +
                                                      "}");
-        Live live = liveJsonSerializer.deserialize(jsonLive);
-        assertEquals("liSuccess", live.liveStreamId);
+        LiveStream liveStream = liveStreamJsonSerializer.deserialize(jsonLive);
+        assertEquals("liSuccess", liveStream.liveStreamId);
     }
 
     @Test
@@ -41,16 +41,16 @@ class LiveJsonSerializerTest {
         JSONObject jsonLive = new JSONObject("{\n" +
                                                      "    \"liveStreamId\": \"liSuccess\",\n" +
                                                      "}");
-        Live live = liveJsonSerializer.deserialize(jsonLive);
-        assertEquals("liSuccess", live.liveStreamId);
+        LiveStream liveStream = liveStreamJsonSerializer.deserialize(jsonLive);
+        assertEquals("liSuccess", liveStream.liveStreamId);
 
     }
 
     @Test
     void serialize() {
-        Live live = new Live();
-        live.liveStreamId = "toto";
-        assertEquals("toto", liveJsonSerializer.serialize(live).getString("liveStreamId"));
+        LiveStream liveStream = new LiveStream();
+        liveStream.liveStreamId = "toto";
+        assertEquals("toto", liveStreamJsonSerializer.serialize(liveStream).getString("liveStreamId"));
     }
 
     @Test
@@ -73,7 +73,7 @@ class LiveJsonSerializerTest {
                                                      "        \"thumbnail\": \"https://cdn-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B/thumbnail.jpg\"\n" +
                                                      "    }\n" +
                                                      "}");
-        Live live = liveJsonSerializer.deserializeProperties(jsonLive);
-        assertEquals("Success", live.name);
+        LiveStream liveStream = liveStreamJsonSerializer.deserializeProperties(jsonLive);
+        assertEquals("Success", liveStream.name);
     }
 }

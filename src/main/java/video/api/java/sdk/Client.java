@@ -1,36 +1,37 @@
 package video.api.java.sdk;
 
-import video.api.java.sdk.infrastructure.unirest.analytic.event.AnalyticsEventClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.live.AnalyticsLiveClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.video.AnalyticsVideoClient;
+import video.api.java.sdk.infrastructure.unirest.analytic.event.SessionEventAnalyticsClient;
+import video.api.java.sdk.infrastructure.unirest.analytic.live.LiveStreamAnalyticsClient;
+import video.api.java.sdk.infrastructure.unirest.analytic.video.VideoAnalyticsClient;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
-import video.api.java.sdk.infrastructure.unirest.live.LiveClient;
+import video.api.java.sdk.infrastructure.unirest.live.LiveStreamClient;
 import video.api.java.sdk.infrastructure.unirest.player.PlayerClient;
 import video.api.java.sdk.infrastructure.unirest.video.VideoClient;
 
 public class Client {
-    public final VideoClient          videos;
-    public final PlayerClient         players;
-    public final LiveClient           lives;
-    public final CaptionClient        captions;
-    public final AnalyticsEventClient analyticsEvent;
-    public final AnalyticsLiveClient  analyticsLive;
-    public final AnalyticsVideoClient analyticsVideo;
+    public final CaptionClient               captions;
+    public final LiveStreamClient            liveStreams;
+    public final LiveStreamAnalyticsClient   liveStreamAnalytics;
+    public final PlayerClient                players;
+    public final SessionEventAnalyticsClient sessionEventAnalytics;
+    public final VideoClient                 videos;
+    public final VideoAnalyticsClient        videoAnalytics;
 
-    public Client(VideoClient videoClient, PlayerClient playerClient,
-            LiveClient liveClient, CaptionClient captionClient,
-            AnalyticsVideoClient analyticsVideoClient, AnalyticsLiveClient analyticsLiveClient,
-            AnalyticsEventClient analyticsEventClient
+    public Client(
+            CaptionClient captions,
+            LiveStreamClient liveStreams,
+            LiveStreamAnalyticsClient liveStreamAnalytics,
+            PlayerClient players,
+            SessionEventAnalyticsClient sessionEventAnalytics,
+            VideoClient videos,
+            VideoAnalyticsClient videoAnalytics
     ) {
-        this.videos         = videoClient;
-        this.players        = playerClient;
-        this.lives          = liveClient;
-        this.captions       = captionClient;
-        this.analyticsEvent = analyticsEventClient;
-        this.analyticsLive  = analyticsLiveClient;
-        this.analyticsVideo = analyticsVideoClient;
-
+        this.captions              = captions;
+        this.liveStreams           = liveStreams;
+        this.liveStreamAnalytics   = liveStreamAnalytics;
+        this.players               = players;
+        this.sessionEventAnalytics = sessionEventAnalytics;
+        this.videos                = videos;
+        this.videoAnalytics        = videoAnalytics;
     }
-
-
 }

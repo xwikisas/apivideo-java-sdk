@@ -14,13 +14,13 @@ import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
 
-public class AnalyticsVideoClient implements video.api.java.sdk.domain.analytic.analyticVideo.AnalyticsVideoClient, PageLoader<AnalyticVideo> {
+public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticVideo.AnalyticsVideoClient, PageLoader<AnalyticVideo> {
 
     private final AnalyticVideoJsonSerializer serializer;
     private final RequestExecutor             requestExecutor;
     private final String                      baseUri;
 
-    public AnalyticsVideoClient(AnalyticVideoJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public VideoAnalyticsClient(AnalyticVideoJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;

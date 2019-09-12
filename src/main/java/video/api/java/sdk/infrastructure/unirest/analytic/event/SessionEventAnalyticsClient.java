@@ -13,14 +13,14 @@ import video.api.java.sdk.infrastructure.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
-public class AnalyticsEventClient implements video.api.java.sdk.domain.analytic.analyticEvent.AnalyticsEventClient, PageLoader<AnalyticEvent> {
+public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticEvent.AnalyticsEventClient, PageLoader<AnalyticEvent> {
 
     private final AnalyticEventJsonSerializer serializer;
     private final RequestExecutor             requestExecutor;
     private final String                      baseUri;
     private       String                      sessionId;
 
-    public AnalyticsEventClient(AnalyticEventJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public SessionEventAnalyticsClient(AnalyticEventJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;

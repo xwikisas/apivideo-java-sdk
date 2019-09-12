@@ -7,7 +7,7 @@ import video.api.java.sdk.domain.analytic.analyticLive.AnalyticLive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AnalyticLiveJsonSerializerTest {
+class AnalyticLiveStreamJsonSerializerTest {
     AnalyticLiveJsonSerializer analyticLiveJsonSerializer;
 
     @BeforeEach

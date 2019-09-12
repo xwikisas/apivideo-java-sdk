@@ -7,7 +7,7 @@ import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.live.Live;
+import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
@@ -17,13 +17,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, PageLoader<Live> {
+public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveClient, PageLoader<LiveStream> {
 
-    private final LiveJsonSerializer serializer;
-    private final RequestExecutor    requestExecutor;
-    private final String             baseUri;
+    private final LiveStreamJsonSerializer serializer;
+    private final RequestExecutor          requestExecutor;
+    private final String                   baseUri;
 
-    public LiveClient(LiveJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public LiveStreamClient(LiveStreamJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
@@ -31,7 +31,7 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
 
     }
 
-    public Live get(String liveStreamId) throws ResponseException {
+    public LiveStream get(String liveStreamId) throws ResponseException {
 
         HttpRequest request = Unirest.get(baseUri + "/live-streams/" + liveStreamId);
 
@@ -41,8 +41,8 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
     }
 
 
-    public Live create(Live live) throws ResponseException {
-        HttpRequest request = Unirest.post(baseUri + "/live-streams").body(serializer.serializeProperties(live));
+    public LiveStream create(LiveStream liveStream) throws ResponseException {
+        HttpRequest request = Unirest.post(baseUri + "/live-streams").body(serializer.serializeProperties(liveStream));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -51,7 +51,7 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
     }
 
 
-    public Live uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException {
+    public LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException {
         try {
 
             File            FileToUpload      = new File(thumbnailSource);
@@ -70,9 +70,9 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
         }
     }
 
-    public Live update(Live live) throws ResponseException {
+    public LiveStream update(LiveStream liveStream) throws ResponseException {
 
-        HttpRequest request = Unirest.patch(baseUri + "/live-streams/" + live.liveStreamId).body(serializer.serializeProperties(live));
+        HttpRequest request = Unirest.patch(baseUri + "/live-streams/" + liveStream.liveStreamId).body(serializer.serializeProperties(liveStream));
 
         HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
 
@@ -94,14 +94,14 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
 
     /////////////////////////Iterators//////////////////////////////
 
-    public PageIterator<Live> list() throws ResponseException, IllegalArgumentException {
+    public PageIterator<LiveStream> list() throws ResponseException, IllegalArgumentException {
 
 
         QueryParams queryParams = new QueryParams();
         return new PageIterator<>(this, queryParams);
     }
 
-    public PageIterator<Live> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public PageIterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
 
         return new PageIterator<>(this, queryParams);
@@ -112,22 +112,22 @@ public class LiveClient implements video.api.java.sdk.domain.live.LiveClient, Pa
     /////////////////////////Functions//////////////////////////////
 
 
-    public String toString(Live live) {
-        return serializer.serialize(live).toString();
+    public String toString(LiveStream liveStream) {
+        return serializer.serialize(liveStream).toString();
     }
 
-    public JSONObject toJSONObject(Live live) {
-        return serializer.serialize(live);
+    public JSONObject toJSONObject(LiveStream liveStream) {
+        return serializer.serialize(liveStream);
     }
 
-    private Live getLiveResponse(HttpResponse<JsonNode> response) {
+    private LiveStream getLiveResponse(HttpResponse<JsonNode> response) {
 
         return serializer.deserialize(response.getBody().getObject());
     }
 
 
     @Override
-    public Page<Live> load(QueryParams queryParams) throws ResponseException {
+    public Page<LiveStream> load(QueryParams queryParams) throws ResponseException {
 
         String      url     = queryParams.create(baseUri + "/live-streams/");
         HttpRequest request = Unirest.get(url);
