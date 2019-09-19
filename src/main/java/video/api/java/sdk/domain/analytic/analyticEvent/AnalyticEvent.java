@@ -30,7 +30,6 @@ public class AnalyticEvent {
             }
         } catch (JSONException | NullPointerException n) {
             n.getCause();
-            System.out.println("empty analyticEvent" + this.type);
             this.type      = null;
             this.emittedAt = null;
         }

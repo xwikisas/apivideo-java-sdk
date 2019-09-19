@@ -97,9 +97,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
             videoId = video.videoId;
         }
         int size = (int) fileToUpload.length();
-        System.out.println("size = " + size);
+
         try {
-            System.out.println("videoId : " + videoId);
             Thread.sleep(150);
         } catch (InterruptedException e) {
             throw new IllegalArgumentException("upload video -->Source :" + source + "\n Message-->" + e.getMessage());
@@ -137,7 +136,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
                     int ChunkFileSize = copiedBytes - from;
 
                     String tmpdir = System.getProperty("java.io.tmpdir");
-                    System.out.println(tmpdir);
+
                     final FileInputStream chunkStream = new FileInputStream(source);
                     chunkStream.skip(from);
                     byte[] b         = new byte[ChunkFileSize];
@@ -165,8 +164,6 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
                     stream.close();
 
                     chunkFile.deleteOnExit();
-
-                    System.out.println("Chunk" + (i + 1));
 
                 }
 

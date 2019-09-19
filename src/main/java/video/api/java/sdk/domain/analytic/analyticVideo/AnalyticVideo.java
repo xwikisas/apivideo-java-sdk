@@ -74,7 +74,6 @@ public class AnalyticVideo {
             }
         } catch (JSONException | NullPointerException n) {
             n.getCause();
-            System.out.println("empty analyticVideo");
 
             this.videoId    = null;
             this.videoTitle = null;

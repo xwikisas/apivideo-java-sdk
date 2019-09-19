@@ -67,8 +67,6 @@ public class AnalyticLive {
 
             }
         } catch (JSONException | NullPointerException n) {
-            System.out.println("empty Video");
-
             this.liveStreamId = null;
             this.liveName     = null;
             this.period       = null;
