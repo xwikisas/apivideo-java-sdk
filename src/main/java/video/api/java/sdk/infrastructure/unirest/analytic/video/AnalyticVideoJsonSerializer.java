@@ -123,14 +123,7 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
         }
         data.put("tags", tags);
 
-        Map<String, String> videoMetadata = analyticVideo.metadata;
-        JSONArray           metadataArray = new JSONArray();
-        for (Map.Entry<String, String> e : videoMetadata.entrySet()) {
-            HashMap hashMap = new HashMap<>();
-            hashMap.put("key", e.getKey());
-            hashMap.put("value", e.getValue());
-            metadataArray.put(new JSONObject(hashMap));
-        }
+        JSONArray metadataArray = mapToArray(analyticVideo.metadata);
         data.put("metadata", metadataArray);
         JSONArray dataArray = new JSONArray();
         //JSONArray dataArray = data.getJSONArray("data");
@@ -146,14 +139,7 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
             session.put("sessionId", analyticData.session.sessionId);
             session.put("endedAt", analyticData.session.endedAt);
             session.put("loadedAt", analyticData.session.loadedAt);
-            Map<String, String> videoMetadatas = analyticData.session.metadatas;
-            JSONArray           metadataArrays = new JSONArray();
-            for (Map.Entry<String, String> e : videoMetadatas.entrySet()) {
-                HashMap hashMap = new HashMap<>();
-                hashMap.put("key", e.getKey());
-                hashMap.put("value", e.getValue());
-                metadataArrays.put(new JSONObject(hashMap));
-            }
+            JSONArray metadataArrays = mapToArray(analyticData.session.metadatas);
             session.put("metadatas", metadataArrays);
             playerSession.put("session", session);
 
@@ -199,6 +185,17 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
 
 
         return data;
+    }
+
+    private static JSONArray mapToArray(Map<String, String> map) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("key", e.getKey());
+            hashMap.put("value", e.getValue());
+            array.put(new JSONObject(hashMap));
+        }
+        return array;
     }
 
     @Override
