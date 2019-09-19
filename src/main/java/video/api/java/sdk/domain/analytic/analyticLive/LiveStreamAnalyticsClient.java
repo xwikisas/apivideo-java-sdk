@@ -9,7 +9,7 @@ import java.util.Iterator;
 public interface LiveStreamAnalyticsClient {
     AnalyticLive get(String liveStreamId, String period) throws ResponseException;
 
-    Iterator<AnalyticLive> list() throws ResponseException, IllegalArgumentException;
+    Iterable<AnalyticLive> list() throws ResponseException, IllegalArgumentException;
 
-    Iterator<AnalyticLive> search(QueryParams queryParams) throws Exception;
+    Iterable<AnalyticLive> search(QueryParams queryParams) throws Exception;
 }

@@ -56,9 +56,7 @@ video.tags.add("my tag");
 video = client.videos.upload("/path/to/file.mp4", video);
 
 // Iterate over videos (paging is transparent)
-for (PageIterator<Video> it = client.videos.list(); it.hasNext(); ) {
-    Video video = it.next();
-
+for (Video v : client.videos.list()) {
     String videoTitle = video.title;
 }
 ```

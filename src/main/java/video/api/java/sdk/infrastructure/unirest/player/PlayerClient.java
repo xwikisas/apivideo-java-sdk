@@ -10,6 +10,7 @@ import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.domain.player.Player;
+import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
@@ -99,15 +100,15 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     /////////////////////////Iterators//////////////////////////////
 
 
-    public Iterator<Player> list() throws ResponseException, IllegalArgumentException {
+    public Iterable<Player> list() throws ResponseException, IllegalArgumentException {
 
         QueryParams queryParams = new QueryParams();
-        return new PageIterator<>(this, queryParams);
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
-    public Iterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
-        return new PageIterator<>(this, queryParams);
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
 

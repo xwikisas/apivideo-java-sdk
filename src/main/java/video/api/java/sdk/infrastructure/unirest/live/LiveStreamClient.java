@@ -10,6 +10,7 @@ import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.pagination.Page;
+import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
@@ -95,18 +96,15 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     /////////////////////////Iterators//////////////////////////////
 
-    public Iterator<LiveStream> list() throws ResponseException, IllegalArgumentException {
+    public Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException {
 
 
         QueryParams queryParams = new QueryParams();
-        return new PageIterator<>(this, queryParams);
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
-    public Iterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-
-
-        return new PageIterator<>(this, queryParams);
-
+    public Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
 

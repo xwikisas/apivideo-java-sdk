@@ -10,6 +10,7 @@ import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.analytic.analyticLive.AnalyticLive;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
+import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
@@ -51,14 +52,14 @@ public class LiveStreamAnalyticsClient implements video.api.java.sdk.domain.anal
     }
 
 
-    public Iterator<AnalyticLive> list() throws ResponseException, IllegalArgumentException {
+    public Iterable<AnalyticLive> list() throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
-        return new PageIterator<>(this, queryParams);
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
 
-    public Iterator<AnalyticLive> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        return new PageIterator<>(this, queryParams);
+    public Iterable<AnalyticLive> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
 
     }
 

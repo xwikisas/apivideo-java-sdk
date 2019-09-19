@@ -18,8 +18,8 @@ public interface PlayerClient {
 
     int delete(String playerId) throws ResponseException;
 
-    Iterator<Player> list() throws ResponseException;
+    Iterable<Player> list() throws ResponseException;
 
-    Iterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
 }

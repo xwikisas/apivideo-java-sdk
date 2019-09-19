@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 public interface VideoClient {
 
-    Iterator<Video> list() throws ResponseException, IllegalArgumentException;
+    Iterable<Video> list() throws ResponseException, IllegalArgumentException;
 
     Video get(String VideoId) throws ResponseException;
 
@@ -23,7 +23,7 @@ public interface VideoClient {
     Video upload(String source, Video video, UploadProgressListener m) throws ResponseException, IllegalArgumentException;
     //    Video createAndUpload(Video video, String source) throws  ResponseException, IllegalArgumentException;
 
-    Iterator<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException, URISyntaxException;
+    Iterable<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException, URISyntaxException;
 
     Video uploadThumbnail(Video video, String thumbnailSource) throws ResponseException, IllegalArgumentException;
 

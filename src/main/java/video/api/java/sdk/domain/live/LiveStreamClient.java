@@ -12,7 +12,7 @@ public interface LiveStreamClient {
 
     LiveStream create(LiveStream liveStream) throws ResponseException;
 
-    Iterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
     LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException;
 
@@ -20,5 +20,5 @@ public interface LiveStreamClient {
 
     int delete(String liveStreamId) throws ResponseException;
 
-    Iterator<LiveStream> list() throws ResponseException, IllegalArgumentException;
+    Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException;
 }

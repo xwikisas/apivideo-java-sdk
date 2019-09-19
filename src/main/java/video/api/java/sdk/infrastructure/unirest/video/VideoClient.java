@@ -10,6 +10,7 @@ import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.domain.video.models.Status;
+import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
@@ -226,7 +227,6 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
     public int delete(Video video) throws ResponseException {
 
         HttpRequest request = Unirest.delete(baseUri + "/videos/" + video.videoId);
-
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
         return response.getStatus();
@@ -235,16 +235,15 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
 
     /////////////////////////Iterators//////////////////////////////
 
-    public java.util.Iterator list() throws ResponseException, IllegalArgumentException {
+    public Iterable<Video> list() throws ResponseException, IllegalArgumentException {
 
         QueryParams queryParams = new QueryParams();
 
-        return new PageIterator<>(this, queryParams);
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
-    public Iterator<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-
-        return new PageIterator<>(this, queryParams);
+    public Iterable<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
     /////////////////////////Functions//////////////////////////////
