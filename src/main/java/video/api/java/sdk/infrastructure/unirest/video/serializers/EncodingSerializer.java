@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.video.models.Encoding;
-import video.api.java.sdk.domain.video.models.Quality;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class EncodingSerializer implements JsonSerializer<Encoding> {
         MetadataSerializer metadataSerializer = new MetadataSerializer();
         Encoding           encoding           = new Encoding();
         encoding.playable  = data.getBoolean("playable");
-        encoding.qualities = new ArrayList<Quality>();
+        encoding.qualities = new ArrayList<>();
 
         for (Object item : data.getJSONArray("qualities")) {
             encoding.qualities.add(qualitySerializer.deserialize((JSONObject) item));

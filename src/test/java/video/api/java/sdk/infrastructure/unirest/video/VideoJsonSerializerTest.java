@@ -10,8 +10,7 @@ import video.api.java.sdk.domain.video.Video;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class VideoJsonSerializerTest {
     private VideoJsonSerializer videoJsonSerializer;
@@ -88,8 +87,8 @@ class VideoJsonSerializerTest {
         assertEquals("toto", video.videoId);
         assertEquals("toto", video.title);
         assertEquals("desc", video.description);
-        assertEquals(true, video.isPublic);
-        assertEquals(true, video.panoramic);
+        assertTrue(video.isPublic);
+        assertTrue(video.panoramic);
         assertEquals("tata", video.tags.get(0));
         assertEquals("titi", video.tags.get(1));
         assertEquals("__age__", video.metadata.get("age"));
@@ -116,8 +115,8 @@ class VideoJsonSerializerTest {
         assertEquals("vi1", video.videoId);
         assertEquals("toto", video.title);
         assertEquals("desc", video.description);
-        assertEquals(true, video.isPublic);
-        assertEquals(true, video.panoramic);
+        assertTrue(video.isPublic);
+        assertTrue(video.panoramic);
     }
 
     @Test

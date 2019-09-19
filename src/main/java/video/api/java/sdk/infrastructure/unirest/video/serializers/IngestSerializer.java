@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.video.models.Ingest;
-import video.api.java.sdk.domain.video.models.ReceivedByte;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class IngestSerializer implements JsonSerializer<Ingest> {
             Ingest ingest = new Ingest();
             ingest.status        = data.getString("status");
             ingest.filesize      = data.getInt("filesize");
-            ingest.receivedBytes = new ArrayList<ReceivedByte>();
+            ingest.receivedBytes = new ArrayList<>();
             ReceivedByteSerializer receivedByteSerializer = new ReceivedByteSerializer();
             for (Object item : data.getJSONArray("receivedBytes")) {
                 ingest.receivedBytes.add(receivedByteSerializer.deserialize((JSONObject) item));

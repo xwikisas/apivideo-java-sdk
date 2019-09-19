@@ -33,7 +33,7 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
     public List<Caption> deserialize(JSONArray data) throws JSONException {
 
 
-        List<Caption> captions = new ArrayList<Caption>();
+        List<Caption> captions = new ArrayList<>();
         for (Object item : data) {
             captions.add(deserialize((JSONObject) item));
         }

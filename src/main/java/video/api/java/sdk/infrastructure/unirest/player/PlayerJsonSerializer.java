@@ -140,7 +140,7 @@ public class PlayerJsonSerializer implements JsonSerializer<Player> {
     public List<Player> deserialize(JSONArray data) throws JSONException {
 
 
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         for (Object item : data) {
             players.add(deserialize((JSONObject) item));
         }
@@ -280,10 +280,10 @@ public class PlayerJsonSerializer implements JsonSerializer<Player> {
         Matcher m = c.matcher(input);
 
         if (m.matches()) {
-            return new Color(Integer.valueOf(m.group(1)),  // r
-                             Integer.valueOf(m.group(2)),  // g
-                             Integer.valueOf(m.group(3)),  //b
-                             (int) (Float.valueOf((m.group(4))) * 256)); // alpha
+            return new Color(Integer.parseInt(m.group(1)),  // r
+                             Integer.parseInt(m.group(2)),  // g
+                             Integer.parseInt(m.group(3)),  //b
+                             (int) (Float.parseFloat((m.group(4))) * 256)); // alpha
         }
 
         return null;

@@ -38,7 +38,7 @@ public class AssetsSerializer implements JsonSerializer<Assets> {
 
 
     @Override
-    public List deserialize(JSONArray data) throws JSONException {
+    public List<Assets> deserialize(JSONArray data) throws JSONException {
         return null;
     }
 

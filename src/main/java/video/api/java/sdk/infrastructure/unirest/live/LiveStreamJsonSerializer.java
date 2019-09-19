@@ -37,7 +37,7 @@ public class LiveStreamJsonSerializer implements JsonSerializer<LiveStream> {
     @Override
     public List<LiveStream> deserialize(JSONArray data) throws JSONException {
 
-        List<LiveStream> lives = new ArrayList<LiveStream>();
+        List<LiveStream> lives = new ArrayList<>();
         for (Object item : data) {
             lives.add(deserialize((JSONObject) item));
         }

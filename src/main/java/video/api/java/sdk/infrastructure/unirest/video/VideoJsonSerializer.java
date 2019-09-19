@@ -10,7 +10,10 @@ import video.api.java.sdk.infrastructure.unirest.video.serializers.AssetsSeriali
 import video.api.java.sdk.infrastructure.unirest.video.serializers.SourceSerializer;
 import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class VideoJsonSerializer implements JsonSerializer<Video> {
     @Override
@@ -68,7 +71,7 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
     public List<Video> deserialize(JSONArray data) throws JSONException {
 
 
-        List<Video> videos = new ArrayList<Video>();
+        List<Video> videos = new ArrayList<>();
         for (Object item : data) {
             videos.add(deserialize((JSONObject) item));
         }
@@ -88,17 +91,13 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         data.put("isPublic", video.isPublic);
         data.put("panoramic", video.panoramic);
         data.put("description", video.description);
-        JSONArray tags = new JSONArray();
-
-        for (Iterator<String> it = video.tags.iterator(); it.hasNext(); ) {
-            tags.put(it.next());
-        }
+        JSONArray tags = new JSONArray(video.tags);
         data.put("tags", tags);
 
         Map<String, String> videoMetadata = video.metadata;
         JSONArray           metadataArray = new JSONArray();
         for (Map.Entry<String, String> e : videoMetadata.entrySet()) {
-            HashMap hashMap = new HashMap<>();
+            HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("key", e.getKey());
             hashMap.put("value", e.getValue());
             metadataArray.put(new JSONObject(hashMap));
@@ -128,17 +127,14 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         data.put("description", video.description);
         data.put("tags", video.tags.toArray());
         data.put("metadata", video.metadata);
-        JSONArray tags = new JSONArray();
+        JSONArray tags = new JSONArray(video.tags);
 
-        for (Iterator<String> it = video.tags.iterator(); it.hasNext(); ) {
-            tags.put(it.next());
-        }
         data.put("tags", tags);
         if (video.metadata != null) {
             Map<String, String> videoMetadata = video.metadata;
             JSONArray           metadataArray = new JSONArray();
             for (Map.Entry<String, String> e : videoMetadata.entrySet()) {
-                HashMap hashMap = new HashMap<>();
+                HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("key", e.getKey());
                 hashMap.put("value", e.getValue());
                 metadataArray.put(new JSONObject(hashMap));

@@ -7,6 +7,6 @@ public class Ingest {
 
     public String             status        = "unkown";
     public int                filesize      = 0;
-    public List<ReceivedByte> receivedBytes = new ArrayList<ReceivedByte>();
+    public List<ReceivedByte> receivedBytes = new ArrayList<>();
 
 }

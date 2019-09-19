@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.video.models.ReceivedByte;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class ReceivedByteSerializer implements JsonSerializer<ReceivedByte> {
@@ -43,8 +42,8 @@ public class ReceivedByteSerializer implements JsonSerializer<ReceivedByte> {
 
     JSONArray serialize(List<ReceivedByte> receivedBytes) throws JSONException {
         JSONArray tabs = new JSONArray();
-        for (Iterator<ReceivedByte> it = receivedBytes.iterator(); it.hasNext(); ) {
-            tabs.put(serialize(it.next()));
+        for (ReceivedByte receivedByte : receivedBytes) {
+            tabs.put(serialize(receivedByte));
         }
         return tabs;
     }

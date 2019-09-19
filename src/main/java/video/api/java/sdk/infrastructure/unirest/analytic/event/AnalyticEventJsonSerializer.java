@@ -53,7 +53,7 @@ public class AnalyticEventJsonSerializer implements JsonSerializer<AnalyticEvent
     public List<AnalyticEvent> deserialize(JSONArray data) throws JSONException {
 
 
-        List<AnalyticEvent> analyticEvent = new ArrayList<AnalyticEvent>();
+        List<AnalyticEvent> analyticEvent = new ArrayList<>();
         for (Object item : data) {
             analyticEvent.add(deserialize((JSONObject) item));
         }

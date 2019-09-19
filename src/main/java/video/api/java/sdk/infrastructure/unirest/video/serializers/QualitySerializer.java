@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.video.models.Quality;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class QualitySerializer implements JsonSerializer<Quality> {
@@ -43,8 +42,8 @@ public class QualitySerializer implements JsonSerializer<Quality> {
 
     public JSONArray serialize(List<Quality> quality) throws JSONException {
         JSONArray tabs = new JSONArray();
-        for (Iterator<Quality> it = quality.iterator(); it.hasNext(); ) {
-            tabs.put(serialize(it.next()));
+        for (Quality value : quality) {
+            tabs.put(serialize(value));
         }
         return tabs;
     }

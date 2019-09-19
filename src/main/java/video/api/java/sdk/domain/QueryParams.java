@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.*;
 
-@SuppressWarnings("WeakerAccess")
 public class QueryParams {
 
     public int                 currentPage = 1;
@@ -64,14 +63,11 @@ public class QueryParams {
         }
 
         int i = 0;
-        for (Iterator<String> it = this.tags.iterator(); it.hasNext(); ) {
-            param.put("tags[" + i + "]", it.next());
+        for (String tag : this.tags) {
+            param.put("tags[" + i + "]", tag);
         }
 
         for (Map.Entry<String, String> e : this.metadata.entrySet()) {
-            HashMap hashMap = new HashMap<>();
-            hashMap.put("key", e.getKey());
-            hashMap.put("value", e.getValue());
             param.put("metadata[" + e.getKey() + "]", e.getValue());
         }
         return param;
