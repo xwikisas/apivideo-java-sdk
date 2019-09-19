@@ -10,4 +10,3 @@ All notable changes to this project will be documented in this file.
 - Use interfaces in Client
 - Replace PageIterator references with Iterator in domain
 - Replace Iterator with Iterable in domain interfaces
- 

@@ -14,8 +14,6 @@ import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
-import java.util.Iterator;
-
 
 public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticVideo.VideoAnalyticsClient, PageLoader<AnalyticVideo> {
 

@@ -4,7 +4,6 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 
 import java.net.URISyntaxException;
-import java.util.Iterator;
 
 public interface VideoClient {
 

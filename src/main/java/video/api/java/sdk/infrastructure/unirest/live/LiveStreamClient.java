@@ -17,7 +17,6 @@ import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient, PageLoader<LiveStream> {
 

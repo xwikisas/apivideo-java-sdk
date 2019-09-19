@@ -18,7 +18,6 @@ import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSeriali
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import static java.lang.Math.min;
 

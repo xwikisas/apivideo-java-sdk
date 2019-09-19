@@ -18,7 +18,6 @@ import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClient, PageLoader<Player> {
 
