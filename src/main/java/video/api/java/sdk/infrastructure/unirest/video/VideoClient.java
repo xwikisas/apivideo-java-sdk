@@ -6,18 +6,18 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.domain.pagination.Page;
+import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.domain.video.models.Status;
-import video.api.java.sdk.infrastructure.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.video.monitor.DefaultUploadProgressListener;
-import video.api.java.sdk.infrastructure.unirest.video.monitor.UploadProgressListener;
 import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSerializer;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static java.lang.Math.min;
 
@@ -235,14 +235,14 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
 
     /////////////////////////Iterators//////////////////////////////
 
-    public PageIterator<Video> list() throws ResponseException, IllegalArgumentException {
+    public java.util.Iterator list() throws ResponseException, IllegalArgumentException {
 
         QueryParams queryParams = new QueryParams();
 
         return new PageIterator<>(this, queryParams);
     }
 
-    public PageIterator<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterator<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
         return new PageIterator<>(this, queryParams);
     }

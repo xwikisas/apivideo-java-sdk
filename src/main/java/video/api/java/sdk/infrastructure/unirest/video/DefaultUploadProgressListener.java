@@ -1,4 +1,6 @@
-package video.api.java.sdk.infrastructure.unirest.video.monitor;
+package video.api.java.sdk.infrastructure.unirest.video;
+
+import video.api.java.sdk.domain.video.UploadProgressListener;
 
 public class DefaultUploadProgressListener implements UploadProgressListener {
 

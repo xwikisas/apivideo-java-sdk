@@ -3,8 +3,8 @@ package video.api.java.sdk.infrastructure.unirest.live;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
-import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

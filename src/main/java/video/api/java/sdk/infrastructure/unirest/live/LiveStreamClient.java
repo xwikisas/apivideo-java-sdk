@@ -7,17 +7,18 @@ import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.Page;
+import video.api.java.sdk.domain.live.LiveStream;
+import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
-public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveClient, PageLoader<LiveStream> {
+public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient, PageLoader<LiveStream> {
 
     private final LiveStreamJsonSerializer serializer;
     private final RequestExecutor          requestExecutor;
@@ -94,14 +95,14 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveClie
 
     /////////////////////////Iterators//////////////////////////////
 
-    public PageIterator<LiveStream> list() throws ResponseException, IllegalArgumentException {
+    public Iterator<LiveStream> list() throws ResponseException, IllegalArgumentException {
 
 
         QueryParams queryParams = new QueryParams();
         return new PageIterator<>(this, queryParams);
     }
 
-    public PageIterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
 
         return new PageIterator<>(this, queryParams);

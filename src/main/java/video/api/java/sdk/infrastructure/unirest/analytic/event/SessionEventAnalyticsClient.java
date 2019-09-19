@@ -9,11 +9,13 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.analytic.analyticEvent.AnalyticEvent;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.Page;
+import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
-public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticEvent.AnalyticsEventClient, PageLoader<AnalyticEvent> {
+import java.util.Iterator;
+
+public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticEvent.SessionEventAnalyticsClient, PageLoader<AnalyticEvent> {
 
     private final AnalyticEventJsonSerializer serializer;
     private final RequestExecutor             requestExecutor;
@@ -29,13 +31,13 @@ public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.an
     }
 
 
-    public PageIterator<AnalyticEvent> list(String sessionId) throws ResponseException, IllegalArgumentException {
+    public Iterator<AnalyticEvent> list(String sessionId) throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
         this.sessionId = sessionId;
         return new PageIterator<>(this, queryParams);
     }
 
-    public PageIterator<AnalyticEvent> search(QueryParams queryParams, String sessionId) throws ResponseException, IllegalArgumentException {
+    public Iterator<AnalyticEvent> search(QueryParams queryParams, String sessionId) throws ResponseException, IllegalArgumentException {
         this.sessionId = sessionId;
         return new PageIterator<>(this, queryParams);
     }

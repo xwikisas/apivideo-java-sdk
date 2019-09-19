@@ -9,12 +9,14 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.analytic.analyticVideo.AnalyticVideo;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.Page;
+import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 
+import java.util.Iterator;
 
-public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticVideo.AnalyticsVideoClient, PageLoader<AnalyticVideo> {
+
+public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticVideo.VideoAnalyticsClient, PageLoader<AnalyticVideo> {
 
     private final AnalyticVideoJsonSerializer serializer;
     private final RequestExecutor             requestExecutor;
@@ -44,13 +46,13 @@ public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.
     }
 
 
-    public PageIterator<AnalyticVideo> list() throws ResponseException, IllegalArgumentException {
+    public Iterator<AnalyticVideo> list() throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
         return new PageIterator<>(this, queryParams);
     }
 
 
-    public PageIterator<AnalyticVideo> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterator<AnalyticVideo> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
         return new PageIterator<>(this, queryParams);
 

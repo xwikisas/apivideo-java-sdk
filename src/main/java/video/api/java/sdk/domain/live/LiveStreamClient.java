@@ -3,15 +3,16 @@ package video.api.java.sdk.domain.live;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.PageIterator;
+
+import java.util.Iterator;
 
 
-public interface LiveClient {
+public interface LiveStreamClient {
     LiveStream get(String liveStreamId) throws ResponseException;
 
     LiveStream create(LiveStream liveStream) throws ResponseException;
 
-    PageIterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    Iterator<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
     LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException;
 
@@ -19,5 +20,5 @@ public interface LiveClient {
 
     int delete(String liveStreamId) throws ResponseException;
 
-    PageIterator<LiveStream> list() throws ResponseException, IllegalArgumentException;
+    Iterator<LiveStream> list() throws ResponseException, IllegalArgumentException;
 }

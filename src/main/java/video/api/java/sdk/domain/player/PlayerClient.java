@@ -2,7 +2,8 @@ package video.api.java.sdk.domain.player;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.PageIterator;
+
+import java.util.Iterator;
 
 
 public interface PlayerClient {
@@ -17,8 +18,8 @@ public interface PlayerClient {
 
     int delete(String playerId) throws ResponseException;
 
-    PageIterator<Player> list() throws ResponseException;
+    Iterator<Player> list() throws ResponseException;
 
-    PageIterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    Iterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
 }

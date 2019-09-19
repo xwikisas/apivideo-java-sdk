@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.video.monitor;
+package video.api.java.sdk.domain.video;
 
 public interface UploadProgressListener {
 

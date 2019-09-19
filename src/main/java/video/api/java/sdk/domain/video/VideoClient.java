@@ -2,14 +2,13 @@ package video.api.java.sdk.domain.video;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.unirest.video.monitor.UploadProgressListener;
 
 import java.net.URISyntaxException;
+import java.util.Iterator;
 
 public interface VideoClient {
 
-    PageIterator<Video> list() throws ResponseException, IllegalArgumentException;
+    Iterator<Video> list() throws ResponseException, IllegalArgumentException;
 
     Video get(String VideoId) throws ResponseException;
 
@@ -24,7 +23,7 @@ public interface VideoClient {
     Video upload(String source, Video video, UploadProgressListener m) throws ResponseException, IllegalArgumentException;
     //    Video createAndUpload(Video video, String source) throws  ResponseException, IllegalArgumentException;
 
-    PageIterator search(QueryParams queryParams) throws ResponseException, IllegalArgumentException, URISyntaxException;
+    Iterator<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException, URISyntaxException;
 
     Video uploadThumbnail(Video video, String thumbnailSource) throws ResponseException, IllegalArgumentException;
 

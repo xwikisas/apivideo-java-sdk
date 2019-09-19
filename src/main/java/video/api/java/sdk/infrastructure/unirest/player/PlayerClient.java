@@ -7,9 +7,9 @@ import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.player.Player;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.pagination.Page;
+import video.api.java.sdk.domain.pagination.Page;
+import video.api.java.sdk.domain.player.Player;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
@@ -17,6 +17,7 @@ import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClient, PageLoader<Player> {
 
@@ -98,13 +99,13 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     /////////////////////////Iterators//////////////////////////////
 
 
-    public PageIterator<Player> list() throws ResponseException, IllegalArgumentException {
+    public Iterator<Player> list() throws ResponseException, IllegalArgumentException {
 
         QueryParams queryParams = new QueryParams();
         return new PageIterator<>(this, queryParams);
     }
 
-    public PageIterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterator<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
         return new PageIterator<>(this, queryParams);
     }

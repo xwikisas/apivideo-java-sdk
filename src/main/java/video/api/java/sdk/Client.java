@@ -1,12 +1,12 @@
 package video.api.java.sdk;
 
-import video.api.java.sdk.infrastructure.unirest.analytic.event.SessionEventAnalyticsClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.live.LiveStreamAnalyticsClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.video.VideoAnalyticsClient;
-import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
-import video.api.java.sdk.infrastructure.unirest.live.LiveStreamClient;
-import video.api.java.sdk.infrastructure.unirest.player.PlayerClient;
-import video.api.java.sdk.infrastructure.unirest.video.VideoClient;
+import video.api.java.sdk.domain.analytic.analyticEvent.SessionEventAnalyticsClient;
+import video.api.java.sdk.domain.analytic.analyticLive.LiveStreamAnalyticsClient;
+import video.api.java.sdk.domain.analytic.analyticVideo.VideoAnalyticsClient;
+import video.api.java.sdk.domain.caption.CaptionClient;
+import video.api.java.sdk.domain.live.LiveStreamClient;
+import video.api.java.sdk.domain.player.PlayerClient;
+import video.api.java.sdk.domain.video.VideoClient;
 
 public class Client {
     public final CaptionClient               captions;

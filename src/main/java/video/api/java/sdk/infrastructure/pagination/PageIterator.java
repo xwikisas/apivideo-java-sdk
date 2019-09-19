@@ -2,15 +2,14 @@ package video.api.java.sdk.infrastructure.pagination;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.domain.pagination.Page;
 
-import java.util.Iterator;
+public class PageIterator<T> implements java.util.Iterator<T> {
 
-public class PageIterator<T> implements Iterator<T> {
-
-    private PageLoader<T> pageLoader;
-    private Iterator<T>   current;
-    private int           pagesTotal;
-    private QueryParams   queryParams;
+    private PageLoader<T>         pageLoader;
+    private java.util.Iterator<T> current;
+    private int                   pagesTotal;
+    private QueryParams           queryParams;
 
 
     public PageIterator(PageLoader<T> pageLoader, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
@@ -46,7 +45,7 @@ public class PageIterator<T> implements Iterator<T> {
         return this.current.next();
     }
 
-    private Iterator<T> loadPage() throws ResponseException, IllegalArgumentException {
+    private java.util.Iterator<T> loadPage() throws ResponseException, IllegalArgumentException {
 
 
         Page<T> page = pageLoader.load(this.queryParams);

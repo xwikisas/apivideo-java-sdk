@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.pagination;
+package video.api.java.sdk.domain.pagination;
 
 import java.util.List;
 
