@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.caption.Caption;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,11 +19,11 @@ import java.util.List;
 public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionClient {
 
 
-    private final CaptionJsonSerializer serializer;
-    private final RequestExecutor       requestExecutor;
-    private final String                baseUri;
+    private final JsonSerializer<Caption> serializer;
+    private final RequestExecutor         requestExecutor;
+    private final String                  baseUri;
 
-    public CaptionClient(CaptionJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public CaptionClient(JsonSerializer<Caption> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;
@@ -91,16 +92,6 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
 
 
     /////////////////////////Functions//////////////////////////////
-
-
-    public String toString(Caption caption) {
-        return serializer.serialize(caption).toString();
-    }
-
-
-    public JSONObject toJSONObject(Caption caption) {
-        return serializer.serialize(caption);
-    }
 
     private Caption getCaptionResponse(HttpResponse<JsonNode> response) {
 

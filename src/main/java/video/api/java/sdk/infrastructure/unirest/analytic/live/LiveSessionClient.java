@@ -7,30 +7,27 @@ import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.analyticLive.AnalyticLive;
+import video.api.java.sdk.domain.analytic.analyticLive.LiveSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-public class LiveStreamAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticLive.LiveStreamAnalyticsClient, PageLoader<AnalyticLive> {
+public class LiveSessionClient implements video.api.java.sdk.domain.analytic.analyticLive.LiveSessionClient, PageLoader<LiveSession> {
+    private final JsonSerializer<LiveSession> serializer;
+    private final RequestExecutor             requestExecutor;
+    private final String                      baseUri;
 
-
-    private final AnalyticLiveJsonSerializer serializer;
-    private final RequestExecutor            requestExecutor;
-    private final String                     baseUri;
-
-    public LiveStreamAnalyticsClient(AnalyticLiveJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
-
+    public LiveSessionClient(JsonSerializer<LiveSession> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;
-
     }
 
 
-    public AnalyticLive get(String liveStreamId, String period) throws ResponseException, IllegalArgumentException {
+    public LiveSession get(String liveStreamId, String period) throws ResponseException, IllegalArgumentException {
 
 
         JSONObject parameters = new JSONObject();
@@ -50,13 +47,13 @@ public class LiveStreamAnalyticsClient implements video.api.java.sdk.domain.anal
     }
 
 
-    public Iterable<AnalyticLive> list() throws ResponseException, IllegalArgumentException {
+    public Iterable<LiveSession> list() throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
 
-    public Iterable<AnalyticLive> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<LiveSession> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
 
     }
@@ -64,23 +61,23 @@ public class LiveStreamAnalyticsClient implements video.api.java.sdk.domain.anal
     /////////////////////////Functions//////////////////////////////
 
 
-    public String toString(AnalyticLive analyticLive) {
+    public String toString(LiveSession liveSession) {
 
-        return serializer.serialize(analyticLive).toString();
+        return serializer.serialize(liveSession).toString();
     }
 
-    public JSONObject toJSONObject(AnalyticLive analyticLive) {
+    public JSONObject toJSONObject(LiveSession liveSession) {
 
-        return serializer.serialize(analyticLive);
+        return serializer.serialize(liveSession);
     }
 
-    private AnalyticLive getAnalyticLiveResponse(HttpResponse<JsonNode> response) {
+    private LiveSession getAnalyticLiveResponse(HttpResponse<JsonNode> response) {
 
         return serializer.deserialize(response.getBody().getObject());
     }
 
     @Override
-    public Page<AnalyticLive> load(QueryParams queryParams) throws ResponseException {
+    public Page<LiveSession> load(QueryParams queryParams) throws ResponseException {
         String      url     = queryParams.create(baseUri + "/analytics/live-streams/");
         HttpRequest request = Unirest.get(url);
 

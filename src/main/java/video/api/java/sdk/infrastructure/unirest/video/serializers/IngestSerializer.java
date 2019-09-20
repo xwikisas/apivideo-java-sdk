@@ -46,12 +46,6 @@ public class IngestSerializer implements JsonSerializer<Ingest> {
 
     }
 
-    @Override
-    public JSONObject serializeProperties(Ingest ingest) throws JSONException {
-        return null;
-    }
-
-
 }
 
 

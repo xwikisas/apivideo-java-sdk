@@ -56,7 +56,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
         if (video.title == null) {
             video.title = "";
         }
-        JSONObject prop = serializer.serializeProperties(video);
+        JSONObject prop = serializer.serialize(video);
 
         HttpRequest request = Unirest.post(baseUri + "/videos").body(prop);
 
@@ -213,7 +213,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
     public Video update(Video video) throws ResponseException {
 
 
-        HttpRequest request = Unirest.patch(baseUri + "/videos/" + video.videoId).body(serializer.serializeProperties(video));
+        HttpRequest request = Unirest.patch(baseUri + "/videos/" + video.videoId).body(serializer.serialize(video));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 

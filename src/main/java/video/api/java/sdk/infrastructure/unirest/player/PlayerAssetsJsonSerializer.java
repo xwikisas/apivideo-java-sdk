@@ -33,10 +33,4 @@ public class PlayerAssetsJsonSerializer implements JsonSerializer<Assets> {
 
     }
 
-    @Override
-    public JSONObject serializeProperties(Assets assets) throws JSONException {
-        return null;
-    }
-
-
 }

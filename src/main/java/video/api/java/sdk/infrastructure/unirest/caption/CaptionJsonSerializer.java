@@ -15,7 +15,6 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
     public Caption deserialize(JSONObject data) throws JSONException {
         Caption caption = new Caption();
 
-
         if (data.has("uri"))
             caption.uri = data.getString("uri");
         if (data.has("src"))
@@ -23,7 +22,7 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
         if (data.has("srclang"))
             caption.srclang = data.getString("srclang");
         if (data.has("default"))
-            caption.isDefault = (boolean) data.get("default");
+            caption.defaultCaption = data.getBoolean("default");
 
 
         return caption;
@@ -31,8 +30,6 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
 
     @Override
     public List<Caption> deserialize(JSONArray data) throws JSONException {
-
-
         List<Caption> captions = new ArrayList<>();
         for (Object item : data) {
             captions.add(deserialize((JSONObject) item));
@@ -42,22 +39,9 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
 
     @Override
     public JSONObject serialize(Caption caption) throws JSONException {
-
         JSONObject data = new JSONObject();
-        data.put("uri", caption.uri);
-        data.put("src", caption.src);
-        data.put("srclang", caption.srclang);
-        data.put("default", caption.isDefault);
-        return data;
 
-    }
-
-
-    public JSONObject serializeProperties(Caption caption) throws JSONException {
-
-        JSONObject data = new JSONObject();
-        data.put("srclang", caption.srclang);
-        data.put("default", caption.isDefault);
+        data.put("default", caption.defaultCaption);
 
         return data;
     }

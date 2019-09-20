@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
+import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class LiveStreamStreamClientTest {
-    LiveStream testLiveStream;
     private LiveStreamClient liveStreamClient;
 
     @BeforeEach
     void setUp() {
         liveStreamClient = new LiveStreamClient(
-                new LiveStreamJsonSerializer(),
+                new LiveStreamJsonSerializer(new AssetsJsonSerializer()),
                 new RequestExecutor(),
                 ""
         );
@@ -29,16 +29,15 @@ class LiveStreamStreamClientTest {
 
     @Test
     void create() throws ResponseException {
-        LiveStream liveStream = new LiveStream();
+        LiveStream liveStream = new LiveStream("test");
         liveStream.liveStreamId = "liSuccess";
         assertNotNull(liveStreamClient.create(liveStream));
     }
 
     @Test
     void update() throws ResponseException {
-        LiveStream liveStream = new LiveStream();
+        LiveStream liveStream = new LiveStream("Success");
         liveStream.liveStreamId = "liSuccess";
-        liveStream.name         = "Success";
         assertNotNull(liveStreamClient.update(liveStream));
     }
 

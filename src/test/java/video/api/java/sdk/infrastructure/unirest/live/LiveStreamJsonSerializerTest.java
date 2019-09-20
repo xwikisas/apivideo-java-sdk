@@ -4,76 +4,78 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.live.LiveStream;
+import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class LiveStreamJsonSerializerTest {
 
-    private LiveStreamJsonSerializer liveStreamJsonSerializer;
+    private LiveStreamJsonSerializer serializer;
 
     @BeforeEach
     void setUp() {
-        liveStreamJsonSerializer = new LiveStreamJsonSerializer();
-    }
-
-
-    @Test
-    void deserializeMax() {
-        JSONObject jsonLive = new JSONObject("{\n" +
-                                                     "    \"liveStreamId\": \"liSuccess\",\n" +
-                                                     "    \"streamKey\": \"a2135a64-dce6-4329-a987-0ea046f42fff\",\n" +
-                                                     "    \"name\": \" update test name\",\n" +
-                                                     "    \"record\": false,\n" +
-                                                     "    \"broadcasting\": false,\n" +
-                                                     "    \"assets\": {\n" +
-                                                     "        \"iframe\": \"<iframe src=\\\"https://embed-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
-                                                     "        \"player\": \"https://embed-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B\",\n" +
-                                                     "        \"hls\": \"https://live.api.video/li7KG7XdDROdtuAj00rD4J8B.m3u8\",\n" +
-                                                     "        \"thumbnail\": \"https://cdn-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B/thumbnail.jpg\"\n" +
-                                                     "    }\n" +
-                                                     "}");
-        LiveStream liveStream = liveStreamJsonSerializer.deserialize(jsonLive);
-        assertEquals("liSuccess", liveStream.liveStreamId);
+        serializer = new LiveStreamJsonSerializer(new AssetsJsonSerializer());
     }
 
     @Test
     void deserializeMin() {
-        JSONObject jsonLive = new JSONObject("{\n" +
-                                                     "    \"liveStreamId\": \"liSuccess\",\n" +
-                                                     "}");
-        LiveStream liveStream = liveStreamJsonSerializer.deserialize(jsonLive);
-        assertEquals("liSuccess", liveStream.liveStreamId);
+        JSONObject json = new JSONObject()
+                .put("liveStreamId", "liSuccess")
+                .put("name", "test");
 
+        LiveStream liveStream = serializer.deserialize(json);
+
+        assertEquals(json.getString("liveStreamId"), liveStream.liveStreamId);
+        assertEquals(json.getString("name"), liveStream.name);
     }
 
     @Test
-    void serialize() {
-        LiveStream liveStream = new LiveStream();
-        liveStream.liveStreamId = "toto";
-        assertEquals("toto", liveStreamJsonSerializer.serialize(liveStream).getString("liveStreamId"));
+    void deserializeMax() {
+        JSONObject assets = new JSONObject()
+                .put("iframe", "<iframe src=\"...\" width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" allowfullscreen=\"\"></iframe>")
+                .put("player", "...")
+                .put("hls", "...")
+                .put("thumbnail", "...");
+
+        JSONObject json = new JSONObject()
+                .put("liveStreamId", "liSuccess")
+                .put("name", "test")
+                .put("streamKey", "xxx")
+                .put("record", true)
+                .put("broadcasting", true)
+                .put("assets", assets);
+
+        LiveStream liveStream = serializer.deserialize(json);
+        assertEquals(json.getString("streamKey"), liveStream.streamKey);
+        assertEquals(json.getBoolean("record"), liveStream.record);
+        assertEquals(json.getBoolean("broadcasting"), liveStream.broadcasting);
+        assertEquals(assets.getString("iframe"), liveStream.assets.iframe);
+        assertEquals(assets.getString("player"), liveStream.assets.player);
+        assertEquals(assets.getString("hls"), liveStream.assets.hls);
+        assertEquals(assets.getString("thumbnail"), liveStream.assets.thumbnail);
     }
 
     @Test
-    void serializeProperties() {
+    void serializeMin() {
+        LiveStream liveStream = new LiveStream("test");
 
+        JSONObject serialized = serializer.serialize(liveStream);
+
+        assertEquals(liveStream.name, serialized.getString("name"));
+        assertEquals(liveStream.record, serialized.getBoolean("record"));
+        assertFalse(serialized.has("playerId"));
     }
 
     @Test
-    void deserializeProperties() {
-        JSONObject jsonLive = new JSONObject("{\n" +
-                                                     "    \"liveStreamId\": \"liSuccess\",\n" +
-                                                     "    \"streamKey\": \"a2135a64-dce6-4329-a987-0ea046f42fff\",\n" +
-                                                     "    \"name\": \"Success\",\n" +
-                                                     "    \"record\": false,\n" +
-                                                     "    \"broadcasting\": false,\n" +
-                                                     "    \"assets\": {\n" +
-                                                     "        \"iframe\": \"<iframe src=\\\"https://embed-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
-                                                     "        \"player\": \"https://embed-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B\",\n" +
-                                                     "        \"hls\": \"https://live.api.video/li7KG7XdDROdtuAj00rD4J8B.m3u8\",\n" +
-                                                     "        \"thumbnail\": \"https://cdn-staging.api.video/live/li7KG7XdDROdtuAj00rD4J8B/thumbnail.jpg\"\n" +
-                                                     "    }\n" +
-                                                     "}");
-        LiveStream liveStream = liveStreamJsonSerializer.deserializeProperties(jsonLive);
-        assertEquals("Success", liveStream.name);
+    void serializeMax() {
+        LiveStream liveStream = new LiveStream("test");
+        liveStream.record   = true;
+        liveStream.playerId = "xxx";
+
+        JSONObject serialized = serializer.serialize(liveStream);
+
+        assertEquals(liveStream.record, serialized.getBoolean("record"));
+        assertEquals(liveStream.playerId, serialized.getString("playerId"));
     }
 }

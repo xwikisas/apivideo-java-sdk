@@ -7,14 +7,15 @@ import kong.unirest.Unirest;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.account.Account;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 public class AccountClient {
-    private final AccountJsonSerializer serializer;
-    private final RequestExecutor       requestExecutor;
-    private final String                baseUri;
+    private final JsonSerializer<Account>  serializer;
+    private final RequestExecutor requestExecutor;
+    private final String          baseUri;
 
 
-    public AccountClient(AccountJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public AccountClient(JsonSerializer<Account> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;

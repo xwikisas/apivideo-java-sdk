@@ -31,7 +31,7 @@ class CaptionJsonSerializerTest {
         assertEquals("tata", caption.uri);
         assertEquals("vtt", caption.src);
         assertEquals("en", caption.srclang);
-        assertFalse(caption.isDefault);
+        assertFalse(caption.defaultCaption);
 
     }
 
@@ -81,28 +81,12 @@ class CaptionJsonSerializerTest {
 
     @Test
     void serialize() {
-        JSONObject caption = new JSONObject("{\n" +
-                                                    "    \"uri\": \"tata\",\n" +
-                                                    "    \"src\": \"vtt\",\n" +
-                                                    "    \"srclang\": \"en\",\n" +
-                                                    "    \"default\": false\n" +
-                                                    "}");
+        Caption caption = new Caption();
+        caption.defaultCaption = true;
 
-        assertEquals(caption.toString(), captionJsonSerializer.serialize(captionJsonSerializer.deserialize(caption)).toString());
+        JSONObject serialized =  captionJsonSerializer.serialize(caption);
 
-
-    }
-
-    @Test
-    void serializeProperties() {
-        JSONObject caption = new JSONObject("{\n" +
-                                                    "    \"srclang\": \"en\",\n" +
-                                                    "    \"default\": false\n" +
-                                                    "}");
-
-        assertEquals(caption.toString(), captionJsonSerializer.serializeProperties(captionJsonSerializer.deserialize(caption)).toString());
-
-
+        assertEquals(caption.defaultCaption, serialized.getBoolean("default"));
     }
 
 }

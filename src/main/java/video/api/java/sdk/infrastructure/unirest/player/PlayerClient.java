@@ -44,7 +44,7 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
 
     public Player create(Player player) throws ResponseException {
 
-        HttpRequest request = Unirest.post(baseUri + "/players").body(serializer.serializeProperties(player));
+        HttpRequest request = Unirest.post(baseUri + "/players").body(serializer.serialize(player));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -56,7 +56,7 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
 
     public Player update(Player player) throws ResponseException {
 
-        HttpRequest request = Unirest.patch(baseUri + "/players/" + player.playerId).body(serializer.serializeProperties(player));
+        HttpRequest request = Unirest.patch(baseUri + "/players/" + player.playerId).body(serializer.serialize(player));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -112,17 +112,6 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
 
 
     /////////////////////////Functions//////////////////////////////
-
-    public String toString(Player player) {
-
-        return serializer.serialize(player).toString();
-    }
-
-    public JSONObject toJSONObject(Player player) {
-
-        return serializer.serialize(player);
-    }
-
 
     private Player getPlayerResponse(HttpResponse<JsonNode> response) {
         return serializer.deserialize(response.getBody().getObject());

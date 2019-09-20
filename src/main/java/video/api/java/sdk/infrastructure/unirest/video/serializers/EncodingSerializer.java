@@ -45,10 +45,4 @@ public class EncodingSerializer implements JsonSerializer<Encoding> {
         return data;
     }
 
-    @Override
-    public JSONObject serializeProperties(Encoding encoding) throws JSONException {
-        return null;
-    }
-
-
 }

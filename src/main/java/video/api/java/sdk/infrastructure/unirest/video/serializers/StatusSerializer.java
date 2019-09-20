@@ -14,10 +14,13 @@ public class StatusSerializer implements JsonSerializer<Status> {
         IngestSerializer   ingestSerializer   = new IngestSerializer();
         EncodingSerializer encodingSerializer = new EncodingSerializer();
         Status             status             = new Status();
-        if (data.has("ingest"))
+
+        if (data.has("ingest")) {
             status.ingest = ingestSerializer.deserialize(data.getJSONObject("ingest"));
-        if (data.has("encoding"))
+        }
+        if (data.has("encoding")) {
             status.encoding = encodingSerializer.deserialize(data.getJSONObject("encoding"));
+        }
         return status;
     }
 
@@ -34,11 +37,5 @@ public class StatusSerializer implements JsonSerializer<Status> {
         data.put("encoding", encodingSerializer.serialize(status.encoding));
         return data;
     }
-
-    @Override
-    public JSONObject serializeProperties(Status status) throws JSONException {
-        return null;
-    }
-
 
 }

@@ -4,7 +4,6 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
@@ -13,6 +12,7 @@ import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,11 +20,11 @@ import java.io.IOException;
 
 public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient, PageLoader<LiveStream> {
 
-    private final LiveStreamJsonSerializer serializer;
-    private final RequestExecutor          requestExecutor;
-    private final String                   baseUri;
+    private final JsonSerializer<LiveStream> serializer;
+    private final RequestExecutor            requestExecutor;
+    private final String                     baseUri;
 
-    public LiveStreamClient(LiveStreamJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public LiveStreamClient(JsonSerializer<LiveStream> serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
@@ -43,7 +43,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
 
     public LiveStream create(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = Unirest.post(baseUri + "/live-streams").body(serializer.serializeProperties(liveStream));
+        HttpRequest request = Unirest.post(baseUri + "/live-streams").body(serializer.serialize(liveStream));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -73,7 +73,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     public LiveStream update(LiveStream liveStream) throws ResponseException {
 
-        HttpRequest request = Unirest.patch(baseUri + "/live-streams/" + liveStream.liveStreamId).body(serializer.serializeProperties(liveStream));
+        HttpRequest request = Unirest.patch(baseUri + "/live-streams/" + liveStream.liveStreamId).body(serializer.serialize(liveStream));
 
         HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
 
@@ -108,15 +108,6 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
 
     /////////////////////////Functions//////////////////////////////
-
-
-    public String toString(LiveStream liveStream) {
-        return serializer.serialize(liveStream).toString();
-    }
-
-    public JSONObject toJSONObject(LiveStream liveStream) {
-        return serializer.serialize(liveStream);
-    }
 
     private LiveStream getLiveResponse(HttpResponse<JsonNode> response) {
 

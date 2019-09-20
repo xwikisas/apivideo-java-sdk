@@ -48,10 +48,4 @@ public class MetadataSerializer implements JsonSerializer<Metadata> {
         return data;
     }
 
-    @Override
-    public JSONObject serializeProperties(Metadata metadata) throws JSONException {
-        return null;
-    }
-
-
 }

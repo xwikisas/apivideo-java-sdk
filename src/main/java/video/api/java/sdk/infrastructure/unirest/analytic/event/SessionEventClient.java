@@ -4,25 +4,24 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.analyticEvent.AnalyticEvent;
+import video.api.java.sdk.domain.analytic.analyticEvent.SessionEvent;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticEvent.SessionEventAnalyticsClient, PageLoader<AnalyticEvent> {
+public class SessionEventClient implements video.api.java.sdk.domain.analytic.analyticEvent.SessionEventClient, PageLoader<SessionEvent> {
 
-    private final AnalyticEventJsonSerializer serializer;
-    private final RequestExecutor             requestExecutor;
-    private final String                      baseUri;
-    private       String                      sessionId;
+    private final JsonSerializer<SessionEvent> serializer;
+    private final RequestExecutor              requestExecutor;
+    private final String                       baseUri;
+    private       String                       sessionId;
 
-    public SessionEventAnalyticsClient(AnalyticEventJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
-
+    public SessionEventClient(JsonSerializer<SessionEvent> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;
@@ -30,13 +29,13 @@ public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.an
     }
 
 
-    public Iterable<AnalyticEvent> list(String sessionId) throws ResponseException, IllegalArgumentException {
+    public Iterable<SessionEvent> list(String sessionId) throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
         this.sessionId = sessionId;
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
-    public Iterable<AnalyticEvent> search(QueryParams queryParams, String sessionId) throws ResponseException, IllegalArgumentException {
+    public Iterable<SessionEvent> search(QueryParams queryParams, String sessionId) throws ResponseException, IllegalArgumentException {
         this.sessionId = sessionId;
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
@@ -44,22 +43,8 @@ public class SessionEventAnalyticsClient implements video.api.java.sdk.domain.an
 
     /////////////////////////Functions//////////////////////////////
 
-    public String toString(AnalyticEvent analyticEvent) {
-        return serializer.serialize(analyticEvent).toString();
-    }
-
-    public JSONObject toJSONObject(AnalyticEvent analyticEvent) {
-        return serializer.serialize(analyticEvent);
-    }
-
-    private AnalyticEvent getAnalyticEventResponse(HttpResponse<JsonNode> response) {
-
-        return serializer.deserialize(response.getBody().getObject());
-    }
-
-
     @Override
-    public Page<AnalyticEvent> load(QueryParams queryParams) throws ResponseException {
+    public Page<SessionEvent> load(QueryParams queryParams) throws ResponseException {
         String      url     = queryParams.create(baseUri + "/analytics/sessions/" + sessionId + "/events");
         HttpRequest request = Unirest.get(url);
 

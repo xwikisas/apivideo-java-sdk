@@ -7,7 +7,6 @@ import kong.unirest.Unirest;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
 
-@SuppressWarnings("WeakerAccess")
 public class TokenClient {
 
 

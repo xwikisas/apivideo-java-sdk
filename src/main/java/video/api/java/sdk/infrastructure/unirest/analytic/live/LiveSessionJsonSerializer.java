@@ -1,46 +1,27 @@
-package video.api.java.sdk.infrastructure.unirest.analytic.video;
+package video.api.java.sdk.infrastructure.unirest.analytic.live;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.analytic.analyticVideo.AnalyticVideo;
+import video.api.java.sdk.domain.analytic.analyticLive.LiveSession;
 import video.api.java.sdk.domain.analytic.models.AnalyticData;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo> {
+public class LiveSessionJsonSerializer implements JsonSerializer<LiveSession> {
 
     @Override
-    public AnalyticVideo deserialize(JSONObject data) throws JSONException {
-        AnalyticVideo analyticVideo = new AnalyticVideo();
-        analyticVideo.videoId = data.getJSONObject("video").getString("videoId");
-        if (data.getJSONObject("video").has("title"))
-            analyticVideo.videoTitle = data.getJSONObject("video").getString("title");
-        if (data.getJSONObject("video").has("period"))
-            analyticVideo.period = data.getString("period");
+    public LiveSession deserialize(JSONObject data) throws JSONException {
+        LiveSession liveSession = new LiveSession();
+        liveSession.liveStreamId = data.getJSONObject("live").getString("liveStreamId");
+        if (data.getJSONObject("live").has("name"))
+            liveSession.liveName = data.getJSONObject("live").getString("name");
+        if (data.getJSONObject("live").has("period"))
+            liveSession.period = data.getString("period");
         JSONArray dataArray = data.getJSONArray("data");
-        if (data.getJSONObject("video").has("tags")) {
-            for (int i = 0; i < data.getJSONObject("video").getJSONArray("tags").length(); i++) {
-                analyticVideo.tags.add(data.getJSONObject("video").getJSONArray("tags").getString(i));
-            }
-        }
-
-        if (data.getJSONObject("video").has("metadata")) {
-            JSONArray           jsonArray = data.getJSONObject("video").getJSONArray("metadata");
-            Map<String, String> metadata  = new HashMap<>();
-            for (int j = 0; j < jsonArray.length(); j++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(j);
-                String     key        = jsonObject.getString("key");
-                String     value      = jsonObject.getString("value");
-                metadata.put(key, value);
-            }
-            analyticVideo.metadata = metadata;
-        }
-        analyticVideo.data = new AnalyticData[dataArray.length()];
+        liveSession.data = new AnalyticData[dataArray.length()];
 
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject   playerSession = dataArray.getJSONObject(i);
@@ -51,23 +32,6 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
                 analyticData.session.sessionId = playerSession.getJSONObject("session").getString("sessionId");
                 analyticData.session.endedAt   = playerSession.getJSONObject("session").getString("endedAt");
                 analyticData.session.loadedAt  = playerSession.getJSONObject("session").getString("loadedAt");
-            }
-            if (playerSession.getJSONObject("session").has("metadatas")) {
-                JSONArray           jsonArray = playerSession.getJSONObject("session").getJSONArray("metadatas");
-                Map<String, String> metadatas = new HashMap<>();
-                for (int j = 0; j < jsonArray.length(); j++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(j);
-                    String     key        = jsonObject.getString("key");
-                    try {
-                        String value = jsonObject.getString("value");
-                        metadatas.put(key, value);
-
-                    } catch (org.json.JSONException e) {
-                        metadatas.put(key, null);
-
-                    }
-                }
-                analyticData.session.metadatas = metadatas;
             }
             // Build Analytic Location
             if (playerSession.has("location")) {
@@ -99,38 +63,30 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
                 analyticData.client.name    = playerSession.getJSONObject("client").getString("name");
                 analyticData.client.version = playerSession.getJSONObject("client").getString("version");
             }
-            analyticVideo.data[i] = analyticData;
+            liveSession.data[i] = analyticData;
 
         }
 
 
-        return analyticVideo;
+        return liveSession;
     }
 
     @Override
-    public JSONObject serialize(AnalyticVideo analyticVideo) throws JSONException {
-        JSONObject data  = new JSONObject();
-        JSONObject video = new JSONObject();
+    public JSONObject serialize(LiveSession liveSession) throws JSONException {
+        JSONObject data = new JSONObject();
+        JSONObject live = new JSONObject();
 
-        video.put("videoId", analyticVideo.videoId);
-        video.put("title", analyticVideo.videoTitle);
-        data.put("video", video);
-        data.put("period", analyticVideo.period);
-        JSONArray tags = new JSONArray();
 
-        for (String tag : analyticVideo.tags) {
-            tags.put(tag);
-        }
-        data.put("tags", tags);
+        live.put("liveStreamId", liveSession.liveStreamId);
+        live.put("name", liveSession.liveName);
+        data.put("live", live);
+        data.put("period", liveSession.period);
 
-        JSONArray metadataArray = mapToArray(analyticVideo.metadata);
-        data.put("metadata", metadataArray);
+
         JSONArray dataArray = new JSONArray();
-        //JSONArray dataArray = data.getJSONArray("data");
-        //   analyticVideo.data = new AnalyticData[dataArray.length()];
 
-        for (int i = 0; i < analyticVideo.data.length; i++) {
-            AnalyticData analyticData  = analyticVideo.data[i];
+        for (int i = 0; i < liveSession.data.length; i++) {
+            AnalyticData analyticData  = liveSession.data[i];
             JSONObject   playerSession = new JSONObject();
 
 
@@ -139,8 +95,6 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
             session.put("sessionId", analyticData.session.sessionId);
             session.put("endedAt", analyticData.session.endedAt);
             session.put("loadedAt", analyticData.session.loadedAt);
-            JSONArray metadataArrays = mapToArray(analyticData.session.metadatas);
-            session.put("metadatas", metadataArrays);
             playerSession.put("session", session);
 
             // Build Analytic Location
@@ -187,33 +141,15 @@ public class AnalyticVideoJsonSerializer implements JsonSerializer<AnalyticVideo
         return data;
     }
 
-    private static JSONArray mapToArray(Map<String, String> map) {
-        JSONArray array = new JSONArray();
-        for (Map.Entry<String, String> e : map.entrySet()) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("key", e.getKey());
-            hashMap.put("value", e.getValue());
-            array.put(new JSONObject(hashMap));
-        }
-        return array;
-    }
-
     @Override
-    public JSONObject serializeProperties(AnalyticVideo analyticVideo) throws JSONException {
-        return null;
-    }
+    public List<LiveSession> deserialize(JSONArray data) throws JSONException {
 
 
-    @Override
-    public List<AnalyticVideo> deserialize(JSONArray data) throws JSONException {
-
-
-        List<AnalyticVideo> analyticsVideo = new ArrayList<>();
+        List<LiveSession> liveSession = new ArrayList<>();
         for (Object item : data) {
-            analyticsVideo.add(deserialize((JSONObject) item));
+            liveSession.add(deserialize((JSONObject) item));
         }
-        return analyticsVideo;
+        return liveSession;
     }
-
 
 }

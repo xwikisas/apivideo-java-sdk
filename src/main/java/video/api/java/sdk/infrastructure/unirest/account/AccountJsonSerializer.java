@@ -49,10 +49,4 @@ public class AccountJsonSerializer implements JsonSerializer<Account> {
         return data;
     }
 
-    @Override
-    public JSONObject serializeProperties(Account account) throws JSONException {
-        return null;
-    }
-
-
 }

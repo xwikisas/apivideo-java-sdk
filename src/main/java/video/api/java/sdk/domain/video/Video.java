@@ -1,6 +1,6 @@
 package video.api.java.sdk.domain.video;
 
-import video.api.java.sdk.domain.video.models.Assets;
+import video.api.java.sdk.domain.asset.Assets;
 import video.api.java.sdk.domain.video.models.Source;
 import video.api.java.sdk.domain.video.models.Status;
 

@@ -2,17 +2,17 @@ package video.api.java.sdk.infrastructure.unirest.analytic.event;
 
 import org.junit.jupiter.api.Test;
 
-class SessionEventAnalyticsClientTest {
+class SessionEventJsonSerializerTest {
 
     @Test
-    void list() {
+    void deserialize() {
     }
 
     @Test
-    void search() {
+    void serialize() {
     }
 
     @Test
-    void load() {
+    void deserialize1() {
     }
 }

@@ -3,19 +3,19 @@ package video.api.java.sdk.domain.analytic.analyticEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AnalyticEvent {
+public class SessionEvent {
     public String type;
     public String emittedAt;
     public int    at;
     public int    from;
     public int    to;
 
-    public AnalyticEvent() {
+    public SessionEvent() {
         this.type      = null;
         this.emittedAt = null;
     }
 
-    public AnalyticEvent(JSONObject data) {
+    public SessionEvent(JSONObject data) {
 
 
         try {

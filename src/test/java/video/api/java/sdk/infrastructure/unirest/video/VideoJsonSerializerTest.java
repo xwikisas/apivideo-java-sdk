@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.video.Video;
+import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ class VideoJsonSerializerTest {
 
     @BeforeEach
     void setUp() {
-        videoJsonSerializer = new VideoJsonSerializer();
+        videoJsonSerializer = new VideoJsonSerializer(new AssetsJsonSerializer());
     }
 
     ///////////////Failure//////////////////////////
@@ -176,17 +177,9 @@ class VideoJsonSerializerTest {
     @Test
     void serialize() {
         Video video = new Video();
-        video.videoId = "vi";
+        video.title = "tt";
         JSONObject jsonVideo = videoJsonSerializer.serialize(video);
-        assertEquals("vi", jsonVideo.getString("videoId"));
+        assertEquals("tt", jsonVideo.getString("title"));
     }
 
-    @Test
-    void serializeProperties() {
-        Video video = new Video();
-        video.title = "viTitle";
-        JSONObject jsonVideo = videoJsonSerializer.serialize(video);
-        assertEquals("viTitle", jsonVideo.getString("title"));
-
-    }
 }

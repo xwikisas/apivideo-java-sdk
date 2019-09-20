@@ -4,16 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import video.api.java.sdk.domain.analytic.analyticVideo.AnalyticVideo;
+import video.api.java.sdk.domain.analytic.analyticVideo.VideoSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AnalyticVideoJsonSerializerTest {
-    AnalyticVideoJsonSerializer analyticVideoJsonSerializer;
+class VideoSessionJsonSerializerTest {
+    VideoSessionJsonSerializer videoSessionJsonSerializer;
 
     @BeforeEach
     void SetUp() {
-        analyticVideoJsonSerializer = new AnalyticVideoJsonSerializer();
+        videoSessionJsonSerializer = new VideoSessionJsonSerializer();
     }
 
 
@@ -78,8 +78,8 @@ class AnalyticVideoJsonSerializerTest {
                                                      "    ]\n" +
                                                      "}");
 
-        AnalyticVideo analyticVideo = analyticVideoJsonSerializer.deserialize(analytic);
-        assertEquals("viSuccess", analyticVideo.videoId);
+        VideoSession videoSession = videoSessionJsonSerializer.deserialize(analytic);
+        assertEquals("viSuccess", videoSession.videoId);
 
 
     }
@@ -115,8 +115,8 @@ class AnalyticVideoJsonSerializerTest {
                                                      "    ]\n" +
                                                      "}");
 
-        AnalyticVideo analyticVideo = analyticVideoJsonSerializer.deserialize(analytic);
-        assertEquals("viSuccess", analyticVideo.videoId);
+        VideoSession videoSession = videoSessionJsonSerializer.deserialize(analytic);
+        assertEquals("viSuccess", videoSession.videoId);
 
 
     }
@@ -158,7 +158,7 @@ class AnalyticVideoJsonSerializerTest {
         analytics.put(analytic);
         analytics.put(analytic);
         analytics.put(analytic);
-        assertEquals(4, analyticVideoJsonSerializer.deserialize(analytics).size());
+        assertEquals(4, videoSessionJsonSerializer.deserialize(analytics).size());
 
 
     }

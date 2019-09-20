@@ -5,14 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.analytic.models.AnalyticData;
 
-public class AnalyticLive {
+public class LiveSession {
 
     public String         liveStreamId;
     public String         liveName;
     public String         period;
     public AnalyticData[] data;
 
-    public AnalyticLive() {
+    public LiveSession() {
         this.liveStreamId = null;
         this.liveName     = null;
         this.period       = null;
@@ -21,7 +21,7 @@ public class AnalyticLive {
     }
 
 
-    public AnalyticLive(JSONObject data) {
+    public LiveSession(JSONObject data) {
         try {
             this.liveStreamId = data.getJSONObject("live").getString("live_stream_id");
             this.liveName     = data.getJSONObject("live").getString("name");

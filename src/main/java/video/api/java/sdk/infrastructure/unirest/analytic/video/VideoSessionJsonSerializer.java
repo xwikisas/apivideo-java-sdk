@@ -1,27 +1,46 @@
-package video.api.java.sdk.infrastructure.unirest.analytic.live;
+package video.api.java.sdk.infrastructure.unirest.analytic.video;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.analytic.analyticLive.AnalyticLive;
+import video.api.java.sdk.domain.analytic.analyticVideo.VideoSession;
 import video.api.java.sdk.domain.analytic.models.AnalyticData;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class AnalyticLiveJsonSerializer implements JsonSerializer<AnalyticLive> {
+public class VideoSessionJsonSerializer implements JsonSerializer<VideoSession> {
 
     @Override
-    public AnalyticLive deserialize(JSONObject data) throws JSONException {
-        AnalyticLive analyticLive = new AnalyticLive();
-        analyticLive.liveStreamId = data.getJSONObject("live").getString("liveStreamId");
-        if (data.getJSONObject("live").has("name"))
-            analyticLive.liveName = data.getJSONObject("live").getString("name");
-        if (data.getJSONObject("live").has("period"))
-            analyticLive.period = data.getString("period");
+    public VideoSession deserialize(JSONObject data) throws JSONException {
+        VideoSession videoSession = new VideoSession();
+        videoSession.videoId = data.getJSONObject("video").getString("videoId");
+        if (data.getJSONObject("video").has("title"))
+            videoSession.videoTitle = data.getJSONObject("video").getString("title");
+        if (data.getJSONObject("video").has("period"))
+            videoSession.period = data.getString("period");
         JSONArray dataArray = data.getJSONArray("data");
-        analyticLive.data = new AnalyticData[dataArray.length()];
+        if (data.getJSONObject("video").has("tags")) {
+            for (int i = 0; i < data.getJSONObject("video").getJSONArray("tags").length(); i++) {
+                videoSession.tags.add(data.getJSONObject("video").getJSONArray("tags").getString(i));
+            }
+        }
+
+        if (data.getJSONObject("video").has("metadata")) {
+            JSONArray           jsonArray = data.getJSONObject("video").getJSONArray("metadata");
+            Map<String, String> metadata  = new HashMap<>();
+            for (int j = 0; j < jsonArray.length(); j++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(j);
+                String     key        = jsonObject.getString("key");
+                String     value      = jsonObject.getString("value");
+                metadata.put(key, value);
+            }
+            videoSession.metadata = metadata;
+        }
+        videoSession.data = new AnalyticData[dataArray.length()];
 
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject   playerSession = dataArray.getJSONObject(i);
@@ -32,6 +51,23 @@ public class AnalyticLiveJsonSerializer implements JsonSerializer<AnalyticLive> 
                 analyticData.session.sessionId = playerSession.getJSONObject("session").getString("sessionId");
                 analyticData.session.endedAt   = playerSession.getJSONObject("session").getString("endedAt");
                 analyticData.session.loadedAt  = playerSession.getJSONObject("session").getString("loadedAt");
+            }
+            if (playerSession.getJSONObject("session").has("metadatas")) {
+                JSONArray           jsonArray = playerSession.getJSONObject("session").getJSONArray("metadatas");
+                Map<String, String> metadatas = new HashMap<>();
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(j);
+                    String     key        = jsonObject.getString("key");
+                    try {
+                        String value = jsonObject.getString("value");
+                        metadatas.put(key, value);
+
+                    } catch (org.json.JSONException e) {
+                        metadatas.put(key, null);
+
+                    }
+                }
+                analyticData.session.metadatas = metadatas;
             }
             // Build Analytic Location
             if (playerSession.has("location")) {
@@ -63,30 +99,38 @@ public class AnalyticLiveJsonSerializer implements JsonSerializer<AnalyticLive> 
                 analyticData.client.name    = playerSession.getJSONObject("client").getString("name");
                 analyticData.client.version = playerSession.getJSONObject("client").getString("version");
             }
-            analyticLive.data[i] = analyticData;
+            videoSession.data[i] = analyticData;
 
         }
 
 
-        return analyticLive;
+        return videoSession;
     }
 
     @Override
-    public JSONObject serialize(AnalyticLive analyticLive) throws JSONException {
-        JSONObject data = new JSONObject();
-        JSONObject live = new JSONObject();
+    public JSONObject serialize(VideoSession videoSession) throws JSONException {
+        JSONObject data  = new JSONObject();
+        JSONObject video = new JSONObject();
 
+        video.put("videoId", videoSession.videoId);
+        video.put("title", videoSession.videoTitle);
+        data.put("video", video);
+        data.put("period", videoSession.period);
+        JSONArray tags = new JSONArray();
 
-        live.put("liveStreamId", analyticLive.liveStreamId);
-        live.put("name", analyticLive.liveName);
-        data.put("live", live);
-        data.put("period", analyticLive.period);
+        for (String tag : videoSession.tags) {
+            tags.put(tag);
+        }
+        data.put("tags", tags);
 
-
+        JSONArray metadataArray = mapToArray(videoSession.metadata);
+        data.put("metadata", metadataArray);
         JSONArray dataArray = new JSONArray();
+        //JSONArray dataArray = data.getJSONArray("data");
+        //   analyticVideo.data = new AnalyticData[dataArray.length()];
 
-        for (int i = 0; i < analyticLive.data.length; i++) {
-            AnalyticData analyticData  = analyticLive.data[i];
+        for (int i = 0; i < videoSession.data.length; i++) {
+            AnalyticData analyticData  = videoSession.data[i];
             JSONObject   playerSession = new JSONObject();
 
 
@@ -95,6 +139,8 @@ public class AnalyticLiveJsonSerializer implements JsonSerializer<AnalyticLive> 
             session.put("sessionId", analyticData.session.sessionId);
             session.put("endedAt", analyticData.session.endedAt);
             session.put("loadedAt", analyticData.session.loadedAt);
+            JSONArray metadataArrays = mapToArray(analyticData.session.metadatas);
+            session.put("metadatas", metadataArrays);
             playerSession.put("session", session);
 
             // Build Analytic Location
@@ -141,21 +187,27 @@ public class AnalyticLiveJsonSerializer implements JsonSerializer<AnalyticLive> 
         return data;
     }
 
-    @Override
-    public JSONObject serializeProperties(AnalyticLive analyticLive) throws JSONException {
-        return null;
-    }
-
-
-    @Override
-    public List<AnalyticLive> deserialize(JSONArray data) throws JSONException {
-
-
-        List<AnalyticLive> analyticLive = new ArrayList<>();
-        for (Object item : data) {
-            analyticLive.add(deserialize((JSONObject) item));
+    private static JSONArray mapToArray(Map<String, String> map) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("key", e.getKey());
+            hashMap.put("value", e.getValue());
+            array.put(new JSONObject(hashMap));
         }
-        return analyticLive;
+        return array;
     }
+
+    @Override
+    public List<VideoSession> deserialize(JSONArray data) throws JSONException {
+
+
+        List<VideoSession> analyticsVideo = new ArrayList<>();
+        for (Object item : data) {
+            analyticsVideo.add(deserialize((JSONObject) item));
+        }
+        return analyticsVideo;
+    }
+
 
 }

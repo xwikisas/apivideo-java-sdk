@@ -34,12 +34,6 @@ public class QualitySerializer implements JsonSerializer<Quality> {
 
     }
 
-    @Override
-    public JSONObject serializeProperties(Quality quality) throws JSONException {
-        return null;
-    }
-
-
     public JSONArray serialize(List<Quality> quality) throws JSONException {
         JSONArray tabs = new JSONArray();
         for (Quality value : quality) {

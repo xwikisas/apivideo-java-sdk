@@ -7,21 +7,21 @@ import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.analyticVideo.AnalyticVideo;
+import video.api.java.sdk.domain.analytic.analyticVideo.VideoSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 
-public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.analyticVideo.VideoAnalyticsClient, PageLoader<AnalyticVideo> {
+public class VideoSessionClient implements video.api.java.sdk.domain.analytic.analyticVideo.VideoSessionClient, PageLoader<VideoSession> {
+    private final JsonSerializer<VideoSession> serializer;
+    private final RequestExecutor              requestExecutor;
+    private final String                       baseUri;
 
-    private final AnalyticVideoJsonSerializer serializer;
-    private final RequestExecutor             requestExecutor;
-    private final String                      baseUri;
-
-    public VideoAnalyticsClient(AnalyticVideoJsonSerializer serializer, RequestExecutor requestExecutor, String baseUri) {
+    public VideoSessionClient(JsonSerializer<VideoSession> serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
@@ -30,7 +30,7 @@ public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.
     }
 
 
-    public AnalyticVideo get(String videoId, String period) throws ResponseException, IllegalArgumentException {
+    public VideoSession get(String videoId, String period) throws ResponseException, IllegalArgumentException {
 
         JSONObject parameters = new JSONObject();
         if (period != null) {
@@ -45,13 +45,13 @@ public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.
     }
 
 
-    public Iterable<AnalyticVideo> list() throws ResponseException, IllegalArgumentException {
+    public Iterable<VideoSession> list() throws ResponseException, IllegalArgumentException {
         QueryParams queryParams = new QueryParams();
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
     }
 
 
-    public Iterable<AnalyticVideo> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<VideoSession> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
         return new IteratorIterable<>(new PageIterator<>(this, queryParams));
 
@@ -59,25 +59,14 @@ public class VideoAnalyticsClient implements video.api.java.sdk.domain.analytic.
 
     /////////////////////////Functions//////////////////////////////
 
-
-    public String toString(AnalyticVideo analyticVideo) {
-        return serializer.serialize(analyticVideo).toString();
-
-    }
-
-    public JSONObject toJSONObject(AnalyticVideo analyticVideo) {
-        return serializer.serialize(analyticVideo);
-
-    }
-
-    private AnalyticVideo getAnalyticVideoResponse(HttpResponse<JsonNode> response) {
+    private VideoSession getAnalyticVideoResponse(HttpResponse<JsonNode> response) {
 
         return serializer.deserialize(response.getBody().getObject());
     }
 
 
     @Override
-    public Page<AnalyticVideo> load(QueryParams queryParams) throws ResponseException {
+    public Page<VideoSession> load(QueryParams queryParams) throws ResponseException {
 
         String      url     = queryParams.create(baseUri + "/analytics/videos/");
         HttpRequest request = Unirest.get(url);

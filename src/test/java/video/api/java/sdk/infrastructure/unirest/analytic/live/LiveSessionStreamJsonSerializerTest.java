@@ -3,16 +3,16 @@ package video.api.java.sdk.infrastructure.unirest.analytic.live;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import video.api.java.sdk.domain.analytic.analyticLive.AnalyticLive;
+import video.api.java.sdk.domain.analytic.analyticLive.LiveSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AnalyticLiveStreamJsonSerializerTest {
-    AnalyticLiveJsonSerializer analyticLiveJsonSerializer;
+class LiveSessionStreamJsonSerializerTest {
+    LiveSessionJsonSerializer liveSessionJsonSerializer;
 
     @BeforeEach
     void SetUp() {
-        analyticLiveJsonSerializer = new AnalyticLiveJsonSerializer();
+        liveSessionJsonSerializer = new LiveSessionJsonSerializer();
     }
 
     @Test
@@ -58,8 +58,8 @@ class AnalyticLiveStreamJsonSerializerTest {
                                                      "                }\n" +
                                                      "            ]\n" +
                                                      "        }\n");
-        AnalyticLive analyticLive = analyticLiveJsonSerializer.deserialize(analytic);
-        assertEquals("liSuccess", analyticLive.liveStreamId);
+        LiveSession liveSession = liveSessionJsonSerializer.deserialize(analytic);
+        assertEquals("liSuccess", liveSession.liveStreamId);
 
     }
 
@@ -90,8 +90,8 @@ class AnalyticLiveStreamJsonSerializerTest {
                                                      "                }\n" +
                                                      "            ]\n" +
                                                      "        }\n");
-        AnalyticLive analyticLive = analyticLiveJsonSerializer.deserialize(analytic);
-        assertEquals("liSuccess", analyticLive.liveStreamId);
+        LiveSession liveSession = liveSessionJsonSerializer.deserialize(analytic);
+        assertEquals("liSuccess", liveSession.liveStreamId);
 
     }
 }

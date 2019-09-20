@@ -34,12 +34,6 @@ public class ReceivedByteSerializer implements JsonSerializer<ReceivedByte> {
 
     }
 
-    @Override
-    public JSONObject serializeProperties(ReceivedByte receivedByte) throws JSONException {
-        return null;
-    }
-
-
     JSONArray serialize(List<ReceivedByte> receivedBytes) throws JSONException {
         JSONArray tabs = new JSONArray();
         for (ReceivedByte receivedByte : receivedBytes) {

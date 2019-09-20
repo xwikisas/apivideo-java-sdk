@@ -34,10 +34,4 @@ public class SourceSerializer implements JsonSerializer<Source> {
         return data;
     }
 
-    @Override
-    public JSONObject serializeProperties(Source source) throws JSONException {
-        return null;
-    }
-
-
 }

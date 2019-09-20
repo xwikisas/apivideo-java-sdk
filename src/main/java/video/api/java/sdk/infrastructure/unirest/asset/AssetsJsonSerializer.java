@@ -1,14 +1,14 @@
-package video.api.java.sdk.infrastructure.unirest.video.serializers;
+package video.api.java.sdk.infrastructure.unirest.asset;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.video.models.Assets;
+import video.api.java.sdk.domain.asset.Assets;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.List;
 
-public class AssetsSerializer implements JsonSerializer<Assets> {
+public class AssetsJsonSerializer implements JsonSerializer<Assets> {
 
     public JSONObject serialize(Assets assets) throws JSONException {
         JSONObject data = new JSONObject();
@@ -16,14 +16,9 @@ public class AssetsSerializer implements JsonSerializer<Assets> {
         data.put("player", assets.player);
         data.put("hls", assets.hls);
         data.put("thumbnail", assets.thumbnail);
+
         return data;
     }
-
-    @Override
-    public JSONObject serializeProperties(Assets assets) throws JSONException {
-        return null;
-    }
-
 
     @Override
     public Assets deserialize(JSONObject data) throws JSONException {

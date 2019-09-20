@@ -1,4 +1,4 @@
-package video.api.java.sdk.domain.video.models;
+package video.api.java.sdk.domain.asset;
 
 public class Assets {
 

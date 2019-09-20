@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AnalyticVideo {
+public class VideoSession {
 
 
     public final List<String>        tags     = new ArrayList<>();
@@ -20,14 +20,14 @@ public class AnalyticVideo {
     public       Map<String, String> metadata = new HashMap<>();
     public       AnalyticData[]      data;
 
-    public AnalyticVideo() {
+    public VideoSession() {
         this.videoId    = null;
         this.videoTitle = null;
         this.period     = null;
         this.data       = new AnalyticData[]{};
     }
 
-    public AnalyticVideo(JSONObject data) {
+    public VideoSession(JSONObject data) {
         try {
             this.videoId    = data.getJSONObject("video").getString("video_id");
             this.videoTitle = data.getJSONObject("video").getString("title");
