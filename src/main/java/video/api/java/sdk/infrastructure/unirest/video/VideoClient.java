@@ -126,7 +126,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
             } else {
                 RandomAccessFile       randomAccessFile = new RandomAccessFile(source, "r");
                 int                    copiedBytes      = 0;
-                int                    chunkCount       = size / CHUNK_SIZE + 1;
+                int                    chunkCount       = (int) Math.ceil((double) size / CHUNK_SIZE);
                 HttpResponse<JsonNode> responseSubmit   = null;
                 for (int i = 0; i < chunkCount; i++) {
 
