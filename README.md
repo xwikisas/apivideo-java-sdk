@@ -14,7 +14,7 @@ This is an early version, feel free to report any issue.
 // build.gradle
 dependencies {
     implementation 'com.konghq:unirest-java:2.3.17'
-    implementation files('libs/java-sdk-0.1.0.jar')
+    implementation files('libs/java-sdk-0.2.0.jar')
 }
 ``` 
 
