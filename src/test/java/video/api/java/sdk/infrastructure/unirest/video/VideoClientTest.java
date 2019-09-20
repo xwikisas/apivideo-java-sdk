@@ -150,13 +150,4 @@ class VideoClientTest {
 
     }
 
-    @Test
-    void toString1() {
-        assertNotNull(videoClient.toString(new Video()));
-    }
-
-    @Test
-    void toJSONObject() {
-        assertNotNull(videoClient.toJSONObject(new Video()));
-    }
 }
