@@ -14,7 +14,7 @@ public interface CaptionClient {
 
     Caption updateDefault(String VideoId, String lang, boolean isDefault) throws ResponseException;
 
-    int delete(String VideoId, String lang) throws ResponseException;
+    void delete(String VideoId, String lang) throws ResponseException;
 
 
 }

@@ -81,15 +81,10 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     }
 
-    public int delete(String liveStreamId) throws ResponseException {
-
-
+    public void delete(String liveStreamId) throws ResponseException {
         HttpRequest request = Unirest.delete(baseUri + "/live-streams/" + liveStreamId);
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-
-        return response.getStatus();
-
+        requestExecutor.executeJson(request);
     }
 
 

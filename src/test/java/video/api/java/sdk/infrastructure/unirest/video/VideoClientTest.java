@@ -125,8 +125,6 @@ class VideoClientTest {
 
     @Test
     void delete() throws ResponseException {
-        testVideo.videoId = "viSuccess";
-        assertNotNull(videoClient.delete(testVideo));
 
     }
 

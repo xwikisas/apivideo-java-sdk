@@ -16,7 +16,7 @@ public interface LiveStreamClient {
 
     LiveStream update(LiveStream liveStream) throws ResponseException;
 
-    int delete(String liveStreamId) throws ResponseException;
+    void delete(String liveStreamId) throws ResponseException;
 
     Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException;
 }

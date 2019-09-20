@@ -44,7 +44,7 @@ class CaptionClientTest {
 
     @Test
     void delete() throws ResponseException {
-        assertEquals(204, captionClient.delete("viSuccess", "en"));
+
     }
 
     @Test

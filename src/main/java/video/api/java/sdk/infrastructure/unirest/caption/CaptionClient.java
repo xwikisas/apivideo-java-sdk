@@ -80,14 +80,10 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
         return getCaptionResponse(response);
     }
 
-    public int delete(String videoId, String lang) throws ResponseException {
-
+    public void delete(String videoId, String lang) throws ResponseException {
         HttpRequest request = Unirest.delete(baseUri + "/videos/" + videoId + "/captions/" + lang);
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-
-        return response.getStatus();
-
+        requestExecutor.executeJson(request);
     }
 
 

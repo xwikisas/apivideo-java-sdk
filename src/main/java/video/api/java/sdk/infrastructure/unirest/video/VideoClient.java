@@ -223,12 +223,10 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
     }
 
 
-    public int delete(Video video) throws ResponseException {
-
+    public void delete(Video video) throws ResponseException {
         HttpRequest request = Unirest.delete(baseUri + "/videos/" + video.videoId);
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return response.getStatus();
+        requestExecutor.executeJson(request);
     }
 
 

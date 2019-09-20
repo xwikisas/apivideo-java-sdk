@@ -4,7 +4,6 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
@@ -88,14 +87,12 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     }
 
 
-    public int delete(String playerId) throws ResponseException {
-
+    public void delete(String playerId) throws ResponseException {
         HttpRequest request = Unirest.delete(baseUri + "/players/" + playerId);
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-
-        return response.getStatus();
+        requestExecutor.executeJson(request);
     }
+
     /////////////////////////Iterators//////////////////////////////
 
 

@@ -64,7 +64,7 @@ class PlayerClientTest {
 
     @Test
     void delete() throws ResponseException {
-        assertEquals(playerClient.delete("plSuccess"), 204);
+
     }
 
     @Test

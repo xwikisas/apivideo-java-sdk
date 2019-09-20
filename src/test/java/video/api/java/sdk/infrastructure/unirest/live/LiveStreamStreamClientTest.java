@@ -43,7 +43,7 @@ class LiveStreamStreamClientTest {
 
     @Test
     void delete() throws ResponseException {
-        assertNotNull(liveStreamClient.delete("liSuccess"));
+
     }
 
     @Test
