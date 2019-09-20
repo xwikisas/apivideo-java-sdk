@@ -36,13 +36,6 @@ public class Main {
 
         // Get its embed code 
         String embedCode = video.assets.iframe; // <iframe src="..."></iframe>
-
-        // Iterate over videos (paging is transparent)
-        for (PageIterator<Video> it = client.videos.list(); it.hasNext(); ) {
-            Video v = it.next();
-        
-            String videoTitle = v.title;
-        }
     }
 }
 ```
@@ -55,9 +48,9 @@ video.title = "My title";
 video.tags.add("my tag");
 video = client.videos.upload("/path/to/file.mp4", video);
 
-// Iterate over videos (paging is transparent)
+// Iterate over videos (paging is handled by the client)
 for (Video v : client.videos.list()) {
-    String videoTitle = video.title;
+    String videoTitle = v.title;
 }
 ```
 

@@ -4,6 +4,7 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.analytic.analyticEvent.SessionEvent;
@@ -12,6 +13,7 @@ import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.pagination.PageSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 public class SessionEventClient implements video.api.java.sdk.domain.analytic.analyticEvent.SessionEventClient, PageLoader<SessionEvent> {
@@ -50,12 +52,9 @@ public class SessionEventClient implements video.api.java.sdk.domain.analytic.an
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return new Page<>(
-                serializer.deserialize(response.getBody().getObject().getJSONArray("data")),
-                response.getBody().getObject().getJSONObject("pagination").getInt("pagesTotal"),
-                response.getBody().getObject().getJSONObject("pagination").getInt("currentPage")
-        );
+        JSONObject body = response.getBody().getObject();
 
+        return new PageSerializer<>(serializer).deserialize(body);
     }
 
 }

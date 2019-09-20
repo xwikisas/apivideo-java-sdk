@@ -13,6 +13,7 @@ import video.api.java.sdk.domain.video.models.Status;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
+import video.api.java.sdk.infrastructure.pagination.PageSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSerializer;
 
@@ -285,10 +286,6 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
         JSONObject             body     = response.getBody().getObject();
 
-        return new Page<>(
-                serializer.deserialize(body.getJSONArray("data")),
-                body.getJSONObject("pagination").getInt("pagesTotal"),
-                body.getJSONObject("pagination").getInt("currentPage")
-        );
+        return new PageSerializer<>(serializer).deserialize(body);
     }
 }
