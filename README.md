@@ -28,8 +28,8 @@ import video.api.java.sdk.domain.video.Video;
 
 public class Main {
     public static void main(String[] args) throws ResponseException {
-        Client client = new ClientFactory().create("YourApiKey");
-        // Client client = new ClientFactory().createSandbox("YourApiKey");
+        Client client = new ClientFactory().create("YourProductionApiKey");
+        // Client client = new ClientFactory().createSandbox("YourSandboxApiKey");
     
         // Upload a new video
         Video video = client.videos.upload("/path/to/file.mp4");
