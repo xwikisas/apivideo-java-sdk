@@ -14,13 +14,14 @@ import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.pagination.PageLoader;
 import video.api.java.sdk.infrastructure.pagination.PageSerializer;
+import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClient, PageLoader<Player> {
+public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClient {
 
     private final JsonSerializer<Player> serializer;
     private final RequestExecutor        requestExecutor;
@@ -99,14 +100,12 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
 
 
     public Iterable<Player> list() throws ResponseException, IllegalArgumentException {
-
-        QueryParams queryParams = new QueryParams();
-        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
+        return search(new QueryParams());
     }
 
     public Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
 
-        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/players", requestExecutor, serializer), queryParams));
     }
 
 
@@ -114,19 +113,6 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
 
     private Player getPlayerResponse(HttpResponse<JsonNode> response) {
         return serializer.deserialize(response.getBody().getObject());
-    }
-
-
-    @Override
-    public Page<Player> load(QueryParams queryParams) throws ResponseException {
-        String      url     = queryParams.create(baseUri + "/players/");
-        HttpRequest request = Unirest.get(url);
-
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-
-        JSONObject body = response.getBody().getObject();
-
-        return new PageSerializer<>(serializer).deserialize(body);
     }
 
 }

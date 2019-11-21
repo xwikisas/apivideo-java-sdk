@@ -139,12 +139,6 @@ class VideoClientTest {
     }
 
     @Test
-    void load() throws ResponseException, IllegalArgumentException {
-        QueryParams queryParams = new QueryParams();
-        assertNotNull(videoClient.load(queryParams));
-    }
-
-    @Test
     void getStatus() throws ResponseException {
         assertNotNull(videoClient.getStatus("viSuccess"));
 

@@ -4,23 +4,20 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
-import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.pagination.PageLoader;
-import video.api.java.sdk.infrastructure.pagination.PageSerializer;
+import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient, PageLoader<LiveStream> {
+public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient {
 
     private final JsonSerializer<LiveStream> serializer;
     private final RequestExecutor            requestExecutor;
@@ -93,14 +90,11 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     /////////////////////////Iterators//////////////////////////////
 
     public Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException {
-
-
-        QueryParams queryParams = new QueryParams();
-        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
+        return search(new QueryParams());
     }
 
     public Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/live-streams", requestExecutor, serializer), queryParams));
     }
 
 
@@ -111,18 +105,5 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
         return serializer.deserialize(response.getBody().getObject());
     }
 
-
-    @Override
-    public Page<LiveStream> load(QueryParams queryParams) throws ResponseException {
-
-        String      url     = queryParams.create(baseUri + "/live-streams/");
-        HttpRequest request = Unirest.get(url);
-
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-
-        JSONObject body = response.getBody().getObject();
-
-        return new PageSerializer<>(serializer).deserialize(body);
-    }
 }
 

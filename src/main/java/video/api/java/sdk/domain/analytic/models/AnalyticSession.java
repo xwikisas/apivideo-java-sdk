@@ -8,7 +8,7 @@ public class AnalyticSession {
     public String              sessionId;
     public String              loadedAt;
     public String              endedAt;
-    public Map<String, String> metadatas = new HashMap<>();
+    public Map<String, String> metadata = new HashMap<>();
 
 
     AnalyticSession() {

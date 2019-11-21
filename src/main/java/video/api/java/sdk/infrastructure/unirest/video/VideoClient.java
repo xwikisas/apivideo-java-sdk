@@ -6,14 +6,12 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.domain.video.models.Status;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.pagination.PageLoader;
-import video.api.java.sdk.infrastructure.pagination.PageSerializer;
+import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSerializer;
 
@@ -22,7 +20,7 @@ import java.util.HashMap;
 
 import static java.lang.Math.min;
 
-public class VideoClient implements video.api.java.sdk.domain.video.VideoClient, PageLoader<Video> {
+public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
     private static final int CHUNK_SIZE = 50 * 1024 * 1024; // 50 Mo
 
     private final JsonSerializer<Video> serializer;
@@ -267,7 +265,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
     }
 
     public Iterable<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        return new IteratorIterable<>(new PageIterator<>(this, queryParams));
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/videos", requestExecutor, serializer), queryParams));
     }
 
     private Video getVideoResponse(HttpResponse<JsonNode> response) throws ResponseException {
@@ -276,16 +274,5 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient,
         } catch (NullPointerException e) {
             throw new ClientException(response, "Body response is empty.");
         }
-    }
-
-    @Override
-    public Page<Video> load(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        String      url     = queryParams.create(baseUri + "/videos/");
-        HttpRequest request = Unirest.get(url);
-
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-        JSONObject             body     = response.getBody().getObject();
-
-        return new PageSerializer<>(serializer).deserialize(body);
     }
 }

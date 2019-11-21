@@ -16,93 +16,72 @@ public class VideoSessionJsonSerializer implements JsonSerializer<VideoSession> 
 
     @Override
     public VideoSession deserialize(JSONObject data) throws JSONException {
-        VideoSession videoSession = new VideoSession();
-        videoSession.videoId = data.getJSONObject("video").getString("videoId");
-        if (data.getJSONObject("video").has("title"))
-            videoSession.videoTitle = data.getJSONObject("video").getString("title");
-        if (data.getJSONObject("video").has("period"))
-            videoSession.period = data.getString("period");
-        JSONArray dataArray = data.getJSONArray("data");
-        if (data.getJSONObject("video").has("tags")) {
-            for (int i = 0; i < data.getJSONObject("video").getJSONArray("tags").length(); i++) {
-                videoSession.tags.add(data.getJSONObject("video").getJSONArray("tags").getString(i));
-            }
-        }
+        System.out.println(data);
 
-        if (data.getJSONObject("video").has("metadata")) {
-            JSONArray           jsonArray = data.getJSONObject("video").getJSONArray("metadata");
-            Map<String, String> metadata  = new HashMap<>();
+        VideoSession videoSession = new VideoSession();
+
+        AnalyticData analyticData = new AnalyticData();
+
+        // Build Analytic Session
+        JSONObject session = data.getJSONObject("session");
+        analyticData.session.sessionId = session.getString("sessionId");
+        analyticData.session.endedAt   = session.getString("endedAt");
+        analyticData.session.loadedAt  = session.getString("loadedAt");
+
+        if (session.has("metadata")) {
+            JSONArray           jsonArray = session.getJSONArray("metadata");
+
+            Map<String, String> metadata = new HashMap<>();
+
             for (int j = 0; j < jsonArray.length(); j++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(j);
                 String     key        = jsonObject.getString("key");
-                String     value      = jsonObject.getString("value");
-                metadata.put(key, value);
-            }
-            videoSession.metadata = metadata;
-        }
-        videoSession.data = new AnalyticData[dataArray.length()];
+                try {
+                    String value = jsonObject.getString("value");
+                    metadata.put(key, value);
 
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject   playerSession = dataArray.getJSONObject(i);
-            AnalyticData analyticData  = new AnalyticData();
+                } catch (org.json.JSONException e) {
+                    metadata.put(key, null);
 
-            // Build Analytic Session
-            if (playerSession.has("session")) {
-                analyticData.session.sessionId = playerSession.getJSONObject("session").getString("sessionId");
-                analyticData.session.endedAt   = playerSession.getJSONObject("session").getString("endedAt");
-                analyticData.session.loadedAt  = playerSession.getJSONObject("session").getString("loadedAt");
-            }
-            if (playerSession.getJSONObject("session").has("metadatas")) {
-                JSONArray           jsonArray = playerSession.getJSONObject("session").getJSONArray("metadatas");
-                Map<String, String> metadatas = new HashMap<>();
-                for (int j = 0; j < jsonArray.length(); j++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(j);
-                    String     key        = jsonObject.getString("key");
-                    try {
-                        String value = jsonObject.getString("value");
-                        metadatas.put(key, value);
-
-                    } catch (org.json.JSONException e) {
-                        metadatas.put(key, null);
-
-                    }
                 }
-                analyticData.session.metadatas = metadatas;
             }
-            // Build Analytic Location
-            if (playerSession.has("location")) {
-                analyticData.location.country = playerSession.getJSONObject("location").getString("country");
-                analyticData.location.city    = playerSession.getJSONObject("location").getString("city");
-            }
-            // Build Analytic Referer
-            if (playerSession.has("referrer")) {
-                analyticData.referer.medium      = playerSession.getJSONObject("referrer").getString("medium");
-                analyticData.referer.search_term = playerSession.getJSONObject("referrer").getString("searchTerm");
-                analyticData.referer.source      = playerSession.getJSONObject("referrer").getString("source");
-                analyticData.referer.url         = playerSession.getJSONObject("referrer").getString("url");
-            }
-            // Build Analytic Device
-            if (playerSession.has("device")) {
-                analyticData.device.model  = playerSession.getJSONObject("device").getString("model");
-                analyticData.device.type   = playerSession.getJSONObject("device").getString("type");
-                analyticData.device.vendor = playerSession.getJSONObject("device").getString("vendor");
-            }
-            // Build Analytic Os
-            if (playerSession.has("os")) {
-                analyticData.os.name      = playerSession.getJSONObject("os").getString("name");
-                analyticData.os.shortname = playerSession.getJSONObject("os").getString("shortname");
-                analyticData.os.version   = playerSession.getJSONObject("os").getString("version");
-            }
-            // Build Analytic Client
-            if (playerSession.has("client")) {
-                analyticData.client.type    = playerSession.getJSONObject("client").getString("type");
-                analyticData.client.name    = playerSession.getJSONObject("client").getString("name");
-                analyticData.client.version = playerSession.getJSONObject("client").getString("version");
-            }
-            videoSession.data[i] = analyticData;
-
+            analyticData.session.metadata = metadata;
         }
-
+        // Build Analytic Location
+        if (data.has("location")) {
+            JSONObject location = data.getJSONObject("location");
+            analyticData.location.country = location.getString("country");
+            analyticData.location.city    = location.getString("city");
+        }
+        // Build Analytic Referer
+        if (data.has("referrer")) {
+            JSONObject referrer = data.getJSONObject("referrer");
+            analyticData.referer.medium      = referrer.getString("medium");
+            analyticData.referer.search_term = referrer.getString("searchTerm");
+            analyticData.referer.source      = referrer.getString("source");
+            analyticData.referer.url         = referrer.getString("url");
+        }
+        // Build Analytic Device
+        if (data.has("device")) {
+            JSONObject device = data.getJSONObject("device");
+            analyticData.device.model  = device.getString("model");
+            analyticData.device.type   = device.getString("type");
+            analyticData.device.vendor = device.getString("vendor");
+        }
+        // Build Analytic Os
+        if (data.has("os")) {
+            JSONObject os = data.getJSONObject("os");
+            analyticData.os.name      = os.getString("name");
+            analyticData.os.shortname = os.getString("shortname");
+            analyticData.os.version   = os.getString("version");
+        }
+        // Build Analytic Client
+        if (data.has("client")) {
+            JSONObject client = data.getJSONObject("client");
+            analyticData.client.type    = client.getString("type");
+            analyticData.client.name    = client.getString("name");
+            analyticData.client.version = client.getString("version");
+        }
 
         return videoSession;
     }
@@ -130,8 +109,8 @@ public class VideoSessionJsonSerializer implements JsonSerializer<VideoSession> 
         //   analyticVideo.data = new AnalyticData[dataArray.length()];
 
         for (int i = 0; i < videoSession.data.length; i++) {
-            AnalyticData analyticData  = videoSession.data[i];
-            JSONObject   playerSession = new JSONObject();
+            AnalyticData analyticData = videoSession.data[i];
+            JSONObject   data         = new JSONObject();
 
 
             // Build Analytic Session
@@ -139,15 +118,15 @@ public class VideoSessionJsonSerializer implements JsonSerializer<VideoSession> 
             session.put("sessionId", analyticData.session.sessionId);
             session.put("endedAt", analyticData.session.endedAt);
             session.put("loadedAt", analyticData.session.loadedAt);
-            JSONArray metadataArrays = mapToArray(analyticData.session.metadatas);
+            JSONArray metadataArrays = mapToArray(analyticData.session.metadata);
             session.put("metadatas", metadataArrays);
-            playerSession.put("session", session);
+            data.put("session", session);
 
             // Build Analytic Location
             JSONObject location = new JSONObject();
             location.put("country", analyticData.location.country);
             location.put("city", analyticData.location.city);
-            playerSession.put("location", location);
+            data.put("location", location);
 
             // Build Analytic Referer
             JSONObject referer = new JSONObject();
@@ -155,30 +134,30 @@ public class VideoSessionJsonSerializer implements JsonSerializer<VideoSession> 
             referer.put("searchTerm", analyticData.referer.search_term);
             referer.put("source", analyticData.referer.source);
             referer.put("url", analyticData.referer.url);
-            playerSession.put("referer", referer);
+            data.put("referer", referer);
 
             // Build Analytic Device
             JSONObject device = new JSONObject();
             device.put("model", analyticData.device.model);
             device.put("type", analyticData.device.type);
             device.put("vendor", analyticData.device.vendor);
-            playerSession.put("device", device);
+            data.put("device", device);
 
             // Build Analytic Os
             JSONObject os = new JSONObject();
             os.put("name", analyticData.os.name);
             os.put("shortname", analyticData.os.shortname);
             os.put("version", analyticData.os.version);
-            playerSession.put("os", os);
+            data.put("os", os);
 
             // Build Analytic Client
             JSONObject client = new JSONObject();
             client.put("type", analyticData.client.type);
             client.put("name", analyticData.client.name);
             client.put("version", analyticData.client.version);
-            playerSession.put("client", client);
+            data.put("client", client);
 
-            dataArray.put(playerSession);
+            dataArray.put(data);
 
         }
         data.put("data", dataArray);
