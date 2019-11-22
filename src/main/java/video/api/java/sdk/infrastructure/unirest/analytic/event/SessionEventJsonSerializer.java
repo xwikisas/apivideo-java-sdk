@@ -3,7 +3,7 @@ package video.api.java.sdk.infrastructure.unirest.analytic.event;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.analytic.analyticEvent.SessionEvent;
+import video.api.java.sdk.domain.analytic.SessionEvent;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;

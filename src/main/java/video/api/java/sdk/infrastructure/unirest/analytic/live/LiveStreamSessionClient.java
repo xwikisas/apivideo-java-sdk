@@ -8,7 +8,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.analyticLive.LiveSession;
+import video.api.java.sdk.domain.analytic.PlayerSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
@@ -19,18 +19,19 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LiveSessionClient implements video.api.java.sdk.domain.analytic.analyticLive.LiveSessionClient {
-    private final JsonSerializer<LiveSession> serializer;
-    private final RequestExecutor             requestExecutor;
-    private final String                      baseUri;
+public class LiveStreamSessionClient implements video.api.java.sdk.domain.analytic.LiveStreamSessionClient {
+    private final JsonSerializer<PlayerSession> serializer;
+    private final RequestExecutor               requestExecutor;
+    private final String                        baseUri;
 
-    public LiveSessionClient(JsonSerializer<LiveSession> serializer, RequestExecutor requestExecutor, String baseUri) {
+    public LiveStreamSessionClient(JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;
     }
 
-    public LiveSession get(String liveStreamId, final String period) throws ResponseException, IllegalArgumentException, URISyntaxException {
+
+    public PlayerSession get(String liveStreamId, final String period) throws ResponseException, IllegalArgumentException, URISyntaxException {
         List<NameValuePair> parameters = new ArrayList<>();
         if (period != null) {
             parameters.add(new BasicNameValuePair("period", period));
@@ -45,16 +46,25 @@ public class LiveSessionClient implements video.api.java.sdk.domain.analytic.ana
         return getAnalyticLiveResponse(response);
     }
 
-    public Iterable<LiveSession> list() throws ResponseException, IllegalArgumentException {
-        return search(new QueryParams());
+    public Iterable<PlayerSession> list(String videoId) throws ResponseException, IllegalArgumentException {
+        return list(videoId, null, new QueryParams());
     }
 
-    public Iterable<LiveSession> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        // TODO remove route
-        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/analytics/live-streams", requestExecutor, serializer), queryParams));
+    public Iterable<PlayerSession> list(String videoId, String period) throws ResponseException, IllegalArgumentException {
+        return list(videoId, period, new QueryParams());
     }
 
-    private LiveSession getAnalyticLiveResponse(HttpResponse<JsonNode> response) {
+    public Iterable<PlayerSession> list(String liveStreamId, String period, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+        queryParams.period = period;
+
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
+                baseUri + "/analytics/live-streams/" + liveStreamId,
+                requestExecutor,
+                serializer
+        ), queryParams));
+    }
+
+    private PlayerSession getAnalyticLiveResponse(HttpResponse<JsonNode> response) {
         return serializer.deserialize(response.getBody().getObject());
     }
 

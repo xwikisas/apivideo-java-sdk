@@ -2,7 +2,7 @@ package video.api.java.sdk.infrastructure.unirest.analytic.event;
 
 import org.junit.jupiter.api.Test;
 
-class SessionEventClientTest {
+class InfoEventClientTest {
 
     @Test
     void list() {

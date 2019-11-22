@@ -2,11 +2,10 @@ package video.api.java.sdk;
 
 
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
-import video.api.java.sdk.infrastructure.unirest.analytic.event.SessionEventJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.analytic.event.SessionEventClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.live.LiveSessionJsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.analytic.live.LiveSessionClient;
-import video.api.java.sdk.infrastructure.unirest.analytic.video.VideoSessionJsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.analytic.event.SessionEventJsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.analytic.live.LiveStreamSessionClient;
+import video.api.java.sdk.infrastructure.unirest.analytic.video.PlayerSessionJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.analytic.video.VideoSessionClient;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
@@ -34,11 +33,11 @@ public class ClientFactory {
         return new Client(
                 new CaptionClient(new CaptionJsonSerializer(), authRequestExecutor, baseUri),
                 new LiveStreamClient(new LiveStreamJsonSerializer(assetsSerializer), authRequestExecutor, baseUri),
-                new LiveSessionClient(new LiveSessionJsonSerializer(), authRequestExecutor, baseUri),
+                new LiveStreamSessionClient(new PlayerSessionJsonSerializer(), authRequestExecutor, baseUri),
                 new PlayerClient(new PlayerJsonSerializer(), authRequestExecutor, baseUri),
                 new SessionEventClient(new SessionEventJsonSerializer(), authRequestExecutor, baseUri),
                 new VideoClient(new VideoJsonSerializer(assetsSerializer), authRequestExecutor, baseUri),
-                new VideoSessionClient(new VideoSessionJsonSerializer(), authRequestExecutor, baseUri)
+                new VideoSessionClient(new PlayerSessionJsonSerializer(), authRequestExecutor, baseUri)
         );
     }
 

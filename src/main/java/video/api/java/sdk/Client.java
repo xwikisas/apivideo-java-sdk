@@ -1,26 +1,26 @@
 package video.api.java.sdk;
 
-import video.api.java.sdk.domain.analytic.analyticEvent.SessionEventClient;
-import video.api.java.sdk.domain.analytic.analyticLive.LiveSessionClient;
-import video.api.java.sdk.domain.analytic.analyticVideo.VideoSessionClient;
+import video.api.java.sdk.domain.analytic.SessionEventClient;
+import video.api.java.sdk.domain.analytic.LiveStreamSessionClient;
+import video.api.java.sdk.domain.analytic.VideoSessionClient;
 import video.api.java.sdk.domain.caption.CaptionClient;
 import video.api.java.sdk.domain.live.LiveStreamClient;
 import video.api.java.sdk.domain.player.PlayerClient;
 import video.api.java.sdk.domain.video.VideoClient;
 
 public class Client {
-    public final CaptionClient      captions;
-    public final LiveStreamClient   liveStreams;
-    public final LiveSessionClient  liveStreamAnalytics;
-    public final PlayerClient       players;
-    public final SessionEventClient sessionEventAnalytics;
-    public final VideoClient        videos;
-    public final VideoSessionClient videoAnalytics;
+    public final CaptionClient           captions;
+    public final LiveStreamClient        liveStreams;
+    public final LiveStreamSessionClient liveStreamAnalytics;
+    public final PlayerClient            players;
+    public final SessionEventClient      sessionEventAnalytics;
+    public final VideoClient             videos;
+    public final VideoSessionClient      videoAnalytics;
 
     public Client(
             CaptionClient captions,
             LiveStreamClient liveStreams,
-            LiveSessionClient liveStreamAnalytics,
+            LiveStreamSessionClient liveStreamAnalytics,
             PlayerClient players,
             SessionEventClient sessionEventAnalytics,
             VideoClient videos,

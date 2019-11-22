@@ -8,7 +8,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.analyticVideo.VideoSession;
+import video.api.java.sdk.domain.analytic.PlayerSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VideoSessionClient implements video.api.java.sdk.domain.analytic.analyticVideo.VideoSessionClient {
-    private final JsonSerializer<VideoSession> serializer;
-    private final RequestExecutor              requestExecutor;
-    private final String                       baseUri;
+public class VideoSessionClient implements video.api.java.sdk.domain.analytic.VideoSessionClient {
+    private final JsonSerializer<PlayerSession> serializer;
+    private final RequestExecutor               requestExecutor;
+    private final String                        baseUri;
 
-    public VideoSessionClient(JsonSerializer<VideoSession> serializer, RequestExecutor requestExecutor, String baseUri) {
+    public VideoSessionClient(JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor, String baseUri) {
 
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
@@ -33,11 +33,11 @@ public class VideoSessionClient implements video.api.java.sdk.domain.analytic.an
 
     }
 
-    public VideoSession get(String videoId) throws ResponseException, IllegalArgumentException, URISyntaxException {
+    public PlayerSession get(String videoId) throws ResponseException, IllegalArgumentException, URISyntaxException {
         return get(videoId, null);
     }
 
-    public VideoSession get(String videoId, String period) throws ResponseException, IllegalArgumentException, URISyntaxException {
+    public PlayerSession get(String videoId, String period) throws ResponseException, IllegalArgumentException, URISyntaxException {
         List<NameValuePair> parameters = new ArrayList<>();
         if (period != null) {
             parameters.add(new BasicNameValuePair("period", period));
@@ -52,12 +52,15 @@ public class VideoSessionClient implements video.api.java.sdk.domain.analytic.an
         return getAnalyticVideoResponse(response);
     }
 
-
-    public Iterable<VideoSession> list(String videoId) throws ResponseException, IllegalArgumentException {
-        return search(videoId, null, new QueryParams());
+    public Iterable<PlayerSession> list(String videoId) throws ResponseException, IllegalArgumentException {
+        return list(videoId, null, new QueryParams());
     }
 
-    public Iterable<VideoSession> search(String videoId, String period, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<PlayerSession> list(String videoId, String period) throws ResponseException, IllegalArgumentException {
+        return list(videoId, period, new QueryParams());
+    }
+
+    public Iterable<PlayerSession> list(String videoId, String period, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         queryParams.period = period;
 
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/analytics/videos/" + videoId, requestExecutor, serializer), queryParams));
@@ -65,7 +68,7 @@ public class VideoSessionClient implements video.api.java.sdk.domain.analytic.an
 
     /////////////////////////Functions//////////////////////////////
 
-    private VideoSession getAnalyticVideoResponse(HttpResponse<JsonNode> response) {
+    private PlayerSession getAnalyticVideoResponse(HttpResponse<JsonNode> response) {
 
         return serializer.deserialize(response.getBody().getObject());
     }

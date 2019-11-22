@@ -1,4 +1,4 @@
-package video.api.java.sdk.domain.analytic.analyticEvent;
+package video.api.java.sdk.domain.analytic;
 
 import org.json.JSONException;
 import org.json.JSONObject;

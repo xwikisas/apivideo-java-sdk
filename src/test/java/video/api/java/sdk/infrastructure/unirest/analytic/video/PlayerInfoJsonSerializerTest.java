@@ -4,16 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import video.api.java.sdk.domain.analytic.analyticVideo.VideoSession;
+import video.api.java.sdk.domain.analytic.PlayerSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class VideoSessionJsonSerializerTest {
-    VideoSessionJsonSerializer videoSessionJsonSerializer;
+class PlayerInfoJsonSerializerTest {
+    PlayerSessionJsonSerializer playerSessionJsonSerializer;
 
     @BeforeEach
     void SetUp() {
-        videoSessionJsonSerializer = new VideoSessionJsonSerializer();
+        playerSessionJsonSerializer = new PlayerSessionJsonSerializer();
     }
 
 
@@ -21,21 +21,6 @@ class VideoSessionJsonSerializerTest {
     void deserializeMax() {
 
         JSONObject analytic = new JSONObject("{\n" +
-                                                     "    \"video\": {\n" +
-                                                     "        \"videoId\": \"viSuccess\",\n" +
-                                                     "        \"title\": \"updated video\",\n" +
-                                                     "        \"metadata\": [\n" +
-                                                     "            {\n" +
-                                                     "                \"key\": \"author\",\n" +
-                                                     "                \"value\": \"kenny\"\n" +
-                                                     "            }\n" +
-                                                     "        ],\n" +
-                                                     "        \"tags\": [\n" +
-                                                     "            \"tata\",\n" +
-                                                     "            \"titi\"\n" +
-                                                     "        ]\n" +
-                                                     "    },\n" +
-                                                     "    \"period\": \"2019-09-09\",\n" +
                                                      "    \"data\": [\n" +
                                                      "        {\n" +
                                                      "            \"session\": {\n" +
@@ -78,8 +63,8 @@ class VideoSessionJsonSerializerTest {
                                                      "    ]\n" +
                                                      "}");
 
-        VideoSession videoSession = videoSessionJsonSerializer.deserialize(analytic);
-        assertEquals("viSuccess", videoSession.videoId);
+        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(analytic);
+        //assertEquals("viSuccess", playerSession.);
 
 
     }
@@ -115,8 +100,8 @@ class VideoSessionJsonSerializerTest {
                                                      "    ]\n" +
                                                      "}");
 
-        VideoSession videoSession = videoSessionJsonSerializer.deserialize(analytic);
-        assertEquals("viSuccess", videoSession.videoId);
+        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(analytic);
+        //assertEquals("viSuccess", playerSession.videoId);
 
 
     }
@@ -158,7 +143,7 @@ class VideoSessionJsonSerializerTest {
         analytics.put(analytic);
         analytics.put(analytic);
         analytics.put(analytic);
-        assertEquals(4, videoSessionJsonSerializer.deserialize(analytics).size());
+        assertEquals(4, playerSessionJsonSerializer.deserialize(analytics).size());
 
 
     }
