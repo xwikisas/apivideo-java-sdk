@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.analytic.video;
+package video.api.java.sdk.infrastructure.unirest.analytic;
 
 import org.json.JSONException;
 import org.json.JSONObject;
