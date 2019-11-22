@@ -1,15 +1,11 @@
 package video.api.java.sdk.infrastructure.unirest.account;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.account.Account;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-import java.util.List;
-
 public class AccountJsonSerializer implements JsonSerializer<Account> {
-
 
     public Account deserialize(JSONObject data) throws JSONException {
 
@@ -24,11 +20,6 @@ public class AccountJsonSerializer implements JsonSerializer<Account> {
             account.term.endAt   = data.getJSONObject("term").getString("endAt");
         }
         return account;
-    }
-
-    @Override
-    public List<Account> deserialize(JSONArray data) throws JSONException {
-        return null;
     }
 
     public JSONObject serialize(Account object) throws JSONException {

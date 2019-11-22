@@ -26,16 +26,16 @@ class VideoClientTest {
 
     @BeforeEach
     void setUp() {
-        RequestExecutor requestExecutor = new RequestExecutor();
-        requestExecutor.exception      = new ResponseException(requestExecutor.ResponseFailure(), "");
+        TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
+        testRequestExecutor.exception  = new ResponseException(testRequestExecutor.ResponseFailure(), "");
         videoClientResponseException   = new VideoClient(
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
-                requestExecutor,
+                testRequestExecutor,
                 ""
         );
         videoClient                    = new VideoClient(
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
-                new RequestExecutor(),
+                new TestRequestExecutor(),
                 "");
         videoClientSerializerException = new VideoClient(
                 new JsonSerializer<Video>() {
@@ -54,7 +54,7 @@ class VideoClientTest {
                         return null;
                     }
                 },
-                new RequestExecutor(),
+                new TestRequestExecutor(),
                 "");
     }
 

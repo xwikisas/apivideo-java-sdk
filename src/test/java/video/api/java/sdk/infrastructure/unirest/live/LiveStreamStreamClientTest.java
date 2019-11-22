@@ -6,7 +6,7 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,7 +17,7 @@ class LiveStreamStreamClientTest {
     void setUp() {
         liveStreamClient = new LiveStreamClient(
                 new LiveStreamJsonSerializer(new AssetsJsonSerializer()),
-                new RequestExecutor(),
+                new TestRequestExecutor(),
                 ""
         );
     }
@@ -56,11 +56,5 @@ class LiveStreamStreamClientTest {
     void search() throws ResponseException {
         assertNotNull(liveStreamClient.search(new QueryParams()));
 
-    }
-
-    @Test
-    void load() throws ResponseException {
-        QueryParams queryParams = new QueryParams();
-        assertNotNull(liveStreamClient.load(queryParams));
     }
 }

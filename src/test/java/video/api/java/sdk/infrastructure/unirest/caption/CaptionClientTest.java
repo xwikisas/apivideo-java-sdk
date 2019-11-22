@@ -3,7 +3,7 @@ package video.api.java.sdk.infrastructure.unirest.caption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,14 +15,14 @@ class CaptionClientTest {
     void setUp() {
         captionClient = new CaptionClient(
                 new CaptionJsonSerializer(),
-                new RequestExecutor(),
+                new TestRequestExecutor(),
                 ""
         );
-        RequestExecutor requestExecutor = new RequestExecutor();
-        requestExecutor.exception = new ResponseException(requestExecutor.ResponseFailure(), "");
-        captionResponseException  = new CaptionClient(
+        TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
+        testRequestExecutor.exception = new ResponseException(testRequestExecutor.ResponseFailure(), "");
+        captionResponseException      = new CaptionClient(
                 new CaptionJsonSerializer(),
-                requestExecutor,
+                testRequestExecutor,
                 ""
         );
     }

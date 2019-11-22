@@ -9,7 +9,7 @@ import video.api.java.sdk.domain.exception.ServerException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class RequestExecutor implements video.api.java.sdk.domain.RequestExecutor {
+public class TestRequestExecutor implements video.api.java.sdk.domain.RequestExecutor {
 
     private static final HttpRequest<?>    updateThumbnailVideoSuccess        = Unirest.post("/videos/" + "viSuccess" + "/thumbnail");
     private static final HttpRequest<?>    updateThumbnailWithTimeCodeSuccess = Unirest.patch("/videos/" + "viSuccess");
@@ -20,36 +20,36 @@ public class RequestExecutor implements video.api.java.sdk.domain.RequestExecuto
     private static final HttpRequest<?>    getVideoSuccess                    = Unirest.get("/videos/viSuccess");
     private static final HttpRequest<?>    deleteVideoSuccess                 = Unirest.delete("/videos/viSuccess");
     private static final HttpRequest<?>    getStatusVideoSuccess              = Unirest.get("/videos/viSuccess/status");
-    private static final HttpRequest<?>    getVideosSuccess                   = Unirest.get("/videos/?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    listVideosSuccess                  = Unirest.get("/videos?pageSize=25&currentPage=1");
     private static final HttpRequest<?>    getVideoServerException            = Unirest.get("/videos/viServerException");
     private static final HttpRequest<?>    getVideoClientException            = Unirest.get("/videos/viClientException");
-    private static final HttpRequest<?> createCaptionSuccess = Unirest.post("/videos/viSuccess/captions/en");
-    private static final HttpRequest<?> updateCaptionSuccess = Unirest.patch("/videos/" + "viSuccess/captions/en");
-    private static final HttpRequest<?> getCaptionSuccess    = Unirest.get("/videos/viSuccess/captions/en");
-    private static final HttpRequest<?> getCaptionsSuccess   = Unirest.get("/videos/viSuccess/captions");
-    private static final HttpRequest<?> deleteCaptionSuccess = Unirest.delete("/videos/viSuccess/captions/en");
-    private static final HttpRequest<?> getCaptionFailure    = Unirest.get("/videos/viFailure/captions/en");
-    private static final HttpRequest<?> createPlayerSuccess     = Unirest.post("/players");
-    private static final HttpRequest<?> updateLogoPlayerSuccess = Unirest.post("/players/" + "plSuccess/logo");
-    private static final HttpRequest<?> updatePlayerSuccess     = Unirest.patch("/players/" + "plSuccess");
-    private static final HttpRequest<?> getPlayerSuccess        = Unirest.get("/players/plSuccess");
-    private static final HttpRequest<?> deletePlayerSuccess     = Unirest.delete("/players/plSuccess");
-    private static final HttpRequest<?> getPlayersSuccess       = Unirest.get("/players/?pageSize=25&currentPage=1");
-    private static final HttpRequest<?> getPlayerFailure        = Unirest.get("/players/plFailure");
-    private static final HttpRequest<?> createLiveSuccess          = Unirest.post("/live-streams").body(new JSONObject().put("title", "tiSuccess"));
-    private static final HttpRequest<?> updateThumbnailLiveSuccess = Unirest.post("/live-streams/" + "liSuccess" + "/thumbnail");
-    private static final HttpRequest<?> updateAddPlayerLiveSuccess = Unirest.patch("/live-streams/" + "liSuccess");
-    private static final HttpRequest<?> updateLiveSuccess          = Unirest.patch("/live-streams/" + "liSuccess");
-    private static final HttpRequest<?> getLiveSuccess             = Unirest.get("/live-streams/liSuccess");
-    private static final HttpRequest<?> deleteLiveSuccess          = Unirest.delete("/live-streams/liSuccess");
-    private static final HttpRequest<?> getLivesSuccess            = Unirest.get("/live-streams/?pageSize=25&currentPage=1");
-    private static final HttpRequest<?> getLiveServerException     = Unirest.get("/live-streams/liServerException");
-    private static final HttpRequest<?> getLiveClientException     = Unirest.get("/live-streams/liClientException");
-    private static final HttpRequest<?> getAnalyticVideosSuccess  = Unirest.get("/analytics/videos/viSuccess/?period=2019");
-    private static final HttpRequest<?> getAnalyticsVideosSuccess = Unirest.get("/analytics/videos/?pageSize=25&currentPage=1");
-    private static final HttpRequest<?> getAnalyticLivesSuccess  = Unirest.get("/analytics/live-streams/liSuccess/?period=2019");
-    private static final HttpRequest<?> getAnalyticsLivesSuccess = Unirest.get("/analytics/live-streams/?pageSize=25&currentPage=1");
-    private static final HttpRequest<?> getAnalyticsEventsSuccess = Unirest.get("/analytics/sessions/sessionId/events/?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    createCaptionSuccess               = Unirest.post("/videos/viSuccess/captions/en");
+    private static final HttpRequest<?>    updateCaptionSuccess               = Unirest.patch("/videos/" + "viSuccess/captions/en");
+    private static final HttpRequest<?>    getCaptionSuccess                  = Unirest.get("/videos/viSuccess/captions/en");
+    private static final HttpRequest<?>    getCaptionsSuccess                 = Unirest.get("/videos/viSuccess/captions");
+    private static final HttpRequest<?>    deleteCaptionSuccess               = Unirest.delete("/videos/viSuccess/captions/en");
+    private static final HttpRequest<?>    getCaptionFailure                  = Unirest.get("/videos/viFailure/captions/en");
+    private static final HttpRequest<?>    createPlayerSuccess                = Unirest.post("/players");
+    private static final HttpRequest<?>    updateLogoPlayerSuccess            = Unirest.post("/players/" + "plSuccess/logo");
+    private static final HttpRequest<?>    updatePlayerSuccess                = Unirest.patch("/players/" + "plSuccess");
+    private static final HttpRequest<?>    getPlayerSuccess                   = Unirest.get("/players/plSuccess");
+    private static final HttpRequest<?>    deletePlayerSuccess                = Unirest.delete("/players/plSuccess");
+    private static final HttpRequest<?>    listPlayersSuccess                 = Unirest.get("/players?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getPlayerFailure                   = Unirest.get("/players/plFailure");
+    private static final HttpRequest<?>    createLiveSuccess                  = Unirest.post("/live-streams").body(new JSONObject().put("title", "tiSuccess"));
+    private static final HttpRequest<?>    updateThumbnailLiveSuccess         = Unirest.post("/live-streams/" + "liSuccess" + "/thumbnail");
+    private static final HttpRequest<?>    updateAddPlayerLiveSuccess         = Unirest.patch("/live-streams/" + "liSuccess");
+    private static final HttpRequest<?>    updateLiveSuccess                  = Unirest.patch("/live-streams/" + "liSuccess");
+    private static final HttpRequest<?>    getLiveSuccess                     = Unirest.get("/live-streams/liSuccess");
+    private static final HttpRequest<?>    deleteLiveSuccess                  = Unirest.delete("/live-streams/liSuccess");
+    private static final HttpRequest<?>    getLivesSuccess                    = Unirest.get("/live-streams?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getLiveServerException             = Unirest.get("/live-streams/liServerException");
+    private static final HttpRequest<?>    getLiveClientException             = Unirest.get("/live-streams/liClientException");
+    private static final HttpRequest<?>    getAnalyticVideosSuccess           = Unirest.get("/analytics/videos/viSuccess?period=2019");
+    private static final HttpRequest<?>    getAnalyticsVideosSuccess          = Unirest.get("/analytics/videos?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getAnalyticLivesSuccess            = Unirest.get("/analytics/live-streams/liSuccess?period=2019");
+    private static final HttpRequest<?>    getAnalyticsLivesSuccess           = Unirest.get("/analytics/live-streams?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getAnalyticsEventsSuccess          = Unirest.get("/analytics/sessions/sessionId/events?pageSize=25&currentPage=1");
     public               ResponseException exception;
 
     private static RawResponse createRawResponse() {
@@ -127,12 +127,14 @@ public class RequestExecutor implements video.api.java.sdk.domain.RequestExecuto
             throw exception;
         }
 
+        System.out.println(request.getUrl());
+
         if (equals(request, createVideoSuccess)) {
             return videoResponseSuccess();
 
         } else if (equals(request, getVideoSuccess)) {
             return videoResponseSuccess();
-        } else if (equals(request, getVideosSuccess)) {
+        } else if (equals(request, listVideosSuccess)) {
             return videosResponseSuccess();
         } else if (equals(request, getStatusVideoSuccess)) {
             return videoStatusResponseSuccess();
@@ -177,7 +179,7 @@ public class RequestExecutor implements video.api.java.sdk.domain.RequestExecuto
             return playerResponseSuccess();
         } else if (equals(request, deletePlayerSuccess)) {
             return playerResponseSuccess();
-        } else if (equals(request, getPlayersSuccess)) {
+        } else if (equals(request, listPlayersSuccess)) {
             return playersResponseSuccess();
         } else if (equals(request, getPlayerFailure)) {
             return ResponseFailure();

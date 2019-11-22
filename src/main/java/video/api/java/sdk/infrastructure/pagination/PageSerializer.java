@@ -1,12 +1,9 @@
 package video.api.java.sdk.infrastructure.pagination;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.pagination.Page;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
-
-import java.util.List;
 
 public class PageSerializer<T> implements JsonSerializer<Page<T>> {
     private final JsonSerializer<T> inner;
@@ -24,10 +21,5 @@ public class PageSerializer<T> implements JsonSerializer<Page<T>> {
                 pagination.getInt("pagesTotal"),
                 pagination.getInt("currentPage")
         );
-    }
-
-    @Override
-    public List<Page<T>> deserialize(JSONArray data) throws JSONException {
-        throw new UnsupportedOperationException();
     }
 }

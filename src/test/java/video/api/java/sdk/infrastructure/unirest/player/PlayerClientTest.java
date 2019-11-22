@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
-import video.api.java.sdk.infrastructure.unirest.video.RequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,16 +16,16 @@ class PlayerClientTest {
 
     @BeforeEach
     void setUp() {
-        RequestExecutor requestExecutor = new RequestExecutor();
-        requestExecutor.exception = new ResponseException(requestExecutor.ResponseFailure(), "");
-        playerResponseException   = new PlayerClient(
+        TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
+        testRequestExecutor.exception = new ResponseException(testRequestExecutor.ResponseFailure(), "");
+        playerResponseException       = new PlayerClient(
                 new PlayerJsonSerializer(),
-                requestExecutor,
+                testRequestExecutor,
                 ""
         );
-        playerClient              = new PlayerClient(
+        playerClient                  = new PlayerClient(
                 new PlayerJsonSerializer(),
-                new RequestExecutor(),
+                new TestRequestExecutor(),
                 ""
         );
 
@@ -75,10 +75,5 @@ class PlayerClientTest {
     @Test
     void search() throws ResponseException {
         assertNotNull(playerClient.search(new QueryParams()));
-    }
-
-    @Test
-    void load() throws ResponseException {
-        assertNotNull(playerClient.load(new QueryParams()));
     }
 }

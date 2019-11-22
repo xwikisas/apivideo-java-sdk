@@ -17,7 +17,6 @@ public interface JsonSerializer<T> {
 
     T deserialize(JSONObject data) throws JSONException;
 
-
     default List<T> deserialize(JSONArray data) throws JSONException {
         List<T> list = new ArrayList<>();
 
