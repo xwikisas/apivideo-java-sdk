@@ -24,12 +24,12 @@ public class ReceivedByteSerializer implements JsonSerializer<ReceivedByte> {
         return null;
     }
 
-    public JSONObject serialize(ReceivedByte receivedByte) throws JSONException {
+    public JSONObject serialize(ReceivedByte object) throws JSONException {
 
         JSONObject data = new JSONObject();
-        data.put("to", receivedByte.to);
-        data.put("from", receivedByte.from);
-        data.put("total", receivedByte.total);
+        data.put("to", object.to);
+        data.put("from", object.from);
+        data.put("total", object.total);
         return data;
 
     }

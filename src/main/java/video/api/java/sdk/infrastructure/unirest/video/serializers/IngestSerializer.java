@@ -33,13 +33,13 @@ public class IngestSerializer implements JsonSerializer<Ingest> {
         return null;
     }
 
-    public JSONObject serialize(Ingest ingest) {
+    public JSONObject serialize(Ingest object) {
         ReceivedByteSerializer receivedByteSerializer = new ReceivedByteSerializer();
 
         JSONObject data = new JSONObject();
-        data.put("status", ingest.status);
-        data.put("filesize", ingest.filesize);
-        JSONArray tabs = receivedByteSerializer.serialize(ingest.receivedBytes);
+        data.put("status", object.status);
+        data.put("filesize", object.filesize);
+        JSONArray tabs = receivedByteSerializer.serialize(object.receivedBytes);
         data.put("receivedBytes", tabs);
 
         return data;

@@ -25,11 +25,11 @@ public class QualitySerializer implements JsonSerializer<Quality> {
 
 
     @Override
-    public JSONObject serialize(Quality quality) throws JSONException {
+    public JSONObject serialize(Quality object) throws JSONException {
 
         JSONObject data = new JSONObject();
-        data.put("quality", quality.quality);
-        data.put("status", quality.status);
+        data.put("quality", object.quality);
+        data.put("status", object.status);
         return data;
 
     }

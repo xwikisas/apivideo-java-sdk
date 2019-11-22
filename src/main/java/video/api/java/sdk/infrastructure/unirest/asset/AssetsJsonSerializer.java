@@ -10,12 +10,12 @@ import java.util.List;
 
 public class AssetsJsonSerializer implements JsonSerializer<Assets> {
 
-    public JSONObject serialize(Assets assets) throws JSONException {
+    public JSONObject serialize(Assets object) throws JSONException {
         JSONObject data = new JSONObject();
-        data.put("iframe", assets.iframe);
-        data.put("player", assets.player);
-        data.put("hls", assets.hls);
-        data.put("thumbnail", assets.thumbnail);
+        data.put("iframe", object.iframe);
+        data.put("player", object.player);
+        data.put("hls", object.hls);
+        data.put("thumbnail", object.thumbnail);
 
         return data;
     }

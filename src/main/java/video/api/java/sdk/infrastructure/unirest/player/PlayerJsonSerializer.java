@@ -110,32 +110,32 @@ public class PlayerJsonSerializer implements JsonSerializer<Player> {
         return players;
     }
 
-    public JSONObject serialize(Player player) throws JSONException {
+    public JSONObject serialize(Player object) throws JSONException {
 
         JSONObject data = new JSONObject();
-        data.put("shapeMargin", player.shapeMargin);
-        data.put("shapeRadius", player.shapeRadius);
-        data.put("shapeAspect", player.shapeAspect);
-        data.put("shapeBackgroundTop", colorToString(player.shapeBackgroundTop));
-        data.put("shapeBackgroundBottom", colorToString(player.shapeBackgroundBottom));
-        data.put("text", colorToString(player.text));
-        data.put("link", colorToString(player.link));
-        data.put("linkHover", colorToString(player.linkHover));
-        data.put("linkActive", colorToString(player.linkActive));
-        data.put("trackPlayed", colorToString(player.trackPlayed));
-        data.put("trackUnplayed", colorToString(player.trackUnplayed));
-        data.put("trackBackground", colorToString(player.trackBackground));
-        data.put("backgroundTop", colorToString(player.backgroundTop));
-        data.put("backgroundBottom", colorToString(player.backgroundBottom));
-        data.put("backgroundText", colorToString(player.backgroundText));
-        data.put("language", player.language);
-        data.put("shapeMargin", player.shapeMargin);
-        data.put("shapeRadius", player.shapeMargin);
-        data.put("enableApi", player.enableApi);
-        data.put("enableControls", player.enableControls);
-        data.put("forceAutoplay", player.forceAutoplay);
-        data.put("hideTitle", player.hideTitle);
-        data.put("forceLoop", player.forceLoop);
+        data.put("shapeMargin", object.shapeMargin);
+        data.put("shapeRadius", object.shapeRadius);
+        data.put("shapeAspect", object.shapeAspect);
+        data.put("shapeBackgroundTop", colorToString(object.shapeBackgroundTop));
+        data.put("shapeBackgroundBottom", colorToString(object.shapeBackgroundBottom));
+        data.put("text", colorToString(object.text));
+        data.put("link", colorToString(object.link));
+        data.put("linkHover", colorToString(object.linkHover));
+        data.put("linkActive", colorToString(object.linkActive));
+        data.put("trackPlayed", colorToString(object.trackPlayed));
+        data.put("trackUnplayed", colorToString(object.trackUnplayed));
+        data.put("trackBackground", colorToString(object.trackBackground));
+        data.put("backgroundTop", colorToString(object.backgroundTop));
+        data.put("backgroundBottom", colorToString(object.backgroundBottom));
+        data.put("backgroundText", colorToString(object.backgroundText));
+        data.put("language", object.language);
+        data.put("shapeMargin", object.shapeMargin);
+        data.put("shapeRadius", object.shapeMargin);
+        data.put("enableApi", object.enableApi);
+        data.put("enableControls", object.enableControls);
+        data.put("forceAutoplay", object.forceAutoplay);
+        data.put("hideTitle", object.hideTitle);
+        data.put("forceLoop", object.forceLoop);
 
 
         return data;

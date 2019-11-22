@@ -16,11 +16,6 @@ public class PageSerializer<T> implements JsonSerializer<Page<T>> {
     }
 
     @Override
-    public JSONObject serialize(Page<T> tPage) throws JSONException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Page<T> deserialize(JSONObject body) throws JSONException {
         JSONObject pagination = body.getJSONObject("pagination");
         

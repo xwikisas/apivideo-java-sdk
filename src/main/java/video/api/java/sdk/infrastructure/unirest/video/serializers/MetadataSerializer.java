@@ -34,17 +34,17 @@ public class MetadataSerializer implements JsonSerializer<Metadata> {
         return null;
     }
 
-    public JSONObject serialize(Metadata metadata) throws JSONException {
+    public JSONObject serialize(Metadata object) throws JSONException {
         JSONObject data = new JSONObject();
-        data.put("width", metadata.width);
-        data.put("height", metadata.height);
-        data.put("bitrate", metadata.bitrate);
-        data.put("duration", metadata.duration);
-        data.put("framerate", metadata.framerate);
-        data.put("samplerate", metadata.samplerate);
-        data.put("videoCodec", metadata.video_codec);
-        data.put("audioCodec", metadata.audio_codec);
-        data.put("aspectRatio", metadata.aspect_ratio);
+        data.put("width", object.width);
+        data.put("height", object.height);
+        data.put("bitrate", object.bitrate);
+        data.put("duration", object.duration);
+        data.put("framerate", object.framerate);
+        data.put("samplerate", object.samplerate);
+        data.put("videoCodec", object.video_codec);
+        data.put("audioCodec", object.audio_codec);
+        data.put("aspectRatio", object.aspect_ratio);
         return data;
     }
 

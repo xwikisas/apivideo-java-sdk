@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.analytics.PlayerSession;
-import video.api.java.sdk.infrastructure.unirest.analytic.PlayerSessionJsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.analytics.PlayerSessionJsonSerializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

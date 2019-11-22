@@ -31,19 +31,19 @@ public class AccountJsonSerializer implements JsonSerializer<Account> {
         return null;
     }
 
-    public JSONObject serialize(Account account) throws JSONException {
+    public JSONObject serialize(Account object) throws JSONException {
 
         JSONObject data = new JSONObject();
 
         data.put("quota", new JSONObject() {{
-            put("quotaRemaining", account.quota.quotaRemaining);
-            put("quotaUsed", account.quota.quotaUsed);
-            put("quotaTotal", account.quota.quotaTotal);
+            put("quotaRemaining", object.quota.quotaRemaining);
+            put("quotaUsed", object.quota.quotaUsed);
+            put("quotaTotal", object.quota.quotaTotal);
         }});
 
         data.put("term", new JSONObject() {{
-            put("startAt", account.term.startAt);
-            put("endAt", account.term.endAt);
+            put("startAt", object.term.startAt);
+            put("endAt", object.term.endAt);
         }});
 
         return data;

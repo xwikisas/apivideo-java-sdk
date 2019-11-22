@@ -33,14 +33,14 @@ public class EncodingSerializer implements JsonSerializer<Encoding> {
     }
 
     @Override
-    public JSONObject serialize(Encoding encoding) {
+    public JSONObject serialize(Encoding object) {
 
         JSONObject         data               = new JSONObject();
         QualitySerializer  qualitySerializer  = new QualitySerializer();
         MetadataSerializer metadataSerializer = new MetadataSerializer();
-        data.put("playable", encoding.playable);
-        data.put("qualities", qualitySerializer.serialize(encoding.qualities));
-        data.put("metadata", metadataSerializer.serialize(encoding.metadata));
+        data.put("playable", object.playable);
+        data.put("qualities", qualitySerializer.serialize(object.qualities));
+        data.put("metadata", metadataSerializer.serialize(object.metadata));
 
         return data;
     }

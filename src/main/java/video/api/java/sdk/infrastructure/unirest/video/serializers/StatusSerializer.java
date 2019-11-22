@@ -29,12 +29,12 @@ public class StatusSerializer implements JsonSerializer<Status> {
         return null;
     }
 
-    public JSONObject serialize(Status status) throws JSONException {
+    public JSONObject serialize(Status object) throws JSONException {
         JSONObject         data               = new JSONObject();
         IngestSerializer   ingestSerializer   = new IngestSerializer();
         EncodingSerializer encodingSerializer = new EncodingSerializer();
-        data.put("ingest", ingestSerializer.serialize(status.ingest));
-        data.put("encoding", encodingSerializer.serialize(status.encoding));
+        data.put("ingest", ingestSerializer.serialize(object.ingest));
+        data.put("encoding", encodingSerializer.serialize(object.encoding));
         return data;
     }
 

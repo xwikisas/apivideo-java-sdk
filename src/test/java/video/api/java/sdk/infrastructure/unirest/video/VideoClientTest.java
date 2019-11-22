@@ -50,7 +50,7 @@ class VideoClientTest {
                     }
 
                     @Override
-                    public JSONObject serialize(Video video) throws JSONException {
+                    public JSONObject serialize(Video object) throws JSONException {
                         return null;
                     }
                 },

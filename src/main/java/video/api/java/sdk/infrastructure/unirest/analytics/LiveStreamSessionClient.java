@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.analytic;
+package video.api.java.sdk.infrastructure.unirest.analytics;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
@@ -9,12 +9,12 @@ import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-public class VideoSessionClient implements video.api.java.sdk.domain.analytics.VideoSessionClient {
+public class LiveStreamSessionClient implements video.api.java.sdk.domain.analytics.LiveStreamSessionClient {
     private final JsonSerializer<PlayerSession> serializer;
     private final RequestExecutor               requestExecutor;
     private final String                        baseUri;
 
-    public VideoSessionClient(JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor, String baseUri) {
+    public LiveStreamSessionClient(JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor, String baseUri) {
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
         this.baseUri         = baseUri;
@@ -28,11 +28,11 @@ public class VideoSessionClient implements video.api.java.sdk.domain.analytics.V
         return list(videoId, period, new QueryParams());
     }
 
-    public Iterable<PlayerSession> list(String videoId, String period, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<PlayerSession> list(String liveStreamId, String period, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         queryParams.period = period;
 
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
-                baseUri + "/analytics/videos/" + videoId,
+                baseUri + "/analytics/live-streams/" + liveStreamId,
                 requestExecutor,
                 serializer
         ), queryParams));

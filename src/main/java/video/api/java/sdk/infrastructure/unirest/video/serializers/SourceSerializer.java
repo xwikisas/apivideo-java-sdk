@@ -27,10 +27,10 @@ public class SourceSerializer implements JsonSerializer<Source> {
 
 
     @Override
-    public JSONObject serialize(Source source) throws JSONException {
+    public JSONObject serialize(Source object) throws JSONException {
         JSONObject data = new JSONObject();
-        data.put("type", source.type);
-        data.put("uri", source.uri);
+        data.put("type", object.type);
+        data.put("uri", object.uri);
         return data;
     }
 

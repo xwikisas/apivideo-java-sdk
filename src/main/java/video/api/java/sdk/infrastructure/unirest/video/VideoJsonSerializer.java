@@ -83,16 +83,16 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
     }
 
     @Override
-    public JSONObject serialize(Video video) throws JSONException {
+    public JSONObject serialize(Video object) throws JSONException {
         JSONObject data = new JSONObject();
-        data.put("description", video.description);
-        data.put("isPublic", video.isPublic);
-        if (video.metadata != null) {
-            data.put("metadata", mapToArray(video.metadata));
+        data.put("description", object.description);
+        data.put("isPublic", object.isPublic);
+        if (object.metadata != null) {
+            data.put("metadata", mapToArray(object.metadata));
         }
-        data.put("playerId", video.playerId);
-        data.put("tags", new JSONArray(video.tags));
-        data.put("title", video.title);
+        data.put("playerId", object.playerId);
+        data.put("tags", new JSONArray(object.tags));
+        data.put("title", object.title);
 
         return data;
     }

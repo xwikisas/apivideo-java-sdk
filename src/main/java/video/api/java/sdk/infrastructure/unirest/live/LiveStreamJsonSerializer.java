@@ -48,15 +48,15 @@ public class LiveStreamJsonSerializer implements JsonSerializer<LiveStream> {
     }
 
     @Override
-    public JSONObject serialize(LiveStream liveStream) throws JSONException {
+    public JSONObject serialize(LiveStream object) throws JSONException {
         JSONObject data = new JSONObject();
-        if (liveStream.name != null) {
-            data.put("name", liveStream.name);
+        if (object.name != null) {
+            data.put("name", object.name);
         }
-        data.put("record", liveStream.record);
+        data.put("record", object.record);
 
-        if (liveStream.playerId != null) {
-            data.put("playerId", liveStream.playerId);
+        if (object.playerId != null) {
+            data.put("playerId", object.playerId);
         }
         return data;
     }

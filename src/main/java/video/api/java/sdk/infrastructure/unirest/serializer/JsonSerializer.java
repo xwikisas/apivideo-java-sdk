@@ -3,6 +3,7 @@ package video.api.java.sdk.infrastructure.unirest.serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import video.api.java.sdk.domain.analytics.PlayerSessionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public interface JsonSerializer<T> {
-    JSONObject serialize(T t) throws JSONException;
+    default JSONObject serialize(T object) throws JSONException {
+        throw new UnsupportedOperationException("Not implemented");
+    }
 
     T deserialize(JSONObject data) throws JSONException;
+
 
     default List<T> deserialize(JSONArray data) throws JSONException {
         List<T> list = new ArrayList<>();

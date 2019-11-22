@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.analytic;
+package video.api.java.sdk.infrastructure.unirest.analytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,10 +66,5 @@ public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession
                 object.getString("name"),
                 object.getString("version")
         );
-    }
-
-    @Override
-    public JSONObject serialize(PlayerSession object) throws JSONException {
-        throw new UnsupportedOperationException("Not implemented");
     }
 }

@@ -37,11 +37,10 @@ public class CaptionJsonSerializer implements JsonSerializer<Caption> {
         return captions;
     }
 
-    @Override
-    public JSONObject serialize(Caption caption) throws JSONException {
+    public JSONObject serialize(Caption object) throws JSONException {
         JSONObject data = new JSONObject();
 
-        data.put("default", caption.defaultCaption);
+        data.put("default", object.defaultCaption);
 
         return data;
     }

@@ -24,11 +24,11 @@ public class PlayerAssetsJsonSerializer implements JsonSerializer<Assets> {
         return null;
     }
 
-    public JSONObject serialize(Assets asset) throws JSONException {
+    public JSONObject serialize(Assets object) throws JSONException {
 
         JSONObject data = new JSONObject();
-        data.put("link", asset.link);
-        data.put("logo", asset.logo);
+        data.put("link", object.link);
+        data.put("logo", object.logo);
         return data;
 
     }
