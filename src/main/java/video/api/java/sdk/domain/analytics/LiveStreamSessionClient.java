@@ -1,9 +1,7 @@
-package video.api.java.sdk.domain.analytic;
+package video.api.java.sdk.domain.analytics;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
-
-import java.net.URISyntaxException;
 
 
 public interface LiveStreamSessionClient {

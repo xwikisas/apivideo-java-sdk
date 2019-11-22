@@ -2,8 +2,7 @@ package video.api.java.sdk.infrastructure.unirest.analytic;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.analytic.*;
-import video.api.java.sdk.domain.analytic.PlayerSession;
+import video.api.java.sdk.domain.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession> {

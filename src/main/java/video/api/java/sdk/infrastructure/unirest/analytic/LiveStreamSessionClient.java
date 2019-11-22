@@ -1,17 +1,15 @@
 package video.api.java.sdk.infrastructure.unirest.analytic;
 
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.PlayerSession;
+import video.api.java.sdk.domain.analytics.PlayerSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-public class LiveStreamSessionClient implements video.api.java.sdk.domain.analytic.LiveStreamSessionClient {
+public class LiveStreamSessionClient implements video.api.java.sdk.domain.analytics.LiveStreamSessionClient {
     private final JsonSerializer<PlayerSession> serializer;
     private final RequestExecutor               requestExecutor;
     private final String                        baseUri;

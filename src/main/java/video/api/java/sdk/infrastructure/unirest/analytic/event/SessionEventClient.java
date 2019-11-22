@@ -2,14 +2,14 @@ package video.api.java.sdk.infrastructure.unirest.analytic.event;
 
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.analytic.SessionEvent;
+import video.api.java.sdk.domain.analytics.SessionEvent;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-public class SessionEventClient implements video.api.java.sdk.domain.analytic.SessionEventClient {
+public class SessionEventClient implements video.api.java.sdk.domain.analytics.SessionEventClient {
 
     private final JsonSerializer<SessionEvent> serializer;
     private final RequestExecutor              requestExecutor;

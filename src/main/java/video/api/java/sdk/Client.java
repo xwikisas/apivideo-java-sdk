@@ -1,8 +1,8 @@
 package video.api.java.sdk;
 
-import video.api.java.sdk.domain.analytic.SessionEventClient;
-import video.api.java.sdk.domain.analytic.LiveStreamSessionClient;
-import video.api.java.sdk.domain.analytic.VideoSessionClient;
+import video.api.java.sdk.domain.analytics.SessionEventClient;
+import video.api.java.sdk.domain.analytics.LiveStreamSessionClient;
+import video.api.java.sdk.domain.analytics.VideoSessionClient;
 import video.api.java.sdk.domain.caption.CaptionClient;
 import video.api.java.sdk.domain.live.LiveStreamClient;
 import video.api.java.sdk.domain.player.PlayerClient;

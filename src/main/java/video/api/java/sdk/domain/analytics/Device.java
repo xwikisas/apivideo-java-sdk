@@ -1,4 +1,4 @@
-package video.api.java.sdk.domain.analytic;
+package video.api.java.sdk.domain.analytics;
 
 public class Device {
     public final String type;
