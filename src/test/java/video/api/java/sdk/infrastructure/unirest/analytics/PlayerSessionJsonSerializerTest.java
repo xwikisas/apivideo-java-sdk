@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.analytic.video;
+package video.api.java.sdk.infrastructure.unirest.analytics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -6,11 +6,8 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.asset.Assets;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.video.serializers.SourceSerializer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class VideoJsonSerializer implements JsonSerializer<Video> {
@@ -22,18 +19,21 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
 
     @Override
     public Video deserialize(JSONObject data) throws JSONException {
-        Video            video            = new Video();
-        SourceSerializer sourceSerializer = new SourceSerializer();
+        Video video = new Video();
 
         video.videoId = data.getString("videoId");
-        if (data.has("title"))
+        if (data.has("title")) {
             video.title = data.getString("title");
-        if (data.has("description"))
+        }
+        if (data.has("description")) {
             video.description = data.getString("description");
-        if (data.has("public"))
+        }
+        if (data.has("public")) {
             video.isPublic = (boolean) data.get("public");
-        if (data.has("panoramic"))
+        }
+        if (data.has("panoramic")) {
             video.panoramic = (boolean) data.get("panoramic");
+        }
 
         if (data.has("tags")) {
             for (int i = 0; i < data.getJSONArray("tags").length(); i++) {
@@ -52,15 +52,16 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
             }
             video.metadata = metadata;
         }
-        if (data.has("source"))
-            video.source = sourceSerializer.deserialize(data.getJSONObject("source"));
+        if (data.has("source")) {
+            video.source = deserializeSource(data.getJSONObject("source"));
+        }
 
         try {
             video.assets      = assetsSerializer.deserialize(data.getJSONObject("assets"));
             video.publishedAt = data.getString("publishedAt");
         } catch (org.json.JSONException e) {
             video.assets      = new Assets();
-            video.publishedAt = "unkown";
+            video.publishedAt = "unknown";
 
         }
 
@@ -69,17 +70,6 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         }
 
         return video;
-    }
-
-    @Override
-    public List<Video> deserialize(JSONArray data) throws JSONException {
-
-
-        List<Video> videos = new ArrayList<>();
-        for (Object item : data) {
-            videos.add(deserialize((JSONObject) item));
-        }
-        return videos;
     }
 
     @Override
@@ -108,4 +98,10 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         return metadataArray;
     }
 
+    private Video.Source deserializeSource(JSONObject data) {
+        return new Video.Source(
+                data.getString("type"),
+                data.getString("uri")
+        );
+    }
 }

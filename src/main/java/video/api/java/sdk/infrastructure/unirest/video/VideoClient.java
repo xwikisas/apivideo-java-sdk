@@ -8,12 +8,11 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.domain.video.models.Status;
+import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.video.serializers.StatusSerializer;
 
 import java.io.*;
 import java.util.HashMap;

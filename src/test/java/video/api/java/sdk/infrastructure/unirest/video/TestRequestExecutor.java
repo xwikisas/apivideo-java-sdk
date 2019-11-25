@@ -127,8 +127,6 @@ public class TestRequestExecutor implements video.api.java.sdk.domain.RequestExe
             throw exception;
         }
 
-        System.out.println(request.getUrl());
-
         if (equals(request, createVideoSuccess)) {
             return videoResponseSuccess();
 
