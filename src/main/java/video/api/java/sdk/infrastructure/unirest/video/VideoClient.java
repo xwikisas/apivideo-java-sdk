@@ -4,13 +4,13 @@ import kong.unirest.*;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
-import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
+import video.api.java.sdk.infrastructure.unirest.RequestFactory;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -18,32 +18,32 @@ import java.io.*;
 import java.util.HashMap;
 
 import static java.lang.Math.min;
+import static kong.unirest.HttpMethod.*;
 
 public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
     private static final int CHUNK_SIZE = 50 * 1024 * 1024; // 50 Mo
 
+    private final RequestFactory        requestFactory;
     private final JsonSerializer<Video> serializer;
     private final RequestExecutor       requestExecutor;
-    private final String                baseUri;
-    private final StatusSerializer      statusSerializer;
+    private final StatusSerializer      statusSerializer = new StatusSerializer();
 
-    public VideoClient(JsonSerializer<Video> serializer, RequestExecutor requestExecutor, String baseUri) {
-        this.serializer       = serializer;
-        this.requestExecutor  = requestExecutor;
-        this.baseUri          = baseUri;
-        this.statusSerializer = new StatusSerializer();
+    public VideoClient(RequestFactory requestFactory, JsonSerializer<Video> serializer, RequestExecutor requestExecutor) {
+        this.requestFactory  = requestFactory;
+        this.serializer      = serializer;
+        this.requestExecutor = requestExecutor;
     }
 
     public Video get(String videoId) throws ResponseException {
-        HttpRequest request = Unirest.get(baseUri + "/videos/" + videoId);
+        HttpRequest request = requestFactory.create(GET, "/videos/" + videoId);
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return getVideoResponse(response);
+        return serializer.deserialize(response.getBody().getObject());
     }
 
     public Status getStatus(String videoId) throws ResponseException {
-        HttpRequest request = Unirest.get(baseUri + "/videos/" + videoId + "/status");
+        HttpRequest request = requestFactory.create(GET, "/videos/" + videoId + "/status");
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -54,13 +54,15 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         if (video.title == null) {
             video.title = "";
         }
+
         JSONObject prop = serializer.serialize(video);
 
-        HttpRequest request = Unirest.post(baseUri + "/videos").body(prop);
+        HttpRequest request = requestFactory.create(POST, "/videos")
+                .body(prop);
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return getVideoResponse(response);
+        return serializer.deserialize(response.getBody().getObject());
     }
 
     public Video upload(String source) throws ResponseException {
@@ -118,7 +120,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
                 response = uploadMultipleRequests(source, listener, videoId, fileLength);
             }
 
-            return getVideoResponse(response);
+            return serializer.deserialize(response.getBody().getObject());
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -177,7 +179,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     private HttpRequest buildUploadRequest(UploadProgressListener listener, File fileToUpload, String videoId, FileInputStream inputStream) {
-        HttpRequestWithBody request = Unirest.post(baseUri + "/videos/" + videoId + "/source");
+        HttpRequestWithBody request = requestFactory.create(POST, "/videos/" + videoId + "/source");
 
         MultipartBody uploadField = request.field(
                 "file", inputStream, ContentType.APPLICATION_OCTET_STREAM, fileToUpload.getName()
@@ -192,7 +194,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     private HttpRequest buildChunkUploadRequest(UploadProgressListener listener, String videoId, int chunkCount, File fileToUpload, InputStream inputStream, HashMap<String, String> headers, int chunkNum) {
-        HttpRequestWithBody request = Unirest.post(baseUri + "/videos/" + videoId + "/source")
+        HttpRequestWithBody request = requestFactory.create(POST, "/videos/" + videoId + "/source")
                 .headers(headers);
 
         MultipartBody uploadField = request.field(
@@ -213,14 +215,14 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
             File            FileToUpload      = new File(thumbnailSource);
             FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
-            HttpRequest request = Unirest.post(baseUri + "/videos/" + video.videoId + "/thumbnail").field("file", inputStreamToFile,
-                                                                                                          ContentType.APPLICATION_OCTET_STREAM, FileToUpload.getName());
+            HttpRequest request = requestFactory.create(POST, "/videos/" + video.videoId + "/thumbnail").field("file", inputStreamToFile,
+                                                                                                               ContentType.APPLICATION_OCTET_STREAM, FileToUpload.getName());
 
             //Post thumbnail
             HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
 
             inputStreamToFile.close();
-            return getVideoResponse(responseSubmit);
+            return serializer.deserialize(responseSubmit.getBody().getObject());
 
         } catch (IOException e) {
             throw new IllegalArgumentException("uploadThumbnail -->Source :" + thumbnailSource + "\n Message-->" + e.getMessage());
@@ -229,7 +231,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
 
     public Video updateThumbnailWithTimeCode(Video video, String timeCode) throws ResponseException {
-        HttpRequest request = Unirest.patch(baseUri + "/videos/" + video.videoId).body(
+        HttpRequest request = requestFactory.create(PATCH, "/videos/" + video.videoId).body(
                 new JSONObject()
                         .put("timecode", timeCode)
                         .toString()
@@ -238,20 +240,20 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         //Patch thumbnail
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return getVideoResponse(response);
+        return serializer.deserialize(response.getBody().getObject());
     }
 
     public Video update(Video video) throws ResponseException {
-        HttpRequest request = Unirest.patch(baseUri + "/videos/" + video.videoId).body(serializer.serialize(video));
+        HttpRequest request = requestFactory.create(PATCH, "/videos/" + video.videoId).body(serializer.serialize(video));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
-        return getVideoResponse(response);
+        return serializer.deserialize(response.getBody().getObject());
     }
 
 
     public void delete(Video video) throws ResponseException {
-        HttpRequest request = Unirest.delete(baseUri + "/videos/" + video.videoId);
+        HttpRequest request = requestFactory.create(DELETE, "/videos/" + video.videoId);
 
         requestExecutor.executeJson(request);
     }
@@ -264,14 +266,12 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Iterable<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/videos", requestExecutor, serializer), queryParams));
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
+                "/videos",
+                requestFactory,
+                requestExecutor,
+                serializer
+        ), queryParams));
     }
 
-    private Video getVideoResponse(HttpResponse<JsonNode> response) throws ResponseException {
-        try {
-            return serializer.deserialize(response.getBody().getObject());
-        } catch (NullPointerException e) {
-            throw new ClientException(response, "Body response is empty.");
-        }
-    }
 }

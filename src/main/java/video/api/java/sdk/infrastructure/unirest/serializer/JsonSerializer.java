@@ -3,7 +3,6 @@ package video.api.java.sdk.infrastructure.unirest.serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.analytics.PlayerSessionEvent;
 
 import java.util.ArrayList;
 import java.util.List;

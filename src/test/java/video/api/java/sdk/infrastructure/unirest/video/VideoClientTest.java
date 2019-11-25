@@ -10,6 +10,7 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
+import video.api.java.sdk.infrastructure.unirest.RequestFactory;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -29,15 +30,17 @@ class VideoClientTest {
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
         testRequestExecutor.exception  = new ResponseException(testRequestExecutor.ResponseFailure(), "");
         videoClientResponseException   = new VideoClient(
+                new RequestFactory(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
-                testRequestExecutor,
-                ""
+                testRequestExecutor
         );
         videoClient                    = new VideoClient(
+                new RequestFactory(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
-                new TestRequestExecutor(),
-                "");
+                new TestRequestExecutor()
+        );
         videoClientSerializerException = new VideoClient(
+                new RequestFactory(""),
                 new JsonSerializer<Video>() {
                     @Override
                     public Video deserialize(JSONObject data) throws JSONException {
@@ -54,8 +57,8 @@ class VideoClientTest {
                         return null;
                     }
                 },
-                new TestRequestExecutor(),
-                "");
+                new TestRequestExecutor()
+        );
     }
 
 
@@ -105,7 +108,7 @@ class VideoClientTest {
     }
 
     @Test
-    void uploadThumbnailFailure() throws ResponseException, IllegalArgumentException {
+    void uploadThumbnailFailure() throws IllegalArgumentException {
         testVideo.videoId = "viSuccess";
         assertThrows(java.lang.IllegalArgumentException.class, () -> videoClient.uploadThumbnail(testVideo, "ezdzedze"));
     }
@@ -124,7 +127,7 @@ class VideoClientTest {
 
 
     @Test
-    void delete() throws ResponseException {
+    void delete() {
 
     }
 

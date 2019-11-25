@@ -3,13 +3,13 @@ package video.api.java.sdk.infrastructure.unirest.live;
 import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
+import video.api.java.sdk.infrastructure.unirest.RequestFactory;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -17,23 +17,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static kong.unirest.HttpMethod.*;
+
 public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient {
 
+    private final RequestFactory             requestFactory;
     private final JsonSerializer<LiveStream> serializer;
     private final RequestExecutor            requestExecutor;
-    private final String                     baseUri;
 
-    public LiveStreamClient(JsonSerializer<LiveStream> serializer, RequestExecutor requestExecutor, String baseUri) {
-
+    public LiveStreamClient(RequestFactory requestFactory, JsonSerializer<LiveStream> serializer, RequestExecutor requestExecutor) {
+        this.requestFactory  = requestFactory;
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
-        this.baseUri         = baseUri;
-
     }
 
     public LiveStream get(String liveStreamId) throws ResponseException {
 
-        HttpRequest request = Unirest.get(baseUri + "/live-streams/" + liveStreamId);
+        HttpRequest request = requestFactory.create(GET, "/live-streams/" + liveStreamId);
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -42,7 +42,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
 
     public LiveStream create(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = Unirest.post(baseUri + "/live-streams").body(serializer.serialize(liveStream));
+        HttpRequest request = requestFactory.create(POST, "/live-streams").body(serializer.serialize(liveStream));
 
         HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
 
@@ -56,7 +56,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
             File            FileToUpload      = new File(thumbnailSource);
             FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
-            HttpRequest request = Unirest.post(baseUri + "/live-streams/" + liveStreamId + "/thumbnail").field(
+            HttpRequest request = requestFactory.create(POST, "/live-streams/" + liveStreamId + "/thumbnail").field(
                     "file", inputStreamToFile,
                     kong.unirest.ContentType.APPLICATION_OCTET_STREAM, FileToUpload.getName());
 
@@ -72,7 +72,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     public LiveStream update(LiveStream liveStream) throws ResponseException {
 
-        HttpRequest request = Unirest.patch(baseUri + "/live-streams/" + liveStream.liveStreamId).body(serializer.serialize(liveStream));
+        HttpRequest request = requestFactory.create(PATCH, "/live-streams/" + liveStream.liveStreamId).body(serializer.serialize(liveStream));
 
         HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
 
@@ -81,7 +81,7 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public void delete(String liveStreamId) throws ResponseException {
-        HttpRequest request = Unirest.delete(baseUri + "/live-streams/" + liveStreamId);
+        HttpRequest request = requestFactory.create(DELETE, "/live-streams/" + liveStreamId);
 
         requestExecutor.executeJson(request);
     }
@@ -94,7 +94,12 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(baseUri + "/live-streams", requestExecutor, serializer), queryParams));
+        return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
+                "/live-streams",
+                requestFactory,
+                requestExecutor,
+                serializer
+        ), queryParams));
     }
 
 

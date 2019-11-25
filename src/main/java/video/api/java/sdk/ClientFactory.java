@@ -2,11 +2,8 @@ package video.api.java.sdk;
 
 
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
-import video.api.java.sdk.infrastructure.unirest.analytics.PlayerSessionEventClient;
-import video.api.java.sdk.infrastructure.unirest.analytics.SessionEventJsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.analytics.LiveStreamSessionClient;
-import video.api.java.sdk.infrastructure.unirest.analytics.PlayerSessionJsonSerializer;
-import video.api.java.sdk.infrastructure.unirest.analytics.VideoSessionClient;
+import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionJsonSerializer;
@@ -27,17 +24,18 @@ public class ClientFactory {
     }
 
     private Client create(String apiKey, String baseUri) {
-        AuthRequestExecutor  authRequestExecutor = new AuthRequestExecutor(baseUri, apiKey);
+        RequestFactory       requestFactory      = new RequestFactory(baseUri);
+        AuthRequestExecutor  authRequestExecutor = new AuthRequestExecutor(requestFactory, apiKey);
         AssetsJsonSerializer assetsSerializer    = new AssetsJsonSerializer();
 
         return new Client(
-                new CaptionClient(new CaptionJsonSerializer(), authRequestExecutor, baseUri),
-                new LiveStreamClient(new LiveStreamJsonSerializer(assetsSerializer), authRequestExecutor, baseUri),
-                new LiveStreamSessionClient(new PlayerSessionJsonSerializer(), authRequestExecutor, baseUri),
-                new PlayerClient(new PlayerJsonSerializer(), authRequestExecutor, baseUri),
-                new PlayerSessionEventClient(new SessionEventJsonSerializer(), authRequestExecutor, baseUri),
-                new VideoClient(new VideoJsonSerializer(assetsSerializer), authRequestExecutor, baseUri),
-                new VideoSessionClient(new PlayerSessionJsonSerializer(), authRequestExecutor, baseUri)
+                new CaptionClient(requestFactory, new CaptionJsonSerializer(), authRequestExecutor),
+                new LiveStreamClient(requestFactory, new LiveStreamJsonSerializer(assetsSerializer), authRequestExecutor),
+                new LiveStreamSessionClient(requestFactory, new PlayerSessionJsonSerializer(), authRequestExecutor),
+                new PlayerClient(requestFactory, new PlayerJsonSerializer(), authRequestExecutor),
+                new PlayerSessionEventClient(requestFactory, new SessionEventJsonSerializer(), authRequestExecutor),
+                new VideoClient(requestFactory, new VideoJsonSerializer(assetsSerializer), authRequestExecutor),
+                new VideoSessionClient(requestFactory, new PlayerSessionJsonSerializer(), authRequestExecutor)
         );
     }
 
