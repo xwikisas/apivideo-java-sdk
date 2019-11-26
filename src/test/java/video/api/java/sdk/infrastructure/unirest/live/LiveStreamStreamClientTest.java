@@ -2,9 +2,9 @@ package video.api.java.sdk.infrastructure.unirest.live;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
@@ -16,9 +16,9 @@ class LiveStreamStreamClientTest {
     @BeforeEach
     void setUp() {
         liveStreamClient = new LiveStreamClient(
+                new RequestBuilder(""),
                 new LiveStreamJsonSerializer(new AssetsJsonSerializer()),
-                new TestRequestExecutor(),
-                ""
+                new TestRequestExecutor()
         );
     }
 
@@ -52,9 +52,4 @@ class LiveStreamStreamClientTest {
 
     }
 
-    @Test
-    void search() throws ResponseException {
-        assertNotNull(liveStreamClient.search(new QueryParams()));
-
-    }
 }

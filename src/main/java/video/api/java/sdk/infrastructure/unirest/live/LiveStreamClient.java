@@ -29,8 +29,8 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public LiveStream get(String liveStreamId) throws ResponseException {
-
-        HttpRequest request = requestBuilder.get("/live-streams/" + liveStreamId);
+        HttpRequest request = requestBuilder
+                .get("/live-streams/" + liveStreamId);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -38,54 +38,49 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public LiveStream create(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = requestBuilder.post("/live-streams")
+        HttpRequest request = requestBuilder
+                .post("/live-streams")
                 .body(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getObject());
-
     }
 
-    public LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IllegalArgumentException {
+    public LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IOException {
         try (FileInputStream inputStream = new FileInputStream(file)) {
-            HttpRequest request = requestBuilder.post("/live-streams/" + liveStreamId + "/thumbnail")
+            HttpRequest request = requestBuilder
+                    .post("/live-streams/" + liveStreamId + "/thumbnail")
                     .field("file", inputStream, file.getName());
 
             JsonNode responseBody = requestExecutor.executeJson(request);
 
             return serializer.deserialize(responseBody.getObject());
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException("uploadThumbnail : " + e.getMessage());
         }
     }
 
     public LiveStream update(LiveStream liveStream) throws ResponseException {
-
-        HttpRequest request = requestBuilder.patch("/live-streams/" + liveStream.liveStreamId)
+        HttpRequest request = requestBuilder
+                .patch("/live-streams/" + liveStream.liveStreamId)
                 .body(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getObject());
-
     }
 
     public void delete(String liveStreamId) throws ResponseException {
-        HttpRequest request = requestBuilder.delete("/live-streams/" + liveStreamId);
+        HttpRequest request = requestBuilder
+                .delete("/live-streams/" + liveStreamId);
 
         requestExecutor.executeJson(request);
     }
 
-
-    /////////////////////////Iterators//////////////////////////////
-
     public Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException {
-        return search(new QueryParams());
+        return list(new QueryParams());
     }
 
-    public Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<LiveStream> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
                 "/live-streams",
                 requestBuilder,

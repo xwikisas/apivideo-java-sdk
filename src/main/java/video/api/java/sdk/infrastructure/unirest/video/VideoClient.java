@@ -37,7 +37,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Video get(String videoId) throws ResponseException {
-        HttpRequest request = requestBuilder.get("/videos/" + videoId);
+        HttpRequest request = requestBuilder
+                .get("/videos/" + videoId);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -45,7 +46,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Status getStatus(String videoId) throws ResponseException {
-        HttpRequest request = requestBuilder.get("/videos/" + videoId + "/status");
+        HttpRequest request = requestBuilder
+                .get("/videos/" + videoId + "/status");
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -57,7 +59,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
             video.title = "";
         }
 
-        HttpRequest request = requestBuilder.post("/videos")
+        HttpRequest request = requestBuilder
+                .post("/videos")
                 .body(serializer.serialize(video));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
@@ -166,17 +169,16 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     private JsonNode uploadSingleRequest(UploadProgressListener listener, File file, String videoId) throws ResponseException, IOException {
-        FileInputStream inputStream = new FileInputStream(file);
-        HttpRequest     request     = buildUploadRequest(listener, file, videoId, inputStream);
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            HttpRequest request = buildUploadRequest(listener, file, videoId, inputStream);
 
-        JsonNode responseBody = requestExecutor.executeJson(request);
-
-        inputStream.close();
-        return responseBody;
+            return requestExecutor.executeJson(request);
+        }
     }
 
     private HttpRequest buildUploadRequest(UploadProgressListener listener, File file, String videoId, FileInputStream inputStream) {
-        HttpRequestWithBody request = requestBuilder.post("/videos/" + videoId + "/source");
+        HttpRequestWithBody request = requestBuilder
+                .post("/videos/" + videoId + "/source");
 
         MultipartBody uploadField = request.field("file", inputStream, file.getName());
 
@@ -189,7 +191,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     private HttpRequest buildChunkUploadRequest(UploadProgressListener listener, String videoId, int chunkCount, File fileToUpload, InputStream inputStream, HashMap<String, String> headers, int chunkNum) {
-        HttpRequestWithBody request = requestBuilder.post("/videos/" + videoId + "/source")
+        HttpRequestWithBody request = requestBuilder
+                .post("/videos/" + videoId + "/source")
                 .headers(headers);
 
         MultipartBody uploadField = request.field("file", inputStream, fileToUpload.getName());
@@ -203,22 +206,21 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
 
-    public Video uploadThumbnail(Video video, File file) throws ResponseException, IllegalArgumentException {
+    public Video uploadThumbnail(Video video, File file) throws ResponseException, IOException {
         try (FileInputStream inputStream = new FileInputStream(file)) {
-            HttpRequest request = requestBuilder.post("/videos/" + video.videoId + "/thumbnail")
+            HttpRequest request = requestBuilder
+                    .post("/videos/" + video.videoId + "/thumbnail")
                     .field("file", inputStream, file.getName());
 
             JsonNode responseBody = requestExecutor.executeJson(request);
 
             return serializer.deserialize(responseBody.getObject());
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
         }
     }
 
     public Video updateThumbnail(Video video, String timeCode) throws ResponseException {
-        HttpRequest request = requestBuilder.patch("/videos/" + video.videoId)
+        HttpRequest request = requestBuilder
+                .patch("/videos/" + video.videoId)
                 .body(new JSONObject().put("timecode", timeCode));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
@@ -227,7 +229,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Video update(Video video) throws ResponseException {
-        HttpRequest request = requestBuilder.patch("/videos/" + video.videoId)
+        HttpRequest request = requestBuilder
+                .patch("/videos/" + video.videoId)
                 .body(serializer.serialize(video));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
@@ -237,7 +240,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
 
     public void delete(Video video) throws ResponseException {
-        HttpRequest request = requestBuilder.delete("/videos/" + video.videoId);
+        HttpRequest request = requestBuilder
+                .delete("/videos/" + video.videoId);
 
         requestExecutor.executeJson(request);
     }
@@ -246,10 +250,10 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     /////////////////////////Iterators//////////////////////////////
 
     public Iterable<Video> list() throws ResponseException, IllegalArgumentException {
-        return search(new QueryParams());
+        return list(new QueryParams());
     }
 
-    public Iterable<Video> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<Video> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
                 "/videos",
                 requestBuilder,

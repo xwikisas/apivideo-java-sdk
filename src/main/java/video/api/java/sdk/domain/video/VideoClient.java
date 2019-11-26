@@ -4,11 +4,14 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 public interface VideoClient {
 
     Iterable<Video> list() throws ResponseException;
+
+    Iterable<Video> list(QueryParams queryParams) throws ResponseException, URISyntaxException;
 
     Video get(String videoId) throws ResponseException;
 
@@ -24,9 +27,7 @@ public interface VideoClient {
 
     Video upload(File file, Video video, UploadProgressListener m) throws ResponseException;
 
-    Iterable<Video> search(QueryParams queryParams) throws ResponseException, URISyntaxException;
-
-    Video uploadThumbnail(Video video, File file) throws ResponseException;
+    Video uploadThumbnail(Video video, File file) throws ResponseException, IOException;
 
     Video updateThumbnail(Video video, String timecode) throws ResponseException;
 

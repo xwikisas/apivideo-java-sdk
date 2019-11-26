@@ -29,18 +29,17 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     }
 
     public Player get(String playerId) throws ResponseException {
-
-        HttpRequest request = requestBuilder.get("/players/" + playerId);
+        HttpRequest request = requestBuilder
+                .get("/players/" + playerId);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getObject());
-
     }
 
     public Player create(Player player) throws ResponseException {
-
-        HttpRequest request = requestBuilder.post("/players")
+        HttpRequest request = requestBuilder
+                .post("/players")
                 .body(serializer.serialize(player));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
@@ -49,8 +48,8 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     }
 
     public Player update(Player player) throws ResponseException {
-
-        HttpRequest request = requestBuilder.patch("/players/" + player.playerId)
+        HttpRequest request = requestBuilder
+                .patch("/players/" + player.playerId)
                 .body(serializer.serialize(player));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
@@ -58,38 +57,31 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
         return serializer.deserialize(responseBody.getObject());
     }
 
-    public Player uploadLogo(String playerId, File file, String link) throws ResponseException {
-        try (FileInputStream inputStreamToFile = new FileInputStream(file)) {
-            HttpRequest request = requestBuilder.post("/players/" + playerId + "/logo")
-                    .field("file", inputStreamToFile, file.getName())
+    public Player uploadLogo(String playerId, File file, String link) throws ResponseException, IOException {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            HttpRequest request = requestBuilder
+                    .post("/players/" + playerId + "/logo")
+                    .field("file", inputStream, file.getName())
                     .field("link", link);
 
             JsonNode responseBody = requestExecutor.executeJson(request);
 
-            inputStreamToFile.close();
-
             return serializer.deserialize(responseBody.getObject());
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
 
-
     public void delete(String playerId) throws ResponseException {
-        HttpRequest request = requestBuilder.delete("/players/" + playerId);
+        HttpRequest request = requestBuilder
+                .delete("/players/" + playerId);
 
         requestExecutor.executeJson(request);
     }
 
-    /////////////////////////Iterators//////////////////////////////
-
-
     public Iterable<Player> list() throws ResponseException, IllegalArgumentException {
-        return search(new QueryParams());
+        return list(new QueryParams());
     }
 
-    public Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
+    public Iterable<Player> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
                 "/players",
                 requestBuilder,

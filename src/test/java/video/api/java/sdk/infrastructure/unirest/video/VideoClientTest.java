@@ -133,8 +133,8 @@ class VideoClientTest {
     }
 
     @Test
-    void search() throws ResponseException, IllegalArgumentException {
-        assertNotNull(videoClient.search(new QueryParams()));
+    void listWithParams() throws ResponseException, IllegalArgumentException {
+        assertNotNull(videoClient.list(new QueryParams()));
     }
 
     @Test

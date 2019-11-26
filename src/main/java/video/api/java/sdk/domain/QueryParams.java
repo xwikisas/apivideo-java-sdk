@@ -18,30 +18,6 @@ public class QueryParams {
     public List<String>        tags        = new ArrayList<>();
     public Map<String, String> metadata    = new HashMap<>();
 
-    public QueryParams() {
-
-    }
-
-
-    public QueryParams(QueryParams queryParams) {
-        this.currentPage = queryParams.currentPage;
-        this.pageSize    = queryParams.pageSize;
-        this.period      = queryParams.period;
-        this.title       = queryParams.title;
-        this.description = queryParams.description;
-        this.sortBy      = queryParams.sortBy;
-        this.sortOrder   = queryParams.sortOrder;
-        this.tags        = queryParams.tags;
-        this.metadata    = queryParams.metadata;
-
-    }
-
-
-    public String create(String url) throws IllegalArgumentException {
-
-        return queryBuilder(this.createJSONObject(), url);
-    }
-
     public JSONObject createJSONObject() {
         JSONObject param = new JSONObject();
         param.put("currentPage", this.currentPage);

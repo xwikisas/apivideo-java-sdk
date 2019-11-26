@@ -78,7 +78,7 @@ class PlayerClientTest {
     }
 
     @Test
-    void search() throws ResponseException {
-        assertNotNull(playerClient.search(new QueryParams()));
+    void listWithParams() throws ResponseException {
+        assertNotNull(playerClient.list(new QueryParams()));
     }
 }

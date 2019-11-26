@@ -1,6 +1,5 @@
 package video.api.java.sdk.infrastructure.unirest.pagination;
 
-import kong.unirest.HttpMethod;
 import kong.unirest.HttpRequest;
 import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.QueryParams;
@@ -27,7 +26,8 @@ public class UriPageLoader<T> implements PageLoader<T> {
 
     @Override
     public Page<T> load(QueryParams queryParams) throws ResponseException {
-        HttpRequest request = requestBuilder.get(url)
+        HttpRequest request = requestBuilder
+                .get(url)
                 .queryString(queryParams.createJSONObject().toMap());
 
         JsonNode responseBody = requestExecutor.executeJson(request);

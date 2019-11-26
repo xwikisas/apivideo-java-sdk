@@ -5,6 +5,7 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public interface LiveStreamClient {
@@ -12,13 +13,13 @@ public interface LiveStreamClient {
 
     LiveStream create(LiveStream liveStream) throws ResponseException;
 
-    Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
-
-    LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IllegalArgumentException;
+    LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IOException;
 
     LiveStream update(LiveStream liveStream) throws ResponseException;
 
     void delete(String liveStreamId) throws ResponseException;
 
     Iterable<LiveStream> list() throws ResponseException, IllegalArgumentException;
+
+    Iterable<LiveStream> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 }

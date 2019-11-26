@@ -4,6 +4,7 @@ import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public interface PlayerClient {
@@ -14,12 +15,12 @@ public interface PlayerClient {
 
     Player update(Player player) throws ResponseException;
 
-    Player uploadLogo(String playerId, File file, String link) throws ResponseException;
+    Player uploadLogo(String playerId, File file, String link) throws ResponseException, IOException;
 
     void delete(String playerId) throws ResponseException;
 
     Iterable<Player> list() throws ResponseException;
 
-    Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
+    Iterable<Player> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
 }

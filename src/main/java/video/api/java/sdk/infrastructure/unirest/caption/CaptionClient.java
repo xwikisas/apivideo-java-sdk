@@ -2,7 +2,7 @@ package video.api.java.sdk.infrastructure.unirest.caption;
 
 import kong.unirest.HttpRequest;
 import kong.unirest.JsonNode;
-import org.json.JSONArray;
+import org.json.JSONObject;
 import video.api.java.sdk.domain.caption.Caption;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
@@ -26,42 +26,40 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
     }
 
     public Caption get(String videoId, String lang) throws ResponseException {
-
-        HttpRequest request = requestBuilder.get("/videos/" + videoId + "/captions/" + lang);
+        HttpRequest request = requestBuilder
+                .get("/videos/" + videoId + "/captions/" + lang);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getObject());
     }
 
-    public List<Caption> getAll(String VideoId) throws ResponseException {
-        HttpRequest request = requestBuilder.get("/videos/" + VideoId + "/captions");
+    public List<Caption> getAll(String videoId) throws ResponseException {
+        HttpRequest request = requestBuilder
+                .get("/videos/" + videoId + "/captions");
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getArray());
     }
 
-    public Caption upload(String videoId, File file, String lang) throws ResponseException, IllegalArgumentException {
-
+    public Caption upload(String videoId, File file, String lang) throws ResponseException, IOException {
         try (FileInputStream inputStreamToFile = new FileInputStream(file)){
 
-            HttpRequest request = requestBuilder.post("/videos/" + videoId + "/captions/" + lang)
+            HttpRequest request = requestBuilder
+                    .post("/videos/" + videoId + "/captions/" + lang)
                     .field("file", inputStreamToFile, file.getName());
 
             JsonNode responseBody = requestExecutor.executeJson(request);
 
             return serializer.deserialize(responseBody.getObject());
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException("upload caption: " + e.getMessage());
         }
-
     }
 
-    public Caption updateDefault(String videoId, String lang, boolean isDefault) throws ResponseException {
-
-        HttpRequest request = requestBuilder.patch("/videos/" + videoId + "/captions/" + lang).body("{\"default\":" + isDefault + "}");
+    public Caption updateDefault(String videoId, String language, boolean isDefault) throws ResponseException {
+        HttpRequest request = requestBuilder
+                .patch("/videos/" + videoId + "/captions/" + language)
+                .body(new JSONObject().put("default", isDefault));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -69,9 +67,9 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
     }
 
     public void delete(String videoId, String lang) throws ResponseException {
-        HttpRequest request = requestBuilder.delete("/videos/" + videoId + "/captions/" + lang);
+        HttpRequest request = requestBuilder
+                .delete("/videos/" + videoId + "/captions/" + lang);
 
         requestExecutor.executeJson(request);
     }
-
 }

@@ -14,7 +14,7 @@ public class PageIterator<T> implements java.util.Iterator<T> {
 
     public PageIterator(PageLoader<T> pageLoader, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         this.pageLoader  = pageLoader;
-        this.queryParams = new QueryParams(queryParams);
+        this.queryParams = queryParams;
         this.current     = this.loadPage();
     }
 

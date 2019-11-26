@@ -16,12 +16,12 @@ public class TokenClient {
     }
 
     public String get() throws ResponseException {
-        HttpRequest request = requestBuilder.post("/tokens");
+        HttpRequest request = requestBuilder
+                .post("/tokens");
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        // TODO use normalizer
+        // TODO use serializer
         return responseBody.getObject().getString("token");
     }
-
 }
