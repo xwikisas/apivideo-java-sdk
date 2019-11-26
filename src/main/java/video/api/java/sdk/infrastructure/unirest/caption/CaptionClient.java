@@ -35,27 +35,22 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
     }
 
     public List<Caption> getAll(String VideoId) throws ResponseException {
-
         HttpRequest request = requestBuilder.get("/videos/" + VideoId + "/captions");
 
         JsonNode responseBody = requestExecutor.executeJson(request);
-        JSONArray              data     = responseBody.getArray();
-        return serializer.deserialize(data);
+
+        return serializer.deserialize(responseBody.getArray());
     }
 
-    public Caption upload(String videoId, String captionSource, String lang) throws ResponseException, IllegalArgumentException {
+    public Caption upload(String videoId, File file, String lang) throws ResponseException, IllegalArgumentException {
 
-        try {
+        try (FileInputStream inputStreamToFile = new FileInputStream(file)){
 
-            File            fileToUpload      = new File(captionSource);
-            FileInputStream inputStreamToFile = new FileInputStream(fileToUpload);
             HttpRequest request = requestBuilder.post("/videos/" + videoId + "/captions/" + lang)
-                    .field("file", inputStreamToFile, fileToUpload.getName());
+                    .field("file", inputStreamToFile, file.getName());
 
-            //Post thumbnail
             JsonNode responseBody = requestExecutor.executeJson(request);
 
-            inputStreamToFile.close();
             return serializer.deserialize(responseBody.getObject());
 
         } catch (IOException e) {

@@ -4,6 +4,8 @@ package video.api.java.sdk.domain.live;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 
+import java.io.File;
+
 
 public interface LiveStreamClient {
     LiveStream get(String liveStreamId) throws ResponseException;
@@ -12,7 +14,7 @@ public interface LiveStreamClient {
 
     Iterable<LiveStream> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException;
 
-    LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException;
+    LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IllegalArgumentException;
 
     LiveStream update(LiveStream liveStream) throws ResponseException;
 

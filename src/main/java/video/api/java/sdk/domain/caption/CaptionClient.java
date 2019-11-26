@@ -2,6 +2,7 @@ package video.api.java.sdk.domain.caption;
 
 import video.api.java.sdk.domain.exception.ResponseException;
 
+import java.io.File;
 import java.util.List;
 
 public interface CaptionClient {
@@ -10,7 +11,7 @@ public interface CaptionClient {
 
     List<Caption> getAll(String VideoId) throws ResponseException;
 
-    Caption upload(String VideoId, String captionSource, String lang) throws ResponseException, IllegalArgumentException;
+    Caption upload(String VideoId, File file, String lang) throws ResponseException, IllegalArgumentException;
 
     Caption updateDefault(String VideoId, String lang, boolean isDefault) throws ResponseException;
 

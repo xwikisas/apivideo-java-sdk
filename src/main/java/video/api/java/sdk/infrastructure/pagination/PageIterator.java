@@ -46,15 +46,11 @@ public class PageIterator<T> implements java.util.Iterator<T> {
     }
 
     private java.util.Iterator<T> loadPage() throws ResponseException, IllegalArgumentException {
-
-
         Page<T> page = pageLoader.load(this.queryParams);
 
         pagesTotal = page.total;
 
         return page.items.iterator();
-
-
     }
 
 

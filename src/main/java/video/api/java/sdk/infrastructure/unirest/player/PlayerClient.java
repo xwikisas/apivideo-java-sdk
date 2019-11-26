@@ -58,12 +58,10 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
         return serializer.deserialize(responseBody.getObject());
     }
 
-    public Player uploadLogo(String playerId, String logoSource, String link) throws ResponseException {
-        File            fileToUpload      = new File(logoSource);
-
-        try (FileInputStream inputStreamToFile = new FileInputStream(fileToUpload)) {
+    public Player uploadLogo(String playerId, File file, String link) throws ResponseException {
+        try (FileInputStream inputStreamToFile = new FileInputStream(file)) {
             HttpRequest request = requestBuilder.post("/players/" + playerId + "/logo")
-                    .field("file", inputStreamToFile, fileToUpload.getName())
+                    .field("file", inputStreamToFile, file.getName())
                     .field("link", link);
 
             JsonNode responseBody = requestExecutor.executeJson(request);

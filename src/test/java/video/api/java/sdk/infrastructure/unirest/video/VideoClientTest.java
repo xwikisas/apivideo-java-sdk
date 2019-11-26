@@ -14,6 +14,7 @@ import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,7 +29,7 @@ class VideoClientTest {
     @BeforeEach
     void setUp() {
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
-        testRequestExecutor.exception  = new ResponseException(testRequestExecutor.ResponseFailure(), "");
+        testRequestExecutor.exception  = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         videoClientResponseException   = new VideoClient(
                 new RequestBuilder(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
@@ -110,13 +111,13 @@ class VideoClientTest {
     @Test
     void uploadThumbnailFailure() throws IllegalArgumentException {
         testVideo.videoId = "viSuccess";
-        assertThrows(java.lang.IllegalArgumentException.class, () -> videoClient.uploadThumbnail(testVideo, "ezdzedze"));
+        assertThrows(java.lang.IllegalArgumentException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
     }
 
     @Test
     void updateThumbnailWithTimeCode() throws ResponseException {
         testVideo.videoId = "viSuccess";
-        assertNotNull(videoClient.updateThumbnailWithTimeCode(testVideo, ""));
+        assertNotNull(videoClient.updateThumbnail(testVideo, ""));
     }
 
     @Test

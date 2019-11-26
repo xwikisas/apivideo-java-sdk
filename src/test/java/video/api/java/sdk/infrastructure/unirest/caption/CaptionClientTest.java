@@ -3,7 +3,10 @@ package video.api.java.sdk.infrastructure.unirest.caption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,16 +17,16 @@ class CaptionClientTest {
     @BeforeEach
     void setUp() {
         captionClient = new CaptionClient(
+                new RequestBuilder(""),
                 new CaptionJsonSerializer(),
-                new TestRequestExecutor(),
-                ""
+                new TestRequestExecutor()
         );
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
-        testRequestExecutor.exception = new ResponseException(testRequestExecutor.ResponseFailure(), "");
+        testRequestExecutor.exception = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         captionResponseException      = new CaptionClient(
+                new RequestBuilder(""),
                 new CaptionJsonSerializer(),
-                testRequestExecutor,
-                ""
+                testRequestExecutor
         );
     }
 
@@ -49,7 +52,7 @@ class CaptionClientTest {
 
     @Test
     void getUploadException() {
-        assertThrows(IllegalArgumentException.class, () -> captionClient.upload("viSuccess", "error", "en"));
+        assertThrows(IllegalArgumentException.class, () -> captionClient.upload("viSuccess", new File("error"), "en"));
     }
 
     @Test

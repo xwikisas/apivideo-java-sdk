@@ -5,9 +5,13 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("WeakerAccess")
 class PlayerClientTest {
@@ -16,17 +20,18 @@ class PlayerClientTest {
 
     @BeforeEach
     void setUp() {
-        TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
-        testRequestExecutor.exception = new ResponseException(testRequestExecutor.ResponseFailure(), "");
+        TestRequestExecutor executorFailure = new TestRequestExecutor();
+        executorFailure.exception = new ResponseException("foo", executorFailure.responseFailure(), 400);
+
         playerResponseException       = new PlayerClient(
+                new RequestBuilder(""),
                 new PlayerJsonSerializer(),
-                testRequestExecutor,
-                ""
+                executorFailure
         );
         playerClient                  = new PlayerClient(
+                new RequestBuilder(""),
                 new PlayerJsonSerializer(),
-                new TestRequestExecutor(),
-                ""
+                new TestRequestExecutor()
         );
 
     }
@@ -51,7 +56,7 @@ class PlayerClientTest {
 
     @Test
     void uploadFailureLogo() {
-        assertThrows(IllegalArgumentException.class, () -> playerClient.uploadLogo("plSuccess", "Failure Source", "test.fr"));
+        assertThrows(IllegalArgumentException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
     }
 
     @Test

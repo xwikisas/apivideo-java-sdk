@@ -35,10 +35,11 @@ public class AuthRequestExecutor implements RequestExecutor {
         }
 
         if (response.getStatus() >= 500) {
-            throw new ServerException(response, " REQUEST = " + request.getHttpMethod() + ", Url : " + request.getUrl() + " ,body -->" + response.getBody().toString());
+            throw new ServerException("A server issue occurred.", response.getBody() , response.getStatus());
         }
+
         if (response.getStatus() >= 400) {
-            throw new ClientException(response, " REQUEST = " + request.getHttpMethod() + ", Url : " + request.getUrl() + " ,body -->" + response.getBody().toString());
+            throw new ClientException("A client issue occurred.", response.getBody(), response.getStatus());
         }
 
         return response.getBody();
@@ -55,7 +56,7 @@ public class AuthRequestExecutor implements RequestExecutor {
         JSONObject responseBody = response.getBody().getObject();
 
         if (response.getStatus() >= 400) {
-            throw new ClientException(response, "Authentication Failed : " + responseBody.toString());
+            throw new ClientException("Authentication failed.", response.getBody(), response.getStatus());
         }
 
         this.setAccessToken(responseBody.get("access_token"), responseBody.get("refresh_token"));
@@ -77,7 +78,7 @@ public class AuthRequestExecutor implements RequestExecutor {
 
         JSONObject responseBody = response.getBody().getObject();
         if (response.getStatus() >= 400) {
-            throw new ClientException(response, "Authentication Failed : " + responseBody.toString());
+            throw new ClientException("Authentication failed.", response.getBody(), response.getStatus());
         }
 
         this.setAccessToken(responseBody.get("access_token"), responseBody.get("refresh_token"));

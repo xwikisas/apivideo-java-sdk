@@ -53,75 +53,6 @@ public class TestRequestExecutor implements RequestExecutor {
     private static final HttpRequest<?>    getAnalyticsEventsSuccess          = Unirest.get("/analytics/sessions/sessionId/events?pageSize=25&currentPage=1");
     public               ResponseException exception;
 
-    private static RawResponse createRawResponse() {
-        return new RawResponse() {
-            @Override
-            public int getStatus() {
-                return 0;
-            }
-
-            @Override
-            public String getStatusText() {
-                return null;
-            }
-
-            @Override
-            public Headers getHeaders() {
-                return null;
-            }
-
-            @Override
-            public InputStream getContent() {
-                return null;
-            }
-
-            @Override
-            public byte[] getContentAsBytes() {
-                return new byte[0];
-            }
-
-            @Override
-            public String getContentAsString() {
-                return null;
-            }
-
-            @Override
-            public String getContentAsString(String charset) {
-                return null;
-            }
-
-            @Override
-            public InputStreamReader getContentReader() {
-                return null;
-            }
-
-            @Override
-            public boolean hasContent() {
-                return false;
-            }
-
-            @Override
-            public String getContentType() {
-                return null;
-            }
-
-            @Override
-            public String getEncoding() {
-                return null;
-            }
-
-            @Override
-            public Config getConfig() {
-                return null;
-            }
-
-            @Override
-            public HttpResponseSummary toSummary() {
-                return null;
-            }
-        };
-    }
-
     @Override
     public JsonNode executeJson(HttpRequest<?> request) throws ResponseException {
         if (exception != null) {
@@ -164,7 +95,7 @@ public class TestRequestExecutor implements RequestExecutor {
         } else if (equals(request, deleteCaptionSuccess)) {
             return captionResponseSuccess();
         } else if (equals(request, getCaptionFailure)) {
-            return ResponseFailure();
+            return responseFailure();
 
 
         } else if (equals(request, createPlayerSuccess)) {
@@ -180,7 +111,7 @@ public class TestRequestExecutor implements RequestExecutor {
         } else if (equals(request, listPlayersSuccess)) {
             return playersResponseSuccess();
         } else if (equals(request, getPlayerFailure)) {
-            return ResponseFailure();
+            return responseFailure();
 
 
         } else if (equals(request, createLiveSuccess)) {
@@ -652,7 +583,7 @@ public class TestRequestExecutor implements RequestExecutor {
 
     }
 
-    public JsonNode ResponseFailure() {
+    public JsonNode responseFailure() {
         return new JsonNode(
                 "{\n" +
                         "    \"status\": 404,\n" +
@@ -1022,21 +953,11 @@ public class TestRequestExecutor implements RequestExecutor {
     }
 
     private ResponseException videoServerException() {
-        return new ServerException(new JsonResponse(createRawResponse()) {
-            @Override
-            public int getStatus() {
-                return 500;
-            }
-        }, "Server Exception");
+        return new ServerException("foo", new JsonNode(""), 500);
     }
 
     private ResponseException videoClientException() {
-        return new ClientException(new JsonResponse(createRawResponse()) {
-            @Override
-            public int getStatus() {
-                return 400;
-            }
-        }, "Client error");
+        return new ClientException("foo", new JsonNode(""), 400);
     }
 
     private boolean equals(HttpRequest<?> a, HttpRequest<?> b) {

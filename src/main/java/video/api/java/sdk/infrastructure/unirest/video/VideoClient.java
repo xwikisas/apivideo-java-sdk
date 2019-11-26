@@ -65,31 +65,29 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         return serializer.deserialize(responseBody.getObject());
     }
 
-    public Video upload(String source) throws ResponseException {
-        return upload(source, new Video(), null);
+    public Video upload(File file) throws ResponseException {
+        return upload(file, new Video(), null);
     }
 
-    public Video upload(String source, UploadProgressListener listener) throws ResponseException {
-        return upload(source, new Video(), listener);
+    public Video upload(File file, UploadProgressListener listener) throws ResponseException {
+        return upload(file, new Video(), listener);
     }
 
-    public Video upload(String source, Video video) throws ResponseException {
+    public Video upload(File file, Video video) throws ResponseException {
         if (video.title == null) {
-            return upload(source);
+            return upload(file);
         }
 
-        return upload(source, video, null);
+        return upload(file, video, null);
     }
 
-    public Video upload(String source, Video video, UploadProgressListener listener) throws ResponseException {
-
-        File fileToUpload = new File(source);
-        if (!fileToUpload.exists() || !fileToUpload.isFile()) {
-            throw new IllegalArgumentException("Can't open file " + source);
+    public Video upload(File file, Video video, UploadProgressListener listener) throws ResponseException {
+        if (!file.exists() || !file.isFile()) {
+            throw new IllegalArgumentException("Can't open file.");
         }
         String videoId;
         if (video.title == null && video.videoId == null) {
-            video.title = fileToUpload.getName();
+            video.title = file.getName();
             Video videoCreated = create(video);
             videoId = videoCreated.videoId;
         } else if (video.videoId == null) {
@@ -98,13 +96,12 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         } else {
             videoId = video.videoId;
         }
-        int fileLength = (int) fileToUpload.length();
+        int fileLength = (int) file.length();
 
         try {
             Thread.sleep(150);
         } catch (InterruptedException e) {
-            throw new IllegalArgumentException("upload video -->Source :" + source + "\n Message-->" + e.getMessage());
-
+            throw new IllegalArgumentException(e);
         }
 
         try {
@@ -115,9 +112,9 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
             JsonNode responseBody;
             if (fileLength < CHUNK_SIZE) {
-                responseBody = uploadSingleRequest(listener, fileToUpload, videoId);
+                responseBody = uploadSingleRequest(listener, file, videoId);
             } else {
-                responseBody = uploadMultipleRequests(source, listener, videoId, fileLength);
+                responseBody = uploadMultipleRequests(file, listener, videoId, fileLength);
             }
 
             return serializer.deserialize(responseBody.getObject());
@@ -127,8 +124,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
     }
 
-    private JsonNode uploadMultipleRequests(String source, UploadProgressListener listener, String videoId, int fileLength) throws IOException, ResponseException {
-        RandomAccessFile randomAccessFile = new RandomAccessFile(source, "r");
+    private JsonNode uploadMultipleRequests(File file, UploadProgressListener listener, String videoId, int fileLength) throws IOException, ResponseException {
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
         int              copiedBytes      = 0;
         int              chunkCount       = (int) Math.ceil((double) fileLength / CHUNK_SIZE);
         JsonNode         responseBody     = null;
@@ -141,7 +138,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
             String tmpdir = System.getProperty("java.io.tmpdir");
 
-            final FileInputStream chunkStream = new FileInputStream(source);
+            final FileInputStream chunkStream = new FileInputStream(file);
             //noinspection ResultOfMethodCallIgnored
             chunkStream.skip(from);
             byte[] b         = new byte[chunkFileSize];
@@ -168,9 +165,9 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         return responseBody;
     }
 
-    private JsonNode uploadSingleRequest(UploadProgressListener listener, File fileToUpload, String videoId) throws ResponseException, IOException {
-        FileInputStream inputStream = new FileInputStream(fileToUpload);
-        HttpRequest     request     = buildUploadRequest(listener, fileToUpload, videoId, inputStream);
+    private JsonNode uploadSingleRequest(UploadProgressListener listener, File file, String videoId) throws ResponseException, IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+        HttpRequest     request     = buildUploadRequest(listener, file, videoId, inputStream);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -178,10 +175,10 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         return responseBody;
     }
 
-    private HttpRequest buildUploadRequest(UploadProgressListener listener, File fileToUpload, String videoId, FileInputStream inputStream) {
+    private HttpRequest buildUploadRequest(UploadProgressListener listener, File file, String videoId, FileInputStream inputStream) {
         HttpRequestWithBody request = requestBuilder.post("/videos/" + videoId + "/source");
 
-        MultipartBody uploadField = request.field("file", inputStream, fileToUpload.getName());
+        MultipartBody uploadField = request.field("file", inputStream, file.getName());
 
         if (listener != null) {
             uploadField.uploadMonitor((field, fileName, bytesWritten, totalBytes) ->
@@ -206,34 +203,24 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
 
-    public Video uploadThumbnail(Video video, String thumbnailSource) throws ResponseException, IllegalArgumentException {
-        try {
-
-            File            FileToUpload      = new File(thumbnailSource);
-            FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
+    public Video uploadThumbnail(Video video, File file) throws ResponseException, IllegalArgumentException {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
             HttpRequest request = requestBuilder.post("/videos/" + video.videoId + "/thumbnail")
-                    .field("file", inputStreamToFile, FileToUpload.getName());
+                    .field("file", inputStream, file.getName());
 
-            //Post thumbnail
             JsonNode responseBody = requestExecutor.executeJson(request);
 
-            inputStreamToFile.close();
             return serializer.deserialize(responseBody.getObject());
 
         } catch (IOException e) {
-            throw new IllegalArgumentException("uploadThumbnail -->Source :" + thumbnailSource + "\n Message-->" + e.getMessage());
+            throw new IllegalArgumentException(e);
         }
     }
 
+    public Video updateThumbnail(Video video, String timeCode) throws ResponseException {
+        HttpRequest request = requestBuilder.patch("/videos/" + video.videoId)
+                .body(new JSONObject().put("timecode", timeCode));
 
-    public Video updateThumbnailWithTimeCode(Video video, String timeCode) throws ResponseException {
-        HttpRequest request = requestBuilder.patch("/videos/" + video.videoId).body(
-                new JSONObject()
-                        .put("timecode", timeCode)
-                        .toString()
-        );
-
-        //Patch thumbnail
         JsonNode responseBody = requestExecutor.executeJson(request);
 
         return serializer.deserialize(responseBody.getObject());

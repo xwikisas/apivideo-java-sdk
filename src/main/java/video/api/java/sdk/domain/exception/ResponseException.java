@@ -4,17 +4,20 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 
 public class ResponseException extends Exception {
+    private final JsonNode responseBody;
+    private final int status;
 
+    public ResponseException(String message, JsonNode responseBody, int status) {
+        super(message);
+        this.responseBody = responseBody;
+        this.status       = status;
+    }
 
-    private final HttpResponse<JsonNode> response;
-
-    public ResponseException(HttpResponse<JsonNode> response, String message) {
-        super(message + "--> Body : " + response.getBody().toString());
-        this.response = response;
+    public JsonNode getResponseBody() {
+        return responseBody;
     }
 
     public int getStatus() {
-        return this.response.getStatus();
+        return status;
     }
-
 }

@@ -37,9 +37,9 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
         return serializer.deserialize(responseBody.getObject());
     }
 
-
     public LiveStream create(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = requestBuilder.post("/live-streams").body(serializer.serialize(liveStream));
+        HttpRequest request = requestBuilder.post("/live-streams")
+                .body(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -47,18 +47,13 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     }
 
-
-    public LiveStream uploadThumbnail(String liveStreamId, String thumbnailSource) throws ResponseException, IllegalArgumentException {
-        try {
-
-            File            FileToUpload      = new File(thumbnailSource);
-            FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
-            HttpRequest request = requestBuilder.post("/live-streams/" + liveStreamId + "/thumbnail").field(
-                    "file", inputStreamToFile, FileToUpload.getName());
+    public LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IllegalArgumentException {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            HttpRequest request = requestBuilder.post("/live-streams/" + liveStreamId + "/thumbnail")
+                    .field("file", inputStream, file.getName());
 
             JsonNode responseBody = requestExecutor.executeJson(request);
 
-            inputStreamToFile.close();
             return serializer.deserialize(responseBody.getObject());
 
         } catch (IOException e) {
@@ -68,7 +63,8 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     public LiveStream update(LiveStream liveStream) throws ResponseException {
 
-        HttpRequest request = requestBuilder.patch("/live-streams/" + liveStream.liveStreamId).body(serializer.serialize(liveStream));
+        HttpRequest request = requestBuilder.patch("/live-streams/" + liveStream.liveStreamId)
+                .body(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
