@@ -1,15 +1,14 @@
 package video.api.java.sdk.infrastructure.unirest.player;
 
 import kong.unirest.HttpRequest;
-import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.QueryParams;
-import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -17,78 +16,70 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static kong.unirest.HttpMethod.*;
-
 public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClient {
 
-    private final RequestFactory         requestFactory;
+    private final RequestBuilder         requestBuilder;
     private final JsonSerializer<Player> serializer;
     private final RequestExecutor        requestExecutor;
 
-    public PlayerClient(RequestFactory requestFactory, JsonSerializer<Player> serializer, RequestExecutor requestExecutor) {
-        this.requestFactory  = requestFactory;
+    public PlayerClient(RequestBuilder requestBuilder, JsonSerializer<Player> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilder  = requestBuilder;
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
     }
 
     public Player get(String playerId) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(GET, "/players/" + playerId);
+        HttpRequest request = requestBuilder.get("/players/" + playerId);
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return getPlayerResponse(response);
+        return serializer.deserialize(responseBody.getObject());
 
     }
 
     public Player create(Player player) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(POST, "/players").body(serializer.serialize(player));
+        HttpRequest request = requestBuilder.post("/players")
+                .body(serializer.serialize(player));
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        player = getPlayerResponse(response);
-        return player;
-
+        return serializer.deserialize(responseBody.getObject());
     }
-
 
     public Player update(Player player) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(PATCH, "/players/" + player.playerId).body(serializer.serialize(player));
+        HttpRequest request = requestBuilder.patch("/players/" + player.playerId)
+                .body(serializer.serialize(player));
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return getPlayerResponse(response);
-
+        return serializer.deserialize(responseBody.getObject());
     }
 
     public Player uploadLogo(String playerId, String logoSource, String link) throws ResponseException {
-        try {
+        File            fileToUpload      = new File(logoSource);
 
-
-            File            FileToUpload      = new File(logoSource);
-            FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
-            HttpRequest request = requestFactory.create(POST, "/players/" + playerId + "/logo").field(
-                    "file", inputStreamToFile,
-                    kong.unirest.ContentType.APPLICATION_OCTET_STREAM, FileToUpload.getName())
+        try (FileInputStream inputStreamToFile = new FileInputStream(fileToUpload)) {
+            HttpRequest request = requestBuilder.post("/players/" + playerId + "/logo")
+                    .field("file", inputStreamToFile, fileToUpload.getName())
                     .field("link", link);
 
-            HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
+            JsonNode responseBody = requestExecutor.executeJson(request);
 
             inputStreamToFile.close();
-            return getPlayerResponse(responseSubmit);
 
+            return serializer.deserialize(responseBody.getObject());
 
         } catch (IOException e) {
-            throw new IllegalArgumentException("uploadThumbnail : " + e.getMessage());
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
-
     }
 
 
     public void delete(String playerId) throws ResponseException {
-        HttpRequest request = requestFactory.create(DELETE, "/players/" + playerId);
+        HttpRequest request = requestBuilder.delete("/players/" + playerId);
 
         requestExecutor.executeJson(request);
     }
@@ -103,17 +94,10 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
     public Iterable<Player> search(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
                 "/players",
-                requestFactory,
+                requestBuilder,
                 requestExecutor,
                 serializer
         ), queryParams));
-    }
-
-
-    /////////////////////////Functions//////////////////////////////
-
-    private Player getPlayerResponse(HttpResponse<JsonNode> response) {
-        return serializer.deserialize(response.getBody().getObject());
     }
 
 }

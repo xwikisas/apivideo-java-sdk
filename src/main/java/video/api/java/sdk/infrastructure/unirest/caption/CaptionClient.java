@@ -1,13 +1,12 @@
 package video.api.java.sdk.infrastructure.unirest.caption;
 
 import kong.unirest.HttpRequest;
-import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.json.JSONArray;
-import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.caption.Caption;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
@@ -15,34 +14,32 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static kong.unirest.HttpMethod.*;
-
 public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionClient {
-    private final RequestFactory          requestFactory;
+    private final RequestBuilder          requestBuilder;
     private final JsonSerializer<Caption> serializer;
     private final RequestExecutor         requestExecutor;
 
-    public CaptionClient(RequestFactory requestFactory, JsonSerializer<Caption> serializer, RequestExecutor requestExecutor) {
-        this.requestFactory  = requestFactory;
+    public CaptionClient(RequestBuilder requestBuilder, JsonSerializer<Caption> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilder  = requestBuilder;
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
     }
 
     public Caption get(String videoId, String lang) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(GET, "/videos/" + videoId + "/captions/" + lang);
+        HttpRequest request = requestBuilder.get("/videos/" + videoId + "/captions/" + lang);
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(response.getBody().getObject());
+        return serializer.deserialize(responseBody.getObject());
     }
 
     public List<Caption> getAll(String VideoId) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(GET, "/videos/" + VideoId + "/captions");
+        HttpRequest request = requestBuilder.get("/videos/" + VideoId + "/captions");
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
-        JSONArray              data     = response.getBody().getArray();
+        JsonNode responseBody = requestExecutor.executeJson(request);
+        JSONArray              data     = responseBody.getArray();
         return serializer.deserialize(data);
     }
 
@@ -50,36 +47,34 @@ public class CaptionClient implements video.api.java.sdk.domain.caption.CaptionC
 
         try {
 
-            File            FileToUpload      = new File(captionSource);
-            FileInputStream inputStreamToFile = new FileInputStream(FileToUpload);
-            HttpRequest request = requestFactory.create(POST, "/videos/" + videoId + "/captions/" + lang)
-                    .field("file", inputStreamToFile,
-                           kong.unirest.ContentType.APPLICATION_OCTET_STREAM, FileToUpload.getName());
+            File            fileToUpload      = new File(captionSource);
+            FileInputStream inputStreamToFile = new FileInputStream(fileToUpload);
+            HttpRequest request = requestBuilder.post("/videos/" + videoId + "/captions/" + lang)
+                    .field("file", inputStreamToFile, fileToUpload.getName());
 
             //Post thumbnail
-            HttpResponse<JsonNode> responseSubmit = requestExecutor.executeJson(request);
+            JsonNode responseBody = requestExecutor.executeJson(request);
 
             inputStreamToFile.close();
-            return serializer.deserialize(responseSubmit.getBody().getObject());
+            return serializer.deserialize(responseBody.getObject());
 
         } catch (IOException e) {
-            throw new IllegalArgumentException("upload caption  : " + e.getMessage());
-
+            throw new IllegalArgumentException("upload caption: " + e.getMessage());
         }
 
     }
 
     public Caption updateDefault(String videoId, String lang, boolean isDefault) throws ResponseException {
 
-        HttpRequest request = requestFactory.create(PATCH, "/videos/" + videoId + "/captions/" + lang).body("{\"default\":" + isDefault + "}");
+        HttpRequest request = requestBuilder.patch("/videos/" + videoId + "/captions/" + lang).body("{\"default\":" + isDefault + "}");
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(response.getBody().getObject());
+        return serializer.deserialize(responseBody.getObject());
     }
 
     public void delete(String videoId, String lang) throws ResponseException {
-        HttpRequest request = requestFactory.create(DELETE, "/videos/" + videoId + "/captions/" + lang);
+        HttpRequest request = requestBuilder.delete("/videos/" + videoId + "/captions/" + lang);
 
         requestExecutor.executeJson(request);
     }

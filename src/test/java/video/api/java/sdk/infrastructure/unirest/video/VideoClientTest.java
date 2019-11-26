@@ -10,7 +10,7 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -30,17 +30,17 @@ class VideoClientTest {
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
         testRequestExecutor.exception  = new ResponseException(testRequestExecutor.ResponseFailure(), "");
         videoClientResponseException   = new VideoClient(
-                new RequestFactory(""),
+                new RequestBuilder(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
                 testRequestExecutor
         );
         videoClient                    = new VideoClient(
-                new RequestFactory(""),
+                new RequestBuilder(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
                 new TestRequestExecutor()
         );
         videoClientSerializerException = new VideoClient(
-                new RequestFactory(""),
+                new RequestBuilder(""),
                 new JsonSerializer<Video>() {
                     @Override
                     public Video deserialize(JSONObject data) throws JSONException {

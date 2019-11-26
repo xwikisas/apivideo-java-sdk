@@ -1,30 +1,27 @@
 package video.api.java.sdk.infrastructure.unirest.token;
 
 import kong.unirest.HttpRequest;
-import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
-
-import static kong.unirest.HttpMethod.POST;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 
 public class TokenClient {
-    private final RequestFactory requestFactory;
+    private final RequestBuilder      requestBuilder;
     private final AuthRequestExecutor requestExecutor;
 
-    public TokenClient(RequestFactory requestFactory, AuthRequestExecutor requestExecutor) {
-        this.requestFactory  = requestFactory;
+    public TokenClient(RequestBuilder requestBuilder, AuthRequestExecutor requestExecutor) {
+        this.requestBuilder  = requestBuilder;
         this.requestExecutor = requestExecutor;
     }
 
     public String get() throws ResponseException {
-        HttpRequest request = requestFactory.create(POST, "/tokens");
+        HttpRequest request = requestBuilder.post("/tokens");
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
         // TODO use normalizer
-        return response.getBody().getObject().getString("token");
+        return responseBody.getObject().getString("token");
     }
 
 }

@@ -1,33 +1,30 @@
 package video.api.java.sdk.infrastructure.unirest.account;
 
 import kong.unirest.HttpRequest;
-import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
-import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.account.Account;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
-import static kong.unirest.HttpMethod.GET;
-
 public class AccountClient {
-    private final RequestFactory          requestFactory;
+    private final RequestBuilder          requestBuilder;
     private final JsonSerializer<Account> serializer;
     private final RequestExecutor         requestExecutor;
 
-    public AccountClient(RequestFactory requestFactory, JsonSerializer<Account> serializer, RequestExecutor requestExecutor) {
-        this.requestFactory  = requestFactory;
+    public AccountClient(RequestBuilder requestBuilder, JsonSerializer<Account> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilder  = requestBuilder;
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
     }
 
     public Account get() throws ResponseException {
-        HttpRequest request = requestFactory.create(GET, "/account");
+        HttpRequest request = requestBuilder.get("/account");
 
-        HttpResponse<JsonNode> response = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(response.getBody().getObject());
+        return serializer.deserialize(responseBody.getObject());
     }
 
 }

@@ -4,26 +4,23 @@ import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 
-import static kong.unirest.HttpMethod.POST;
-
 public class AuthRequestExecutor implements RequestExecutor {
 
-    private final RequestFactory requestFactory;
+    private final RequestBuilder requestBuilder;
     private final String         apiKey;
     private       String         accessToken;
     private       String         refreshToken;
 
-    public AuthRequestExecutor(RequestFactory requestFactory, String apiKey) {
-        this.requestFactory = requestFactory;
+    public AuthRequestExecutor(RequestBuilder requestBuilder, String apiKey) {
+        this.requestBuilder = requestBuilder;
         this.apiKey         = apiKey;
     }
 
-    public HttpResponse<JsonNode> executeJson(HttpRequest<?> request) throws ResponseException {
+    public JsonNode executeJson(HttpRequest<?> request) throws ResponseException {
         if (accessToken == null) {
             this.requestAccessToken();
         }
@@ -31,7 +28,7 @@ public class AuthRequestExecutor implements RequestExecutor {
         request.headerReplace("Authorization", "Bearer " + accessToken);
         HttpResponse<JsonNode> response = request.asJson();
 
-        if (response.getStatus() == 401 && response.getHeaders().all().get(1).getValue().equals("application/problem+json") && response.getBody().getObject().getString("hint").equals("Access token is invalid")) {
+        if (response.getStatus() == 401 && response.getBody().getObject().getString("hint").equals("Access token is invalid")) {
             this.refreshToken();
 
             return executeJson(request);
@@ -44,22 +41,21 @@ public class AuthRequestExecutor implements RequestExecutor {
             throw new ClientException(response, " REQUEST = " + request.getHttpMethod() + ", Url : " + request.getUrl() + " ,body -->" + response.getBody().toString());
         }
 
-        return response;
+        return response.getBody();
     }
 
     private void requestAccessToken() throws ClientException {
-        JSONObject authBody = new JSONObject();
-        authBody.accumulate("apiKey", apiKey);
+        JSONObject requestBody = new JSONObject()
+            .put("apiKey", apiKey);
 
-        HttpResponse<JsonNode> jsonResponse = requestFactory.create(POST, "/auth/api-key")
-                .header("Content-Type", "application/json; utf-8")
-                .header("Accept", "application/json")
-                .body(authBody)
+        HttpResponse<JsonNode> response = requestBuilder.post("/auth/api-key")
+                .body(requestBody)
                 .asJson();
-        JSONObject responseBody = jsonResponse.getBody().getObject();
 
-        if (jsonResponse.getStatus() >= 400) {
-            throw new ClientException(jsonResponse, "Authentication Failed : " + responseBody.toString());
+        JSONObject responseBody = response.getBody().getObject();
+
+        if (response.getStatus() >= 400) {
+            throw new ClientException(response, "Authentication Failed : " + responseBody.toString());
         }
 
         this.setAccessToken(responseBody.get("access_token"), responseBody.get("refresh_token"));
@@ -68,23 +64,20 @@ public class AuthRequestExecutor implements RequestExecutor {
     private void setAccessToken(Object accessToken, Object refreshToken) {
         this.accessToken  = accessToken.toString();
         this.refreshToken = refreshToken.toString();
-        JSONObject token = new JSONObject();
-        token.put("accessToken", this.accessToken);
-        token.put("refreshToken", this.refreshToken);
     }
 
     private void refreshToken() throws ClientException {
         JSONObject authBody = new JSONObject();
         authBody.accumulate("refreshToken", this.refreshToken);
-        HttpResponse<JsonNode> jsonResponse = requestFactory.create(POST, "/auth/refresh")
+        HttpResponse<JsonNode> response = requestBuilder.post("/auth/refresh")
                 .header("Content-Type", "application/json; utf-8")
                 .header("Accept", "application/json")
                 .body(authBody)
                 .asJson();
 
-        JSONObject responseBody = jsonResponse.getBody().getObject();
-        if (jsonResponse.getStatus() >= 400) {
-            throw new ClientException(jsonResponse, "Authentication Failed : " + responseBody.toString());
+        JSONObject responseBody = response.getBody().getObject();
+        if (response.getStatus() >= 400) {
+            throw new ClientException(response, "Authentication Failed : " + responseBody.toString());
         }
 
         this.setAccessToken(responseBody.get("access_token"), responseBody.get("refresh_token"));

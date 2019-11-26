@@ -1,22 +1,22 @@
 package video.api.java.sdk.infrastructure.unirest.analytics;
 
 import video.api.java.sdk.domain.QueryParams;
-import video.api.java.sdk.domain.RequestExecutor;
 import video.api.java.sdk.domain.analytics.PlayerSession;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.unirest.RequestFactory;
+import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 public class LiveStreamSessionClient implements video.api.java.sdk.domain.analytics.LiveStreamSessionClient {
-    private final RequestFactory                requestFactory;
-    private final         JsonSerializer<PlayerSession> serializer;
-    private final     RequestExecutor               requestExecutor;
+    private final RequestBuilder                requestBuilder;
+    private final JsonSerializer<PlayerSession> serializer;
+    private final RequestExecutor               requestExecutor;
 
-    public LiveStreamSessionClient(RequestFactory requestFactory, JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor) {
-        this.requestFactory  = requestFactory;
+    public LiveStreamSessionClient(RequestBuilder requestBuilder, JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilder  = requestBuilder;
         this.serializer      = serializer;
         this.requestExecutor = requestExecutor;
     }
@@ -34,7 +34,7 @@ public class LiveStreamSessionClient implements video.api.java.sdk.domain.analyt
 
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
                 "/analytics/live-streams/" + liveStreamId,
-                requestFactory,
+                requestBuilder,
                 requestExecutor,
                 serializer
         ), queryParams));
