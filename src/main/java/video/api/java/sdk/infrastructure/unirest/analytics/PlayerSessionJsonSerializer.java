@@ -10,12 +10,12 @@ public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession
     @Override
     public PlayerSession deserialize(JSONObject data) throws JSONException {
         return new PlayerSession(
-                deserializeInfo(data.getJSONObject("session")),
-                deserializeLocation(data.getJSONObject("location")),
-                deserializeReferrer(data.getJSONObject("referrer")),
-                deserializeDevice(data.getJSONObject("device")),
-                deserializeOperatingSystem(data.getJSONObject("os")),
-                deserializeClient(data.getJSONObject("client"))
+                data.has("session") ? deserializeInfo(data.getJSONObject("session")) : null,
+                data.has("location") ? deserializeLocation(data.getJSONObject("location")) : null,
+                data.has("referrer") ? deserializeReferrer(data.getJSONObject("referrer")) : null,
+                data.has("device") ? deserializeDevice(data.getJSONObject("device")) : null,
+                data.has("os") ? deserializeOperatingSystem(data.getJSONObject("os")) : null,
+                data.has("client") ? deserializeClient(data.getJSONObject("client")) : null
         );
     }
 

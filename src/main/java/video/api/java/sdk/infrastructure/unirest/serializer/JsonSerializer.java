@@ -5,9 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public interface JsonSerializer<T> {
     default JSONObject serialize(T object) throws JSONException {
@@ -27,9 +27,22 @@ public interface JsonSerializer<T> {
     }
 
     default Map<String, String> convertKeyValueJsonArrayToMap(JSONArray array) {
-        return array.toList().stream().collect(Collectors.toMap(
-                map -> ((Map) map).get("key").toString(),
-                map -> ((Map) map).get("value").toString())
-        );
+        Map<String, String> map = new HashMap<>();
+
+        for(Object object: array) {
+            JSONObject jsonObject = (JSONObject) object;
+
+            String value;
+            try {
+                value = jsonObject.getString("value");
+            }
+            catch (JSONException e) {
+                value = null;
+            }
+
+            map.put(jsonObject.getString("key"), value);
+        }
+
+        return map;
     }
 }

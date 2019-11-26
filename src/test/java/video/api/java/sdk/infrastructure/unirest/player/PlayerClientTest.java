@@ -9,6 +9,7 @@ import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,7 +57,7 @@ class PlayerClientTest {
 
     @Test
     void uploadFailureLogo() {
-        assertThrows(IllegalArgumentException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
+        assertThrows(FileNotFoundException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
     }
 
     @Test

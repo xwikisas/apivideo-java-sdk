@@ -5,7 +5,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.analytics.PlayerSession;
-import video.api.java.sdk.infrastructure.unirest.analytics.PlayerSessionJsonSerializer;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,18 +22,12 @@ class PlayerSessionJsonSerializerTest {
     @Test
     void deserializeMax() {
 
-        JSONObject analytic = new JSONObject(
+        JSONObject data = new JSONObject(
                 "        {\n" +
                         "            \"session\": {\n" +
                         "                \"sessionId\": \"ps3uBmLoqYV2O4k9BOeSQ6Sm\",\n" +
                         "                \"loadedAt\": \"2019-09-09 06:41:06.683+00\",\n" +
                         "                \"endedAt\": \"2019-09-09 06:41:27.606+00\",\n" +
-                        "                \"metadata\": [\n" +
-                        "                    {\n" +
-                        "                        \"key\": \"age\",\n" +
-                        "                        \"value\": null\n" +
-                        "                    }\n" +
-                        "                ]\n" +
                         "            },\n" +
                         "            \"location\": {\n" +
                         "                \"country\": \"France\",\n" +
@@ -62,10 +57,15 @@ class PlayerSessionJsonSerializerTest {
                         "        }"
         );
 
-        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(analytic);
+        data.getJSONObject("session").put("metadata", new JSONArray(new ArrayList<JSONObject>() {{
+            add(new JSONObject().put("key", "age").put("value", (String) null));
+            add(new JSONObject().put("key", "name").put("value", "Foo"));
+        }}));
+
+        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(data);
+        assertEquals(null, playerSession.info.metadata.get("age"));
+        assertEquals("Foo", playerSession.info.metadata.get("name"));
         //assertEquals("viSuccess", playerSession.);
-
-
     }
 
     @Test
@@ -83,7 +83,7 @@ class PlayerSessionJsonSerializerTest {
                                                      "                \"sessionId\": \"ps3uBmLoqYV2O4k9BOeSQ6Sm\",\n" +
                                                      "                \"loadedAt\": \"2019-09-09 06:41:06.683+00\",\n" +
                                                      "                \"endedAt\": \"2019-09-09 06:41:27.606+00\",\n" +
-                                                     "                \"metadatas\": [\n" +
+                                                     "                \"metadata\": [\n" +
                                                      "                    {\n" +
                                                      "                        \"key\": \"age\",\n" +
                                                      "                        \"value\": null\n" +
@@ -108,15 +108,15 @@ class PlayerSessionJsonSerializerTest {
 
     @Test
     void deserializeAll() {
-        JSONArray analytics = new JSONArray();
+        JSONArray collection = new JSONArray();
 
-        JSONObject analytic = new JSONObject(
+        JSONObject item = new JSONObject(
                 "{\n" +
                         "            \"session\": {\n" +
                         "                \"sessionId\": \"ps3uBmLoqYV2O4k9BOeSQ6Sm\",\n" +
                         "                \"loadedAt\": \"2019-09-09 06:41:06.683+00\",\n" +
                         "                \"endedAt\": \"2019-09-09 06:41:27.606+00\",\n" +
-                        "                \"metadatas\": [\n" +
+                        "                \"metadata\": [\n" +
                         "                    {\n" +
                         "                        \"key\": \"age\",\n" +
                         "                        \"value\": null\n" +
@@ -131,11 +131,11 @@ class PlayerSessionJsonSerializerTest {
                         "        }\n"
         );
 
-        analytics.put(analytic);
-        analytics.put(analytic);
-        analytics.put(analytic);
-        analytics.put(analytic);
-        assertEquals(4, playerSessionJsonSerializer.deserialize(analytics).size());
+        collection.put(item);
+        collection.put(item);
+        collection.put(item);
+        collection.put(item);
+        assertEquals(4, playerSessionJsonSerializer.deserialize(collection).size());
 
 
     }

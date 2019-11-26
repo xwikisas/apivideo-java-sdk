@@ -7,6 +7,7 @@ import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +53,7 @@ class CaptionClientTest {
 
     @Test
     void getUploadException() {
-        assertThrows(IllegalArgumentException.class, () -> captionClient.upload("viSuccess", new File("error"), "en"));
+        assertThrows(FileNotFoundException.class, () -> captionClient.upload("viSuccess", new File("error"), "en"));
     }
 
     @Test

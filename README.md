@@ -55,7 +55,7 @@ for (Video v : client.videos.list()) {
 ```
 
 # API coverage
-Most of _api.video_ features are implemented and autocomplete friendly within your favorite IDE:
+Most of _api.video_ features are implemented and autocompleted within your favorite IDE:
 
 ```java
 client.videos; // https://docs.api.video/5.1/videos

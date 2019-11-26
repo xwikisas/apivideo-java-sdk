@@ -15,6 +15,7 @@ import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -109,9 +110,9 @@ class VideoClientTest {
     }
 
     @Test
-    void uploadThumbnailFailure() throws IllegalArgumentException {
+    void uploadThumbnailFailure() {
         testVideo.videoId = "viSuccess";
-        assertThrows(java.lang.IllegalArgumentException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
+        assertThrows(FileNotFoundException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
     }
 
     @Test
