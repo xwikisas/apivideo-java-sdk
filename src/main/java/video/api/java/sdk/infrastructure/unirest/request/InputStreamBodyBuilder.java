@@ -33,6 +33,6 @@ public class InputStreamBodyBuilder implements BodyBuilder {
             );
         }
 
-        return request;
+        return body;
     }
 }

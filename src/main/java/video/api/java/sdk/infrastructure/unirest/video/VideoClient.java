@@ -22,7 +22,7 @@ import static java.lang.Math.min;
 import static kong.unirest.HttpMethod.*;
 
 public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
-    private static final int CHUNK_SIZE = 50 * 1024 * 1024; // 50 Mo
+    private static final int CHUNK_SIZE = 128 * 1024 * 1024; // 128 MB
 
     private final RequestBuilderFactory requestBuilderFactory;
     private final JsonSerializer<Video> serializer;
