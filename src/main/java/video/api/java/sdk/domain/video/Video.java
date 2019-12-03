@@ -18,13 +18,12 @@ public class Video {
         }
     }
 
-    public String videoId;
-    public String publishedAt;
-    public Source source;
-    public Assets assets = new Assets();
-
+    public String              videoId;
+    public String              publishedAt;
+    public Source              source;
+    public Assets              assets    = new Assets();
     public String              playerId;
-    public String              title     = null;
+    public String              title;
     public String              description;
     public boolean             isPublic  = true;
     public boolean             panoramic = false;

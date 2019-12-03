@@ -8,20 +8,18 @@ import java.util.*;
 
 public class QueryParams {
 
-    public int                 currentPage = 1;
-    public int                 pageSize    = 25;
+    public String              sortBy;
+    public String              sortOrder;
     public String              title;
     public String              description;
     public String              period;
-    public String              sortBy;
-    public String              sortOrder;
-    public List<String>        tags        = new ArrayList<>();
-    public Map<String, String> metadata    = new HashMap<>();
+    public List<String>        tags      = new ArrayList<>();
+    public Map<String, String> metadata  = new HashMap<>();
 
-    public JSONObject createJSONObject() {
-        JSONObject param = new JSONObject();
-        param.put("currentPage", this.currentPage);
-        param.put("pageSize", this.pageSize);
+    public Map<String, Object> toMap() {
+
+        Map<String, Object> param = new HashMap<>();
+
         if (this.period != null) {
             param.put("period", this.period);
         }
@@ -46,6 +44,7 @@ public class QueryParams {
         for (Map.Entry<String, String> e : this.metadata.entrySet()) {
             param.put("metadata[" + e.getKey() + "]", e.getValue());
         }
+
         return param;
     }
 

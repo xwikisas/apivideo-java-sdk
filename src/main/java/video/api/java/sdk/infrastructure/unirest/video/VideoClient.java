@@ -1,44 +1,43 @@
 package video.api.java.sdk.infrastructure.unirest.video;
 
-import kong.unirest.HttpRequest;
-import kong.unirest.HttpRequestWithBody;
 import kong.unirest.JsonNode;
-import kong.unirest.MultipartBody;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
+import video.api.java.sdk.domain.pagination.PageQuery;
 import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.*;
-import java.util.HashMap;
 
 import static java.lang.Math.min;
+import static kong.unirest.HttpMethod.*;
 
 public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
     private static final int CHUNK_SIZE = 50 * 1024 * 1024; // 50 Mo
 
-    private final RequestBuilder        requestBuilder;
+    private final RequestBuilderFactory requestBuilderFactory;
     private final JsonSerializer<Video> serializer;
     private final RequestExecutor       requestExecutor;
     private final StatusSerializer      statusSerializer = new StatusSerializer();
 
-    public VideoClient(RequestBuilder requestBuilder, JsonSerializer<Video> serializer, RequestExecutor requestExecutor) {
-        this.requestBuilder  = requestBuilder;
-        this.serializer      = serializer;
-        this.requestExecutor = requestExecutor;
+    public VideoClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<Video> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilderFactory = requestBuilderFactory;
+        this.serializer            = serializer;
+        this.requestExecutor       = requestExecutor;
     }
 
     public Video get(String videoId) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .get("/videos/" + videoId);
+        RequestBuilder request = requestBuilderFactory
+                .create(GET, "/videos/" + videoId);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -46,8 +45,8 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Status getStatus(String videoId) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .get("/videos/" + videoId + "/status");
+        RequestBuilder request = requestBuilderFactory
+                .create(GET, "/videos/" + videoId + "/status");
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -59,9 +58,9 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
             video.title = "";
         }
 
-        HttpRequest request = requestBuilder
-                .post("/videos")
-                .body(serializer.serialize(video));
+        RequestBuilder request = requestBuilderFactory
+                .create(POST, "/videos")
+                .withJson(serializer.serialize(video));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -141,87 +140,55 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
             String tmpdir = System.getProperty("java.io.tmpdir");
 
-            final FileInputStream chunkStream = new FileInputStream(file);
-            //noinspection ResultOfMethodCallIgnored
-            chunkStream.skip(from);
-            byte[] b         = new byte[chunkFileSize];
-            File   chunkFile = File.createTempFile(tmpdir, chunkFileName);
+            try (FileInputStream chunkStream = new FileInputStream(file)) {
+                //noinspection ResultOfMethodCallIgnored
+                chunkStream.skip(from);
 
-            RandomAccessFile randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
-            randomAccessFile.readFully(b);
-            randomAccessChunk.write(b, 0, chunkFileSize);
-            final InputStream stream      = new FileInputStream(chunkFile);
-            String            rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
-            HashMap<String, String> headers = new HashMap<String, String>() {{
-                put("Content-Range", rangeHeader);
-            }};
+                byte[] b         = new byte[chunkFileSize];
+                File   chunkFile = File.createTempFile(tmpdir, chunkFileName);
 
-            HttpRequest request = buildChunkUploadRequest(listener, videoId, chunkCount, chunkFile, stream, headers, chunkNum);
+                RandomAccessFile randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
+                randomAccessFile.readFully(b);
+                randomAccessChunk.write(b, 0, chunkFileSize);
+                final InputStream inputStream = new FileInputStream(chunkFile);
+                String            rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
 
-            responseBody = requestExecutor.executeJson(request);
-            stream.close();
+                RequestBuilder request = requestBuilderFactory
+                        .create(POST, "/videos/" + videoId + "/source")
+                        .withChunk(file.getName(), inputStream, chunkCount, chunkNum, listener)
+                        .withHeader("Content-Range", rangeHeader);
 
-            chunkFile.deleteOnExit();
+                responseBody = requestExecutor.executeJson(request);
 
+                chunkFile.deleteOnExit();
+            }
         }
 
         return responseBody;
     }
 
     private JsonNode uploadSingleRequest(UploadProgressListener listener, File file, String videoId) throws ResponseException, IOException {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            HttpRequest request = buildUploadRequest(listener, file, videoId, inputStream);
+        RequestBuilder request = requestBuilderFactory
+                .create(POST, "/videos/" + videoId + "/source")
+                .withFile(file, listener);
 
-            return requestExecutor.executeJson(request);
-        }
+        return requestExecutor.executeJson(request);
     }
-
-    private HttpRequest buildUploadRequest(UploadProgressListener listener, File file, String videoId, FileInputStream inputStream) {
-        HttpRequestWithBody request = requestBuilder
-                .post("/videos/" + videoId + "/source");
-
-        MultipartBody uploadField = request.field("file", inputStream, file.getName());
-
-        if (listener != null) {
-            uploadField.uploadMonitor((field, fileName, bytesWritten, totalBytes) ->
-                                              listener.onProgress(bytesWritten, totalBytes, 1, 0));
-        }
-
-        return request;
-    }
-
-    private HttpRequest buildChunkUploadRequest(UploadProgressListener listener, String videoId, int chunkCount, File fileToUpload, InputStream inputStream, HashMap<String, String> headers, int chunkNum) {
-        HttpRequestWithBody request = requestBuilder
-                .post("/videos/" + videoId + "/source")
-                .headers(headers);
-
-        MultipartBody uploadField = request.field("file", inputStream, fileToUpload.getName());
-
-        if (listener != null) {
-            uploadField.uploadMonitor((field, fileName, bytesWritten, totalBytes) ->
-                                              listener.onProgress(bytesWritten, totalBytes, chunkCount, chunkNum));
-        }
-
-        return request;
-    }
-
 
     public Video uploadThumbnail(Video video, File file) throws ResponseException, IOException {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            HttpRequest request = requestBuilder
-                    .post("/videos/" + video.videoId + "/thumbnail")
-                    .field("file", inputStream, file.getName());
+        RequestBuilder request = requestBuilderFactory
+                .create(POST, "/videos/" + video.videoId + "/thumbnail")
+                .withFile(file);
 
-            JsonNode responseBody = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-            return serializer.deserialize(responseBody.getObject());
-        }
+        return serializer.deserialize(responseBody.getObject());
     }
 
     public Video updateThumbnail(Video video, String timeCode) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .patch("/videos/" + video.videoId)
-                .body(new JSONObject().put("timecode", timeCode));
+        RequestBuilder request = requestBuilderFactory
+                .create(PATCH, "/videos/" + video.videoId)
+                .withJson(new JSONObject().put("timecode", timeCode));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -229,9 +196,9 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     }
 
     public Video update(Video video) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .patch("/videos/" + video.videoId)
-                .body(serializer.serialize(video));
+        RequestBuilder request = requestBuilderFactory
+                .create(PATCH, "/videos/" + video.videoId)
+                .withJson(serializer.serialize(video));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -240,12 +207,11 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
 
     public void delete(Video video) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .delete("/videos/" + video.videoId);
+        RequestBuilder request = requestBuilderFactory
+                .create(DELETE, "/videos/" + video.videoId);
 
         requestExecutor.executeJson(request);
     }
-
 
     /////////////////////////Iterators//////////////////////////////
 
@@ -255,11 +221,12 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
     public Iterable<Video> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
-                "/videos",
-                requestBuilder,
+                requestBuilderFactory
+                        .create(GET, "/videos")
+                        .withQueryParams(queryParams.toMap()),
                 requestExecutor,
                 serializer
-        ), queryParams));
+        ), new PageQuery()));
     }
 
 }

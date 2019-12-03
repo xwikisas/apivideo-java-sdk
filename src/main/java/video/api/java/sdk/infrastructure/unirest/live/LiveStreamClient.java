@@ -1,36 +1,38 @@
 package video.api.java.sdk.infrastructure.unirest.live;
 
-import kong.unirest.HttpRequest;
 import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
+import video.api.java.sdk.domain.pagination.PageQuery;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
-import video.api.java.sdk.infrastructure.unirest.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+
+import static kong.unirest.HttpMethod.*;
 
 public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStreamClient {
 
-    private final RequestBuilder             requestBuilder;
+    private final RequestBuilderFactory      requestBuilderFactory;
     private final JsonSerializer<LiveStream> serializer;
     private final RequestExecutor            requestExecutor;
 
-    public LiveStreamClient(RequestBuilder requestBuilder, JsonSerializer<LiveStream> serializer, RequestExecutor requestExecutor) {
-        this.requestBuilder  = requestBuilder;
-        this.serializer      = serializer;
-        this.requestExecutor = requestExecutor;
+    public LiveStreamClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<LiveStream> serializer, RequestExecutor requestExecutor) {
+        this.requestBuilderFactory = requestBuilderFactory;
+        this.serializer            = serializer;
+        this.requestExecutor       = requestExecutor;
     }
 
     public LiveStream get(String liveStreamId) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .get("/live-streams/" + liveStreamId);
+        RequestBuilder request = requestBuilderFactory
+                .create(GET, "/live-streams/" + liveStreamId);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -38,9 +40,9 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public LiveStream create(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .post("/live-streams")
-                .body(serializer.serialize(liveStream));
+        RequestBuilder request = requestBuilderFactory
+                .create(POST, "/live-streams")
+                .withJson(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -48,21 +50,19 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IOException {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            HttpRequest request = requestBuilder
-                    .post("/live-streams/" + liveStreamId + "/thumbnail")
-                    .field("file", inputStream, file.getName());
+        RequestBuilder request = requestBuilderFactory
+                .create(POST, "/live-streams/" + liveStreamId + "/thumbnail")
+                .withFile(file);
 
-            JsonNode responseBody = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(request);
 
-            return serializer.deserialize(responseBody.getObject());
-        }
+        return serializer.deserialize(responseBody.getObject());
     }
 
     public LiveStream update(LiveStream liveStream) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .patch("/live-streams/" + liveStream.liveStreamId)
-                .body(serializer.serialize(liveStream));
+        RequestBuilder request = requestBuilderFactory
+                .create(PATCH, "/live-streams/" + liveStream.liveStreamId)
+                .withJson(serializer.serialize(liveStream));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
@@ -70,8 +70,8 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
     }
 
     public void delete(String liveStreamId) throws ResponseException {
-        HttpRequest request = requestBuilder
-                .delete("/live-streams/" + liveStreamId);
+        RequestBuilder request = requestBuilderFactory
+                .create(DELETE, "/live-streams/" + liveStreamId);
 
         requestExecutor.executeJson(request);
     }
@@ -82,11 +82,10 @@ public class LiveStreamClient implements video.api.java.sdk.domain.live.LiveStre
 
     public Iterable<LiveStream> list(QueryParams queryParams) throws ResponseException, IllegalArgumentException {
         return new IteratorIterable<>(new PageIterator<>(new UriPageLoader<>(
-                "/live-streams",
-                requestBuilder,
+                requestBuilderFactory.create(GET, "/live-streams"),
                 requestExecutor,
                 serializer
-        ), queryParams));
+        ), new PageQuery()));
     }
 
 }

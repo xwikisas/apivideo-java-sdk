@@ -1,21 +1,20 @@
 package video.api.java.sdk.infrastructure.pagination;
 
-import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.pagination.Page;
+import video.api.java.sdk.domain.pagination.PageQuery;
 
 public class PageIterator<T> implements java.util.Iterator<T> {
 
-    private PageLoader<T>         pageLoader;
-    private java.util.Iterator<T> current;
-    private int                   pagesTotal;
-    private QueryParams           queryParams;
+    private final PageLoader<T>         pageLoader;
+    private       java.util.Iterator<T> current;
+    private       int                   pagesTotal;
+    private       PageQuery             pageQuery;
 
-
-    public PageIterator(PageLoader<T> pageLoader, QueryParams queryParams) throws ResponseException, IllegalArgumentException {
-        this.pageLoader  = pageLoader;
-        this.queryParams = queryParams;
-        this.current     = this.loadPage();
+    public PageIterator(PageLoader<T> pageLoader, PageQuery pageQuery) throws ResponseException, IllegalArgumentException {
+        this.pageLoader = pageLoader;
+        this.pageQuery  = pageQuery;
+        this.current    = this.loadPage();
     }
 
     @Override
@@ -33,8 +32,7 @@ public class PageIterator<T> implements java.util.Iterator<T> {
                     return false;
                 }
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -46,7 +44,7 @@ public class PageIterator<T> implements java.util.Iterator<T> {
     }
 
     private java.util.Iterator<T> loadPage() throws ResponseException, IllegalArgumentException {
-        Page<T> page = pageLoader.load(this.queryParams);
+        Page<T> page = pageLoader.load(pageQuery);
 
         pagesTotal = page.total;
 
@@ -55,12 +53,11 @@ public class PageIterator<T> implements java.util.Iterator<T> {
 
 
     private void incrementNumberPage() {
-
-        this.queryParams.currentPage++;
+        pageQuery.currentPage++;
     }
 
     private int getCurrentPage() {
-        return this.queryParams.currentPage;
+        return pageQuery.currentPage;
     }
 
 
