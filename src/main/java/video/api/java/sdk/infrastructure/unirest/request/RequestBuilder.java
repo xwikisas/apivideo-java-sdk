@@ -35,21 +35,27 @@ public class RequestBuilder {
     }
 
     public RequestBuilder withFile(File file) {
-        bodyBuilder = new FileBodyBuilder(file, null);
+        bodyBuilder = new FileBodyBuilder(file, null, null);
 
         return this;
     }
 
     public RequestBuilder withFile(File file, String link) {
-        bodyBuilder = new FileBodyBuilder(file, link);
+        bodyBuilder = new FileBodyBuilder(file, link, null);
+
+        return this;
+    }
+
+    public RequestBuilder withFile(File file, String link, UploadProgressListener progressListener) {
+        bodyBuilder = new FileBodyBuilder(file, link, progressListener);
 
         return this;
     }
 
     public RequestBuilder withFile(File file, UploadProgressListener progressListener) throws IOException {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            return withChunk(file.getName(), inputStream, 1, 0, progressListener);
-        }
+        bodyBuilder = new FileBodyBuilder(file, null, progressListener);
+
+        return this;
     }
 
     public RequestBuilder withChunk(String filename, InputStream inputStream, int chunkCount, int chunkNum, UploadProgressListener progressListener) {
