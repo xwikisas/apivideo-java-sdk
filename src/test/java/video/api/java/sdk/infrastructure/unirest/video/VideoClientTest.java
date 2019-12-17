@@ -10,7 +10,9 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
+import video.api.java.sdk.domain.video.VideoInput;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
@@ -24,7 +26,6 @@ class VideoClientTest {
     private VideoClient videoClient;
     private VideoClient videoClientResponseException;
     private VideoClient videoClientSerializerException;
-    private Video       testVideo = new Video();
 
     @BeforeEach
     void setUp() {
@@ -32,17 +33,20 @@ class VideoClientTest {
         testRequestExecutor.exception  = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         videoClientResponseException   = new VideoClient(
                 new RequestBuilderFactory(""),
-                new VideoJsonSerializer(),
+                new VideoInputSerializer(),
+                new VideoDeserializer(),
                 testRequestExecutor
         );
         videoClient                    = new VideoClient(
                 new RequestBuilderFactory(""),
-                new VideoJsonSerializer(),
+                new VideoInputSerializer(),
+                new VideoDeserializer(),
                 new TestRequestExecutor()
         );
         videoClientSerializerException = new VideoClient(
                 new RequestBuilderFactory(""),
-                new JsonSerializer<Video>() {
+                object -> null,
+                new JsonDeserializer<Video>() {
                     @Override
                     public Video deserialize(JSONObject data) throws JSONException {
                         throw new JSONException("json error");
@@ -50,11 +54,6 @@ class VideoClientTest {
 
                     @Override
                     public List<Video> deserialize(JSONArray data) throws JSONException {
-                        return null;
-                    }
-
-                    @Override
-                    public JSONObject serialize(Video object) throws JSONException {
                         return null;
                     }
                 },
@@ -104,28 +103,23 @@ class VideoClientTest {
 
     @Test
     void createSuccess() throws ResponseException {
-        testVideo.videoId = "viSuccess";
-        assertNotNull(videoClient.create(testVideo));
+        assertNotNull(videoClient.create(new VideoInput()));
     }
 
     @Test
     void uploadThumbnailFailure() {
-        testVideo.videoId = "viSuccess";
-        assertThrows(IOException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
+        assertThrows(IOException.class, () -> videoClient.uploadThumbnail("viSuccess", new File("foo")));
     }
 
     @Test
     void updateThumbnailWithTimeCode() throws ResponseException {
-        testVideo.videoId = "viSuccess";
-        assertNotNull(videoClient.updateThumbnail(testVideo, ""));
+        assertNotNull(videoClient.updateThumbnail("viSuccess", ""));
     }
 
     @Test
     void update() throws ResponseException {
-        testVideo.videoId = "viSuccess";
-        assertNotNull(videoClient.update(testVideo));
+        assertNotNull(videoClient.update(new Video("viSuccess", null, null, null, null)));
     }
-
 
     @Test
     void delete() {

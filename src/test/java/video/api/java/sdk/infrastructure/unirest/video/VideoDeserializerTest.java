@@ -3,7 +3,6 @@ package video.api.java.sdk.infrastructure.unirest.video;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.video.Video;
 
@@ -11,33 +10,28 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class VideoJsonSerializerTest {
-    private VideoJsonSerializer videoJsonSerializer;
-
-    @BeforeEach
-    void setUp() {
-        videoJsonSerializer = new VideoJsonSerializer();
-    }
+class VideoDeserializerTest {
+    private VideoDeserializer deserializer = new VideoDeserializer();
 
     ///////////////Failure//////////////////////////
 
     @Test
     void deserializeFailure() {
-        assertThrows(JSONException.class, () -> videoJsonSerializer.deserialize(new JSONObject()));
+        assertThrows(JSONException.class, () -> deserializer.deserialize(new JSONObject()));
     }
 
     @Test
     void deserializeAllFailure() {
         JSONArray array = new JSONArray();
         array.put(new JSONObject("{\"Fail\":\"ok\"}"));
-        assertThrows(JSONException.class, () -> videoJsonSerializer.deserialize(array));
+        assertThrows(JSONException.class, () -> deserializer.deserialize(array));
     }
 
     ///////////////////////Success/////////////////////////////
     @Test
     void deserializeMinimalSuccess() {
 
-        Video video = videoJsonSerializer.deserialize(new JSONObject() {
+        Video video = deserializer.deserialize(new JSONObject() {
             {
                 put("videoId", "toto");
                 put("publishedAt", "2019-08-28T16:25:51+02:00");
@@ -77,7 +71,7 @@ class VideoJsonSerializerTest {
                         .put("thumbnail", "https://cdn.api.video/vod/virMgDJYvjHzoFZZYgMCkvC/thumbnail.jpg")
                 );
 
-        Video video = videoJsonSerializer.deserialize(jsonVideo);
+        Video video = deserializer.deserialize(jsonVideo);
 
         assertEquals("toto", video.videoId);
         assertEquals("toto", video.title);
@@ -107,7 +101,7 @@ class VideoJsonSerializerTest {
 
         };
 
-        Video video = videoJsonSerializer.deserialize(jsonVideo);
+        Video video = deserializer.deserialize(jsonVideo);
 
         assertEquals("vi1", video.videoId);
         assertEquals("toto", video.title);
@@ -162,7 +156,7 @@ class VideoJsonSerializerTest {
                                                        "                \"thumbnail\": \"https://cdn.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V/thumbnail.jpg\"\n" +
                                                        "            }\n" +
                                                        "        }");
-        List<Video> videoList = videoJsonSerializer.deserialize(new JSONArray() {{
+        List<Video> videoList = deserializer.deserialize(new JSONArray() {{
             put(jsonVideo);
             put(jsonVideo1);
             put(jsonVideo);
@@ -171,13 +165,4 @@ class VideoJsonSerializerTest {
         assertEquals("vi2", videoList.get(1).videoId);
         assertEquals("vi1", videoList.get(2).videoId);
     }
-
-    @Test
-    void serialize() {
-        Video video = new Video();
-        video.title = "tt";
-        JSONObject jsonVideo = videoJsonSerializer.serialize(video);
-        assertEquals("tt", jsonVideo.getString("title"));
-    }
-
 }

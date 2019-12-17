@@ -9,12 +9,12 @@ import video.api.java.sdk.domain.caption.Caption;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CaptionJsonSerializerTest {
-    private CaptionJsonSerializer captionJsonSerializer;
+class CaptionDeserializerTest {
+    private CaptionDeserializer captionDeserializer;
 
     @BeforeEach
     void SetUp() {
-        captionJsonSerializer = new CaptionJsonSerializer();
+        captionDeserializer = new CaptionDeserializer();
 
     }
 
@@ -22,7 +22,7 @@ class CaptionJsonSerializerTest {
     void deserializeMax() {
 
 
-        Caption caption = captionJsonSerializer.deserialize(new JSONObject("{\n" +
+        Caption caption = captionDeserializer.deserialize(new JSONObject("{\n" +
                                                                                    "    \"uri\": \"tata\",\n" +
                                                                                    "    \"src\": \"vtt\",\n" +
                                                                                    "    \"srclang\": \"en\",\n" +
@@ -30,8 +30,8 @@ class CaptionJsonSerializerTest {
                                                                                    "}"));
         assertEquals("tata", caption.uri);
         assertEquals("vtt", caption.src);
-        assertEquals("en", caption.srclang);
-        assertFalse(caption.defaultCaption);
+        assertEquals("en", caption.language);
+        assertFalse(caption.isDefault);
 
     }
 
@@ -40,7 +40,7 @@ class CaptionJsonSerializerTest {
     void deserializeMin() {
 
 
-        Caption caption = captionJsonSerializer.deserialize(new JSONObject("{\n" +
+        Caption caption = captionDeserializer.deserialize(new JSONObject("{\n" +
                                                                                    "    \"uri\": \"tata\",\n" +
                                                                                    "}"));
         assertEquals("tata", caption.uri);
@@ -73,20 +73,9 @@ class CaptionJsonSerializerTest {
         captions.put(caption);
         captions.put(caption1);
         captions.put(caption2);
-        assertEquals(captionJsonSerializer.deserialize(captions).get(0).srclang, "en");
-        assertEquals(captionJsonSerializer.deserialize(captions).get(1).srclang, "fr");
-        assertEquals(captionJsonSerializer.deserialize(captions).get(2).srclang, "esp");
-
-    }
-
-    @Test
-    void serialize() {
-        Caption caption = new Caption();
-        caption.defaultCaption = true;
-
-        JSONObject serialized =  captionJsonSerializer.serialize(caption);
-
-        assertEquals(caption.defaultCaption, serialized.getBoolean("default"));
+        assertEquals(captionDeserializer.deserialize(captions).get(0).language, "en");
+        assertEquals(captionDeserializer.deserialize(captions).get(1).language, "fr");
+        assertEquals(captionDeserializer.deserialize(captions).get(2).language, "esp");
     }
 
 }

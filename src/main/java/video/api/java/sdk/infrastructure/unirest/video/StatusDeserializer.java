@@ -3,10 +3,10 @@ package video.api.java.sdk.infrastructure.unirest.video;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.video.Status;
-import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 
-public class StatusSerializer implements JsonSerializer<Status> {
-    private ReceivedBytesSerializer receivedBytesSerializer = new ReceivedBytesSerializer();
+public class StatusDeserializer implements JsonDeserializer<Status> {
+    private ReceivedBytesSerializer receivedBytesDeserializer = new ReceivedBytesSerializer();
 
     public Status deserialize(JSONObject data) throws JSONException {
         return new Status(
@@ -19,7 +19,7 @@ public class StatusSerializer implements JsonSerializer<Status> {
         return new Status.Ingest(
                 data.getString("status"),
                 data.getInt("filesize"),
-                receivedBytesSerializer.deserialize(data.getJSONArray("receivedBytes"))
+                receivedBytesDeserializer.deserialize(data.getJSONArray("receivedBytes"))
         );
     }
 

@@ -15,8 +15,14 @@ All notable changes to this project will be documented in this file.
 - `Client.videos.uploadThumbnail(Video video, String thumbnailSource)` -> `Client.videos.uploadThumbnail(Video video, File file)`
 - `Client.videos.uploadThumbnailWithTimecode(Video video, String timecode)` -> `Client.videos.uploadThumbnail(Video video, String timecode)`
 - `Client.liveStreams.uploadThumbnail(String liveStreamId, String thumbnailSource)` -> `Client.liveStreams.uploadThumbnail(String liveStreamId, File file)`
+- `Client.liveStreams.create(LiveStream liveStream)` -> `Client.liveStreams.create(LiveStreamInput liveStreamInput)`
 - `Client.players.uploadLogo(String playerId, String logoSource, String link)` -> `Client.players.uploadLogo(String playerId, File file, String link)`
 - `Client.captions.upload(String VideoId, String captionSource, String lang)` -> `Client.captions.upload(String VideoId, File file, String lang)`  
+- `Client.videos.uploadThumbnail(Video video, File file)` -> `Client.videos.uploadThumbnail(Identifier videoId, File file)`
+- `Client.videos.updateThumbnail(Video video, String timecode)` -> `Client.videos.updateThumbnail(Identifier videoId, String timecode)`
+- `Client.videos.delete(Video video)` -> `Client.videos.delete(Identifier videoId)`
+- `Client.captions.updateDefault(String VideoId, String lang, boolean isDefault)` -> `Client.captions.update(String videoId, CaptionInput captionInput)`
+- `Client.captions.getAll(String VideoId)` -> `Client.captions.list(String videoId)`
 
 ## [0.2.0] - 2019-09-20
 

@@ -2,6 +2,7 @@ package video.api.java.sdk.infrastructure.unirest.caption;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import video.api.java.sdk.domain.caption.CaptionInput;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
@@ -17,14 +18,16 @@ class CaptionClientTest {
     void setUp() {
         captionClient = new CaptionClient(
                 new RequestBuilderFactory(""),
-                new CaptionJsonSerializer(),
+                new CaptionInputSerializer(),
+                new CaptionDeserializer(),
                 new TestRequestExecutor()
         );
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
         testRequestExecutor.exception = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         captionResponseException      = new CaptionClient(
                 new RequestBuilderFactory(""),
-                new CaptionJsonSerializer(),
+                new CaptionInputSerializer(),
+                new CaptionDeserializer(),
                 testRequestExecutor
         );
     }
@@ -36,21 +39,24 @@ class CaptionClientTest {
 
     @Test
     void getAll() throws ResponseException {
-        assertNotNull(captionClient.getAll("viSuccess"));
+        assertNotNull(captionClient.list("viSuccess"));
     }
 
     @Test
     void updateDefault() throws ResponseException {
-        assertNotNull(captionClient.updateDefault("viSuccess", "en", true));
+        CaptionInput captionInput = new CaptionInput("en");
+        captionInput.isDefault = true;
+
+        assertNotNull(captionClient.update("viSuccess", captionInput));
     }
 
     @Test
-    void delete() throws ResponseException {
+    void delete() {
 
     }
 
     @Test
-    void getCaptionFailure() throws ResponseException {
+    void getCaptionFailure() {
         // assertNotNull(captionResponseException.get("viFailure","en"));
         assertThrows(ResponseException.class, () -> captionResponseException.get("viFailure", "en"));
     }

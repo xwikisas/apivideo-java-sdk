@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
+import video.api.java.sdk.domain.player.PlayerInput;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
@@ -24,14 +25,16 @@ class PlayerClientTest {
         TestRequestExecutor executorFailure = new TestRequestExecutor();
         executorFailure.exception = new ResponseException("foo", executorFailure.responseFailure(), 400);
 
-        playerResponseException       = new PlayerClient(
+        playerResponseException = new PlayerClient(
                 new RequestBuilderFactory(""),
-                new PlayerJsonSerializer(),
+                new PlayerInputSerializer(),
+                new PlayerDeserializer(),
                 executorFailure
         );
-        playerClient                  = new PlayerClient(
+        playerClient            = new PlayerClient(
                 new RequestBuilderFactory(""),
-                new PlayerJsonSerializer(),
+                new PlayerInputSerializer(),
+                new PlayerDeserializer(),
                 new TestRequestExecutor()
         );
 
@@ -44,15 +47,14 @@ class PlayerClientTest {
 
     @Test
     void create() throws ResponseException {
-        assertNotNull(playerClient.create(new Player()));
+        assertNotNull(playerClient.create(new PlayerInput()));
     }
 
     @Test
     void update() throws ResponseException {
-        Player player = new Player();
-        player.playerId = "plSuccess";
-        assertNotNull(playerClient.update(player));
+        Player player = new Player("plSuccess", new Player.Assets("", ""));
 
+        assertNotNull(playerClient.update(player));
     }
 
     @Test
@@ -66,7 +68,7 @@ class PlayerClientTest {
     }
 
     @Test
-    void delete() throws ResponseException {
+    void delete() {
 
     }
 

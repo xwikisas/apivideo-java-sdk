@@ -1,21 +1,14 @@
 package video.api.java.sdk.infrastructure.unirest.live;
 
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.live.LiveStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class LiveStreamJsonSerializerTest {
+class LiveStreamDeserializerTest {
 
-    private LiveStreamJsonSerializer serializer;
-
-    @BeforeEach
-    void setUp() {
-        serializer = new LiveStreamJsonSerializer();
-    }
+    private LiveStreamDeserializer deserializer = new LiveStreamDeserializer();
 
     @Test
     void deserializeMin() {
@@ -23,7 +16,7 @@ class LiveStreamJsonSerializerTest {
                 .put("liveStreamId", "liSuccess")
                 .put("name", "test");
 
-        LiveStream liveStream = serializer.deserialize(json);
+        LiveStream liveStream = deserializer.deserialize(json);
 
         assertEquals(json.getString("liveStreamId"), liveStream.liveStreamId);
         assertEquals(json.getString("name"), liveStream.name);
@@ -45,7 +38,7 @@ class LiveStreamJsonSerializerTest {
                 .put("broadcasting", true)
                 .put("assets", assets);
 
-        LiveStream liveStream = serializer.deserialize(json);
+        LiveStream liveStream = deserializer.deserialize(json);
         assertEquals(json.getString("streamKey"), liveStream.streamKey);
         assertEquals(json.getBoolean("record"), liveStream.record);
         assertEquals(json.getBoolean("broadcasting"), liveStream.broadcasting);
@@ -53,28 +46,5 @@ class LiveStreamJsonSerializerTest {
         assertEquals(assets.getString("player"), liveStream.assets.get("player"));
         assertEquals(assets.getString("hls"), liveStream.assets.get("hls"));
         assertEquals(assets.getString("thumbnail"), liveStream.assets.get("thumbnail"));
-    }
-
-    @Test
-    void serializeMin() {
-        LiveStream liveStream = new LiveStream("test");
-
-        JSONObject serialized = serializer.serialize(liveStream);
-
-        assertEquals(liveStream.name, serialized.getString("name"));
-        assertEquals(liveStream.record, serialized.getBoolean("record"));
-        assertFalse(serialized.has("playerId"));
-    }
-
-    @Test
-    void serializeMax() {
-        LiveStream liveStream = new LiveStream("test");
-        liveStream.record   = true;
-        liveStream.playerId = "xxx";
-
-        JSONObject serialized = serializer.serialize(liveStream);
-
-        assertEquals(liveStream.record, serialized.getBoolean("record"));
-        assertEquals(liveStream.playerId, serialized.getString("playerId"));
     }
 }

@@ -9,18 +9,18 @@ import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 
 import static kong.unirest.HttpMethod.GET;
 
 public class VideoSessionClient implements video.api.java.sdk.domain.analytics.VideoSessionClient {
-    private final RequestBuilderFactory         requestBuilderFactory;
-    private final JsonSerializer<PlayerSession> serializer;
-    private final RequestExecutor               requestExecutor;
+    private final RequestBuilderFactory           requestBuilderFactory;
+    private final JsonDeserializer<PlayerSession> deserializer;
+    private final RequestExecutor                 requestExecutor;
 
-    public VideoSessionClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<PlayerSession> serializer, RequestExecutor requestExecutor) {
+    public VideoSessionClient(RequestBuilderFactory requestBuilderFactory, JsonDeserializer<PlayerSession> deserializer, RequestExecutor requestExecutor) {
         this.requestBuilderFactory = requestBuilderFactory;
-        this.serializer            = serializer;
+        this.deserializer          = deserializer;
         this.requestExecutor       = requestExecutor;
     }
 
@@ -39,7 +39,7 @@ public class VideoSessionClient implements video.api.java.sdk.domain.analytics.V
                 requestBuilderFactory.create(GET, "/analytics/videos/" + videoId)
                         .withQueryParams(queryParams.toMap()),
                 requestExecutor,
-                serializer
+                deserializer
         ), new PageQuery()));
     }
 }

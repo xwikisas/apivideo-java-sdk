@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface LiveStreamClient {
     LiveStream get(String liveStreamId) throws ResponseException;
 
-    LiveStream create(LiveStream liveStream) throws ResponseException;
+    LiveStream create(LiveStreamInput liveStreamInput) throws ResponseException;
 
     LiveStream uploadThumbnail(String liveStreamId, File file) throws ResponseException, IOException;
 

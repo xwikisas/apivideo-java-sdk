@@ -7,20 +7,21 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.analytics.PlayerSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-class PlayerSessionJsonSerializerTest {
-    private PlayerSessionJsonSerializer playerSessionJsonSerializer;
+class PlayerSessionDeserializerTest {
+    private PlayerSessionDeserializer playerSessionDeserializer;
 
     @BeforeEach
     void SetUp() {
-        playerSessionJsonSerializer = new PlayerSessionJsonSerializer();
+        playerSessionDeserializer = new PlayerSessionDeserializer();
     }
 
 
     @Test
     void deserializeMax() {
-        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(createSerializedPlayerSessionMax());
-        assertEquals(null, playerSession.info.metadata.get("age"));
+        PlayerSession playerSession = playerSessionDeserializer.deserialize(createSerializedPlayerSessionMax());
+        assertNull(playerSession.info.metadata.get("age"));
         assertEquals("Foo", playerSession.info.metadata.get("name"));
         assertEquals(1574085943808L, playerSession.info.endedAt.getTimeInMillis());
         //assertEquals("viSuccess", playerSession.);
@@ -28,7 +29,7 @@ class PlayerSessionJsonSerializerTest {
 
     @Test
     void deserializeMin() {
-        PlayerSession playerSession = playerSessionJsonSerializer.deserialize(createSerializedPlayerSessionMin());
+        PlayerSession playerSession = playerSessionDeserializer.deserialize(createSerializedPlayerSessionMin());
 
         assertEquals("ps3uBmLoqYV2O4k9BOeSQ6Sm", playerSession.info.sessionId);
 
@@ -43,7 +44,7 @@ class PlayerSessionJsonSerializerTest {
         collection.put(createSerializedPlayerSessionMin());
         collection.put(createSerializedPlayerSessionMin());
         collection.put(createSerializedPlayerSessionMin());
-        assertEquals(4, playerSessionJsonSerializer.deserialize(collection).size());
+        assertEquals(4, playerSessionDeserializer.deserialize(collection).size());
 
 
     }

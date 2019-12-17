@@ -11,7 +11,7 @@ public interface PlayerClient {
 
     Player get(String playerId) throws ResponseException;
 
-    Player create(Player player) throws ResponseException;
+    Player create(PlayerInput player) throws ResponseException;
 
     Player update(Player player) throws ResponseException;
 

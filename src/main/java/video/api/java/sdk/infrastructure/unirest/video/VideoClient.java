@@ -8,12 +8,14 @@ import video.api.java.sdk.domain.pagination.PageQuery;
 import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
+import video.api.java.sdk.domain.video.VideoInput;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.pagination.UriPageLoader;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.*;
@@ -24,14 +26,16 @@ import static kong.unirest.HttpMethod.*;
 public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
     private static final int CHUNK_SIZE = 128 * 1024 * 1024; // 128 MB
 
-    private final RequestBuilderFactory requestBuilderFactory;
-    private final JsonSerializer<Video> serializer;
-    private final RequestExecutor       requestExecutor;
-    private final StatusSerializer      statusSerializer = new StatusSerializer();
+    private final RequestBuilderFactory      requestBuilderFactory;
+    private final JsonSerializer<VideoInput> serializer;
+    private final JsonDeserializer<Video>    deserializer;
+    private final RequestExecutor    requestExecutor;
+    private final StatusDeserializer statusDeserializer = new StatusDeserializer();
 
-    public VideoClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<Video> serializer, RequestExecutor requestExecutor) {
+    public VideoClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<VideoInput> serializer, JsonDeserializer<Video> deserializer, RequestExecutor requestExecutor) {
         this.requestBuilderFactory = requestBuilderFactory;
         this.serializer            = serializer;
+        this.deserializer          = deserializer;
         this.requestExecutor       = requestExecutor;
     }
 
@@ -41,7 +45,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
     public Status getStatus(String videoId) throws ResponseException {
@@ -50,54 +54,53 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return statusSerializer.deserialize(responseBody.getObject());
+        return statusDeserializer.deserialize(responseBody.getObject());
     }
 
-    public Video create(Video video) throws ResponseException {
-        if (video.title == null) {
-            video.title = "";
+    public Video create(VideoInput videoInput) throws ResponseException {
+        if (videoInput.title == null) {
+            videoInput.title = "";
         }
 
         RequestBuilder request = requestBuilderFactory
                 .create(POST, "/videos")
-                .withJson(serializer.serialize(video));
+                .withJson(serializer.serialize(videoInput));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
     public Video upload(File file) throws ResponseException {
-        return upload(file, new Video(), null);
+        return upload(file, new VideoInput(), null);
     }
 
     public Video upload(File file, UploadProgressListener listener) throws ResponseException {
-        return upload(file, new Video(), listener);
+        return upload(file, new VideoInput(), listener);
     }
 
-    public Video upload(File file, Video video) throws ResponseException {
-        if (video.title == null) {
+    public Video upload(File file, VideoInput videoInput) throws ResponseException {
+        if (videoInput.title == null) {
             return upload(file);
         }
 
-        return upload(file, video, null);
+        return upload(file, videoInput, null);
     }
 
-    public Video upload(File file, Video video, UploadProgressListener listener) throws ResponseException {
+    public Video upload(File file, VideoInput videoInput, UploadProgressListener listener) throws ResponseException {
         if (!file.exists() || !file.isFile()) {
             throw new IllegalArgumentException("Can't open file.");
         }
         String videoId;
-        if (video.title == null && video.videoId == null) {
-            video.title = file.getName();
-            Video videoCreated = create(video);
-            videoId = videoCreated.videoId;
-        } else if (video.videoId == null) {
-            Video videoCreated = create(video);
-            videoId = videoCreated.videoId;
+        if (videoInput instanceof Video) {
+            videoId = ((Video) videoInput).videoId;
         } else {
-            videoId = video.videoId;
+            if (videoInput.title == null) {
+                videoInput.title = file.getName();
+            }
+            videoId = create(videoInput).videoId;
         }
+
         int fileLength = (int) file.length();
 
         try {
@@ -119,7 +122,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
                 responseBody = uploadMultipleRequests(file, listener, videoId, fileLength);
             }
 
-            return serializer.deserialize(responseBody.getObject());
+            return deserializer.deserialize(responseBody.getObject());
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -175,24 +178,24 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
         return requestExecutor.executeJson(request);
     }
 
-    public Video uploadThumbnail(Video video, File file) throws ResponseException, IOException {
+    public Video uploadThumbnail(String videoId, File file) throws ResponseException, IOException {
         RequestBuilder request = requestBuilderFactory
-                .create(POST, "/videos/" + video.videoId + "/thumbnail")
+                .create(POST, "/videos/" + videoId + "/thumbnail")
                 .withFile(file);
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
-    public Video updateThumbnail(Video video, String timeCode) throws ResponseException {
+    public Video updateThumbnail(String videoId, String timeCode) throws ResponseException {
         RequestBuilder request = requestBuilderFactory
-                .create(PATCH, "/videos/" + video.videoId)
+                .create(PATCH, "/videos/" + videoId)
                 .withJson(new JSONObject().put("timecode", timeCode));
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
     public Video update(Video video) throws ResponseException {
@@ -202,13 +205,13 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
 
-    public void delete(Video video) throws ResponseException {
+    public void delete(String videoId) throws ResponseException {
         RequestBuilder request = requestBuilderFactory
-                .create(DELETE, "/videos/" + video.videoId);
+                .create(DELETE, "/videos/" + videoId);
 
         requestExecutor.executeJson(request);
     }
@@ -225,7 +228,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
                         .create(GET, "/videos")
                         .withQueryParams(queryParams.toMap()),
                 requestExecutor,
-                serializer
+                deserializer
         ), new PageQuery()));
     }
 

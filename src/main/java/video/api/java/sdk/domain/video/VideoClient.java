@@ -17,21 +17,21 @@ public interface VideoClient {
 
     Status getStatus(String videoId) throws ResponseException;
 
-    Video create(Video video) throws ResponseException;
+    Video create(VideoInput videoInput) throws ResponseException;
 
     Video upload(File file) throws ResponseException;
 
-    Video upload(File file, Video video) throws ResponseException;
+    Video upload(File file, VideoInput videoInput) throws ResponseException;
 
     Video upload(File file, UploadProgressListener m) throws ResponseException;
 
-    Video upload(File file, Video video, UploadProgressListener m) throws ResponseException;
+    Video upload(File file, VideoInput video, UploadProgressListener m) throws ResponseException;
 
-    Video uploadThumbnail(Video video, File file) throws ResponseException, IOException;
+    Video uploadThumbnail(String videoId, File file) throws ResponseException, IOException;
 
-    Video updateThumbnail(Video video, String timecode) throws ResponseException;
+    Video updateThumbnail(String videoId, String timecode) throws ResponseException;
 
     Video update(Video video) throws ResponseException;
 
-    void delete(Video video) throws ResponseException;
+    void delete(String videoId) throws ResponseException;
 }

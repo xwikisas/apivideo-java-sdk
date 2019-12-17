@@ -3,11 +3,12 @@ package video.api.java.sdk.infrastructure.unirest.analytics;
 import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.analytics.*;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import javax.xml.bind.DatatypeConverter;
 
-public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession> {
+public class PlayerSessionDeserializer implements JsonDeserializer<PlayerSession> {
 
     @Override
     public PlayerSession deserialize(JSONObject data) throws JSONException {

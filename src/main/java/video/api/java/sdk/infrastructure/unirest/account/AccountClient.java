@@ -6,18 +6,18 @@ import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 
 import static kong.unirest.HttpMethod.GET;
 
 public class AccountClient {
-    private final RequestBuilderFactory   requestBuilderFactory;
-    private final JsonSerializer<Account> serializer;
-    private final RequestExecutor         requestExecutor;
+    private final RequestBuilderFactory     requestBuilderFactory;
+    private final JsonDeserializer<Account> deserializer;
+    private final RequestExecutor           requestExecutor;
 
-    public AccountClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<Account> serializer, RequestExecutor requestExecutor) {
+    public AccountClient(RequestBuilderFactory requestBuilderFactory, JsonDeserializer<Account> deserializer, RequestExecutor requestExecutor) {
         this.requestBuilderFactory = requestBuilderFactory;
-        this.serializer            = serializer;
+        this.deserializer          = deserializer;
         this.requestExecutor       = requestExecutor;
     }
 
@@ -27,7 +27,7 @@ public class AccountClient {
 
         JsonNode responseBody = requestExecutor.executeJson(request);
 
-        return serializer.deserialize(responseBody.getObject());
+        return deserializer.deserialize(responseBody.getObject());
     }
 
 }

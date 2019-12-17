@@ -8,15 +8,14 @@ import java.util.List;
 
 public interface CaptionClient {
 
-    Caption get(String VideoId, String lang) throws ResponseException;
+    Caption get(String videoId, String lang) throws ResponseException;
 
-    List<Caption> getAll(String VideoId) throws ResponseException;
+    List<Caption> list(String videoId) throws ResponseException;
 
-    Caption upload(String VideoId, File file, String lang) throws ResponseException, IOException;
+    Caption upload(String videoId, File file, String language) throws ResponseException, IOException;
 
-    Caption updateDefault(String VideoId, String lang, boolean isDefault) throws ResponseException;
+    Caption update(String videoId, CaptionInput captionInput) throws ResponseException;
 
-    void delete(String VideoId, String lang) throws ResponseException;
-
+    void delete(String videoId, String language) throws ResponseException;
 
 }
