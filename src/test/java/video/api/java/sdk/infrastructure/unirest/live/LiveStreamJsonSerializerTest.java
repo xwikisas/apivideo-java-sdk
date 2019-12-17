@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.live.LiveStream;
-import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,7 +14,7 @@ class LiveStreamJsonSerializerTest {
 
     @BeforeEach
     void setUp() {
-        serializer = new LiveStreamJsonSerializer(new AssetsJsonSerializer());
+        serializer = new LiveStreamJsonSerializer();
     }
 
     @Test
@@ -50,10 +49,10 @@ class LiveStreamJsonSerializerTest {
         assertEquals(json.getString("streamKey"), liveStream.streamKey);
         assertEquals(json.getBoolean("record"), liveStream.record);
         assertEquals(json.getBoolean("broadcasting"), liveStream.broadcasting);
-        assertEquals(assets.getString("iframe"), liveStream.assets.iframe);
-        assertEquals(assets.getString("player"), liveStream.assets.player);
-        assertEquals(assets.getString("hls"), liveStream.assets.hls);
-        assertEquals(assets.getString("thumbnail"), liveStream.assets.thumbnail);
+        assertEquals(assets.getString("iframe"), liveStream.assets.get("iframe"));
+        assertEquals(assets.getString("player"), liveStream.assets.get("player"));
+        assertEquals(assets.getString("hls"), liveStream.assets.get("hls"));
+        assertEquals(assets.getString("thumbnail"), liveStream.assets.get("thumbnail"));
     }
 
     @Test

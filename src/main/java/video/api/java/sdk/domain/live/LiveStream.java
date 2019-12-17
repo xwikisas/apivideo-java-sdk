@@ -1,16 +1,17 @@
 package video.api.java.sdk.domain.live;
 
-import video.api.java.sdk.domain.asset.Assets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LiveStream {
     public final String name;
 
-    public String  liveStreamId;
-    public String  streamKey;
-    public String  playerId;
-    public boolean record       = false;
-    public boolean broadcasting = false;
-    public Assets  assets       = new Assets();
+    public       String              liveStreamId;
+    public       String              streamKey;
+    public       String              playerId;
+    public       boolean             record;
+    public       boolean             broadcasting;
+    public final Map<String, String> assets = new HashMap<>();
 
     public LiveStream(String name) {
         this.name = name;

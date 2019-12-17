@@ -10,7 +10,6 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
@@ -33,12 +32,12 @@ class VideoClientTest {
         testRequestExecutor.exception  = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         videoClientResponseException   = new VideoClient(
                 new RequestBuilderFactory(""),
-                new VideoJsonSerializer(new AssetsJsonSerializer()),
+                new VideoJsonSerializer(),
                 testRequestExecutor
         );
         videoClient                    = new VideoClient(
                 new RequestBuilderFactory(""),
-                new VideoJsonSerializer(new AssetsJsonSerializer()),
+                new VideoJsonSerializer(),
                 new TestRequestExecutor()
         );
         videoClientSerializerException = new VideoClient(

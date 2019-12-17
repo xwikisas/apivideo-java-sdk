@@ -3,21 +3,15 @@ package video.api.java.sdk.infrastructure.unirest.video;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import video.api.java.sdk.domain.asset.Assets;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class VideoJsonSerializer implements JsonSerializer<Video> {
-    private final JsonSerializer<Assets> assetsSerializer;
-
-    public VideoJsonSerializer(JsonSerializer<Assets> assetsSerializer) {
-        this.assetsSerializer = assetsSerializer;
-    }
-
     @Override
     public Video deserialize(JSONObject data) throws JSONException {
         Video video = new Video();
@@ -54,16 +48,14 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
             video.metadata = metadata;
         }
         if (data.has("source")) {
-            video.source = deserializeSource(data.getJSONObject("source"));
+            video.sourceInfo = deserializeSource(data.getJSONObject("source"));
         }
 
         video.publishedAt = DatatypeConverter.parseDateTime(data.getString("publishedAt"));
         video.updatedAt   = DatatypeConverter.parseDateTime(data.getString("updatedAt"));
 
-        try {
-            video.assets = assetsSerializer.deserialize(data.getJSONObject("assets"));
-        } catch (org.json.JSONException e) {
-            video.assets = null;
+        if (data.has("assets")) {
+            video.assets.putAll(convertAssets(data.getJSONObject("assets")));
         }
 
         if (data.has("playerId")) {
@@ -71,6 +63,11 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         }
 
         return video;
+    }
+
+    private Map<String, String> convertAssets(JSONObject assets) {
+        return assets.toMap().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
     }
 
     @Override
@@ -99,8 +96,8 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
         return metadataArray;
     }
 
-    private Video.Source deserializeSource(JSONObject data) {
-        return new Video.Source(
+    private Video.SourceInfo deserializeSource(JSONObject data) {
+        return new Video.SourceInfo(
                 data.getString("type"),
                 data.getString("uri")
         );

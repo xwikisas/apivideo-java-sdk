@@ -21,6 +21,7 @@ dependencies {
 # Quick start
 
 ```java
+import java.io.File;
 import video.api.java.sdk.Client;
 import video.api.java.sdk.ClientFactory;
 import video.api.java.sdk.domain.exception.ResponseException;
@@ -32,10 +33,10 @@ public class Main {
         // Client client = new ClientFactory().createSandbox("YourSandboxApiKey");
     
         // Upload a new video
-        Video video = client.videos.upload("/path/to/file.mp4");
+        Video video = client.videos.upload(new File("/path/to/file.mp4"));
 
         // Get its embed code 
-        String embedCode = video.assets.iframe; // <iframe src="..."></iframe>
+        String embedCode = video.assets.get("iframe"); // <iframe src="..."></iframe>
     }
 }
 ```
@@ -46,7 +47,7 @@ public class Main {
 Video video = new Video();
 video.title = "My title";
 video.tags.add("my tag");
-video = client.videos.upload("/path/to/file.mp4", video);
+video = client.videos.upload(new File("/path/to/file.mp4"), video);
 
 // Iterate over videos (paging is handled by the client)
 for (Video v : client.videos.list()) {

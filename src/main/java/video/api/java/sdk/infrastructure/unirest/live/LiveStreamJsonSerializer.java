@@ -9,14 +9,10 @@ import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LiveStreamJsonSerializer implements JsonSerializer<LiveStream> {
-    private final JsonSerializer<Assets> assetsSerializer;
-
-    public LiveStreamJsonSerializer(JsonSerializer<Assets> assetsSerializer) {
-        this.assetsSerializer = assetsSerializer;
-    }
-
     @Override
     public LiveStream deserialize(JSONObject data) throws JSONException {
         LiveStream liveStream = new LiveStream(data.getString("name"));
@@ -29,13 +25,19 @@ public class LiveStreamJsonSerializer implements JsonSerializer<LiveStream> {
             liveStream.record = data.getBoolean("record");
         if (data.has("broadcasting"))
             liveStream.broadcasting = data.getBoolean("broadcasting");
-        if (data.has("assets"))
-            liveStream.assets = assetsSerializer.deserialize(data.getJSONObject("assets"));
+        if (data.has("assets")) {
+            liveStream.assets.putAll(convertAssets(data.getJSONObject("assets")));
+        }
         if (data.has("playerId")) {
             liveStream.playerId = data.getString("playerId");
         }
 
         return liveStream;
+    }
+
+    private Map<String, String> convertAssets(JSONObject assets) {
+        return assets.toMap().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
     }
 
     @Override

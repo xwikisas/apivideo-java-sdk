@@ -3,7 +3,6 @@ package video.api.java.sdk;
 
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.analytics.*;
-import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionJsonSerializer;
 import video.api.java.sdk.infrastructure.unirest.live.LiveStreamClient;
@@ -26,15 +25,14 @@ public class ClientFactory {
     private Client create(String apiKey, String baseUri) {
         RequestBuilderFactory requestBuilderFactory      = new RequestBuilderFactory(baseUri);
         AuthRequestExecutor   authRequestExecutor = new AuthRequestExecutor(requestBuilderFactory, apiKey);
-        AssetsJsonSerializer  assetsSerializer    = new AssetsJsonSerializer();
 
         return new Client(
                 new CaptionClient(requestBuilderFactory, new CaptionJsonSerializer(), authRequestExecutor),
-                new LiveStreamClient(requestBuilderFactory, new LiveStreamJsonSerializer(assetsSerializer), authRequestExecutor),
+                new LiveStreamClient(requestBuilderFactory, new LiveStreamJsonSerializer(), authRequestExecutor),
                 new LiveStreamSessionClient(requestBuilderFactory, new PlayerSessionJsonSerializer(), authRequestExecutor),
                 new PlayerClient(requestBuilderFactory, new PlayerJsonSerializer(), authRequestExecutor),
                 new PlayerSessionEventClient(requestBuilderFactory, new SessionEventJsonSerializer(), authRequestExecutor),
-                new VideoClient(requestBuilderFactory, new VideoJsonSerializer(assetsSerializer), authRequestExecutor),
+                new VideoClient(requestBuilderFactory, new VideoJsonSerializer(), authRequestExecutor),
                 new VideoSessionClient(requestBuilderFactory, new PlayerSessionJsonSerializer(), authRequestExecutor)
         );
     }

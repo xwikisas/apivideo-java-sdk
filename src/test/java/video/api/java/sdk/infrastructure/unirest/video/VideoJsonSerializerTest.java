@@ -6,9 +6,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +16,7 @@ class VideoJsonSerializerTest {
 
     @BeforeEach
     void setUp() {
-        videoJsonSerializer = new VideoJsonSerializer(new AssetsJsonSerializer());
+        videoJsonSerializer = new VideoJsonSerializer();
     }
 
     ///////////////Failure//////////////////////////
@@ -52,40 +50,32 @@ class VideoJsonSerializerTest {
 
     @Test
     void deserializeMaximalSuccess() {
-        JSONArray tags = new JSONArray() {{
-            put("tata");
-            put("titi");
-        }};
-
-        JSONArray metadata = new JSONArray() {
-        };
-
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("key", "age");
-        hashMap.put("value", "__age__");
-        HashMap<String, String> hashMap2 = new HashMap<>();
-        hashMap2.put("key", "actor");
-        hashMap2.put("value", "Nader");
-        metadata.put(new JSONObject(hashMap));
-        metadata.put(new JSONObject(hashMap2));
-
-        JSONObject jsonVideo = new JSONObject() {
-            {
-                put("videoId", "toto");
-                put("title", "toto");
-                put("description", "desc");
-                put("isPublic", true);
-                put("publishedAt", "2019-08-28T16:25:51+02:00");
-                put("updatedAt", "2019-08-28T16:25:51+02:00");
-                put("panoramic", true);
-                put("tags", tags);
-                put("metadata", metadata);
-
-                // TODO
-            }
-
-        };
+        JSONObject jsonVideo = new JSONObject()
+                .put("videoId", "toto")
+                .put("title", "toto")
+                .put("description", "desc")
+                .put("isPublic", true)
+                .put("publishedAt", "2019-08-28T16:25:51+02:00")
+                .put("updatedAt", "2019-08-28T16:25:51+02:00")
+                .put("panoramic", true)
+                .put("tags", new JSONArray()
+                        .put("foo")
+                        .put("bar"))
+                .put("metadata", new JSONArray()
+                        .put(new JSONObject()
+                                     .put("key", "age")
+                                     .put("value", "__age__")
+                        )
+                        .put(new JSONObject()
+                                     .put("key", "actor")
+                                     .put("value", "Nader")
+                        ))
+                .put("assets", new JSONObject()
+                        .put("iframe", "<iframe src=\"https://embed.api.video/vod/virMgDJYvjHzoFZZYgMCkvC\" width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" allowfullscreen=\"\"></iframe>")
+                        .put("player", "https://embed.api.video/vod/virMgDJYvjHzoFZZYgMCkvC")
+                        .put("hls", "https://cdn.api.video/vod/virMgDJYvjHzoFZZYgMCkvC/hls/manifest.m3u8")
+                        .put("thumbnail", "https://cdn.api.video/vod/virMgDJYvjHzoFZZYgMCkvC/thumbnail.jpg")
+                );
 
         Video video = videoJsonSerializer.deserialize(jsonVideo);
 
@@ -94,10 +84,11 @@ class VideoJsonSerializerTest {
         assertEquals("desc", video.description);
         assertTrue(video.isPublic);
         assertTrue(video.panoramic);
-        assertEquals("tata", video.tags.get(0));
-        assertEquals("titi", video.tags.get(1));
+        assertEquals("foo", video.tags.get(0));
+        assertEquals("bar", video.tags.get(1));
         assertEquals("__age__", video.metadata.get("age"));
         assertEquals("Nader", video.metadata.get("actor"));
+        assertEquals(4, video.assets.size());
     }
 
     @Test
@@ -142,10 +133,10 @@ class VideoJsonSerializerTest {
                                                       "                \"uri\": \"/videos/vi5iemB77Z5VmZSoNz94dr2O/source\"\n" +
                                                       "            },\n" +
                                                       "            \"assets\": {\n" +
-                                                      "                \"iframe\": \"<iframe src=\\\"https://embed-staging.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
-                                                      "                \"player\": \"https://embed-staging.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O\",\n" +
-                                                      "                \"hls\": \"https://cdn-staging.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O/hls/manifest.m3u8\",\n" +
-                                                      "                \"thumbnail\": \"https://cdn-staging.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O/thumbnail.jpg\"\n" +
+                                                      "                \"iframe\": \"<iframe src=\\\"https://embed.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
+                                                      "                \"player\": \"https://embed.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O\",\n" +
+                                                      "                \"hls\": \"https://cdn.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O/hls/manifest.m3u8\",\n" +
+                                                      "                \"thumbnail\": \"https://cdn.api.video/vod/vi5iemB77Z5VmZSoNz94dr2O/thumbnail.jpg\"\n" +
                                                       "            }\n" +
                                                       "        }");
 
@@ -165,10 +156,10 @@ class VideoJsonSerializerTest {
                                                        "                \"uri\": \"/videos/vi2SRWJ6ipruaD9K73CJbP0V/source\"\n" +
                                                        "            },\n" +
                                                        "            \"assets\": {\n" +
-                                                       "                \"iframe\": \"<iframe src=\\\"https://embed-staging.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
-                                                       "                \"player\": \"https://embed-staging.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V\",\n" +
-                                                       "                \"hls\": \"https://cdn-staging.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V/hls/manifest.m3u8\",\n" +
-                                                       "                \"thumbnail\": \"https://cdn-staging.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V/thumbnail.jpg\"\n" +
+                                                       "                \"iframe\": \"<iframe src=\\\"https://embed.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V\\\" width=\\\"100%\\\" height=\\\"100%\\\" frameborder=\\\"0\\\" scrolling=\\\"no\\\" allowfullscreen=\\\"\\\"></iframe>\",\n" +
+                                                       "                \"player\": \"https://embed.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V\",\n" +
+                                                       "                \"hls\": \"https://cdn.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V/hls/manifest.m3u8\",\n" +
+                                                       "                \"thumbnail\": \"https://cdn.api.video/vod/vi2SRWJ6ipruaD9K73CJbP0V/thumbnail.jpg\"\n" +
                                                        "            }\n" +
                                                        "        }");
         List<Video> videoList = videoJsonSerializer.deserialize(new JSONArray() {{
