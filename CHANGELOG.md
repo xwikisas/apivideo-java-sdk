@@ -1,7 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.3.0] - 2019-11-26
+## [0.3.0] - 2019-12-17
+
+### Added
+- `Video.updatedAt` property
 
 ### Changed
 - `Client.videos.upload(String source)` -> `Client.videos.upload(File file)`
