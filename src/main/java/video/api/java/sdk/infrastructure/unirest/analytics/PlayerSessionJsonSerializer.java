@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
+import javax.xml.bind.DatatypeConverter;
+
 public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession> {
 
     @Override
@@ -22,8 +24,8 @@ public class PlayerSessionJsonSerializer implements JsonSerializer<PlayerSession
     private Info deserializeInfo(JSONObject object) {
         return new Info(
                 object.getString("sessionId"),
-                object.getString("endedAt"),
-                object.getString("loadedAt"),
+                DatatypeConverter.parseDateTime(object.getString("endedAt")),
+                DatatypeConverter.parseDateTime(object.getString("loadedAt")),
                 object.has("metadata") ? convertKeyValueJsonArrayToMap(object.getJSONArray("metadata")) : null
         );
     }

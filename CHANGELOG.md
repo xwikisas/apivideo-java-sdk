@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 - `Video.updatedAt` property
 
 ### Changed
+- `Video.publishedAt` property type from `String` to `Calendar`
+- `Info.loadedAt` property type from `String` to `Calendar`
+- `Info.endedAt` property type from `String` to `Calendar`
+- `PlayerSessionEvent.emittedAt` property type from `String` to `Calendar`
 - `Client.videos.upload(String source)` -> `Client.videos.upload(File file)`
 - `Client.videos.uploadThumbnail(Video video, String thumbnailSource)` -> `Client.videos.uploadThumbnail(Video video, File file)`
 - `Client.videos.uploadThumbnailWithTimecode(Video video, String timecode)` -> `Client.videos.uploadThumbnail(Video video, String timecode)`

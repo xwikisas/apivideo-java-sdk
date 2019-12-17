@@ -112,8 +112,6 @@ class VideoJsonSerializerTest {
                 put("panoramic", true);
                 put("publishedAt", "2019-08-28T16:25:51+02:00");
                 put("updatedAt", "2019-08-28T16:25:51+02:00");
-
-                // TODO
             }
 
         };

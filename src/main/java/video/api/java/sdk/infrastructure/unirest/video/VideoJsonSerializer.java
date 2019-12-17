@@ -7,6 +7,7 @@ import video.api.java.sdk.domain.asset.Assets;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,13 +57,13 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
             video.source = deserializeSource(data.getJSONObject("source"));
         }
 
-        video.publishedAt = data.getString("publishedAt");
-        video.updatedAt = data.getString("updatedAt");
+        video.publishedAt = DatatypeConverter.parseDateTime(data.getString("publishedAt"));
+        video.updatedAt   = DatatypeConverter.parseDateTime(data.getString("updatedAt"));
 
         try {
-            video.assets      = assetsSerializer.deserialize(data.getJSONObject("assets"));
+            video.assets = assetsSerializer.deserialize(data.getJSONObject("assets"));
         } catch (org.json.JSONException e) {
-            video.assets      = null;
+            video.assets = null;
         }
 
         if (data.has("playerId")) {
