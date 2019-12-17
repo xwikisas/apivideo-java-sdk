@@ -56,13 +56,13 @@ public class VideoJsonSerializer implements JsonSerializer<Video> {
             video.source = deserializeSource(data.getJSONObject("source"));
         }
 
+        video.publishedAt = data.getString("publishedAt");
+        video.updatedAt = data.getString("updatedAt");
+
         try {
             video.assets      = assetsSerializer.deserialize(data.getJSONObject("assets"));
-            video.publishedAt = data.getString("publishedAt");
         } catch (org.json.JSONException e) {
-            video.assets      = new Assets();
-            video.publishedAt = "unknown";
-
+            video.assets      = null;
         }
 
         if (data.has("playerId")) {

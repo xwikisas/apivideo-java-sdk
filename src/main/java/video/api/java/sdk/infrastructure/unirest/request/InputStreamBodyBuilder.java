@@ -3,7 +3,6 @@ package video.api.java.sdk.infrastructure.unirest.request;
 import kong.unirest.HttpRequest;
 import kong.unirest.HttpRequestWithBody;
 import kong.unirest.MultipartBody;
-import kong.unirest.RequestBodyEntity;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 
 import java.io.InputStream;

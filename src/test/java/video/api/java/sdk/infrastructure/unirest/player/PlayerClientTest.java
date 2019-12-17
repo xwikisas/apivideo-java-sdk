@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.QueryParams;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
-import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,12 +25,12 @@ class PlayerClientTest {
         executorFailure.exception = new ResponseException("foo", executorFailure.responseFailure(), 400);
 
         playerResponseException       = new PlayerClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new PlayerJsonSerializer(),
                 executorFailure
         );
         playerClient                  = new PlayerClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new PlayerJsonSerializer(),
                 new TestRequestExecutor()
         );
@@ -57,15 +57,12 @@ class PlayerClientTest {
 
     @Test
     void uploadFailureLogo() {
-        assertThrows(FileNotFoundException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
+        assertThrows(IOException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
     }
 
     @Test
     void getPlayerFailure() {
-
         assertThrows(ResponseException.class, () -> playerResponseException.get("plFailure"));
-
-
     }
 
     @Test

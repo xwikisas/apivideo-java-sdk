@@ -20,6 +20,7 @@ public class Video {
 
     public String              videoId;
     public String              publishedAt;
+    public String              updatedAt;
     public Source              source;
     public Assets              assets    = new Assets();
     public String              playerId;

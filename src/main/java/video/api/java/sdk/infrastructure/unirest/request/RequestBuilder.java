@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -34,28 +33,30 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder withFile(File file) {
-        bodyBuilder = new FileBodyBuilder(file, null, null);
-
-        return this;
+    public RequestBuilder withFile(File file) throws IOException {
+        return withFile(file, null, null);
     }
 
-    public RequestBuilder withFile(File file, String link) {
-        bodyBuilder = new FileBodyBuilder(file, link, null);
-
-        return this;
+    public RequestBuilder withFile(File file, String link) throws IOException {
+        return withFile(file, link, null);
     }
 
-    public RequestBuilder withFile(File file, String link, UploadProgressListener progressListener) {
+    public RequestBuilder withFile(File file, UploadProgressListener progressListener) throws IOException {
+        return withFile(file, null, progressListener);
+    }
+
+    public RequestBuilder withFile(File file, String link, UploadProgressListener progressListener) throws IOException {
+        if (!isFileReadable(file)) {
+            throw new IOException("File is not readable.");
+        }
+
         bodyBuilder = new FileBodyBuilder(file, link, progressListener);
 
         return this;
     }
 
-    public RequestBuilder withFile(File file, UploadProgressListener progressListener) throws IOException {
-        bodyBuilder = new FileBodyBuilder(file, null, progressListener);
-
-        return this;
+    private boolean isFileReadable(File file) {
+        return file.exists() && file.isFile() && file.canRead();
     }
 
     public RequestBuilder withChunk(String filename, InputStream inputStream, int chunkCount, int chunkNum, UploadProgressListener progressListener) {

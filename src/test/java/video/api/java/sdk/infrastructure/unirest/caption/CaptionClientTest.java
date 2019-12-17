@@ -3,13 +3,11 @@ package video.api.java.sdk.infrastructure.unirest.caption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CaptionClientTest {
     private CaptionClient captionResponseException;
@@ -18,14 +16,14 @@ class CaptionClientTest {
     @BeforeEach
     void setUp() {
         captionClient = new CaptionClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new CaptionJsonSerializer(),
                 new TestRequestExecutor()
         );
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
         testRequestExecutor.exception = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         captionResponseException      = new CaptionClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new CaptionJsonSerializer(),
                 testRequestExecutor
         );
@@ -49,11 +47,6 @@ class CaptionClientTest {
     @Test
     void delete() throws ResponseException {
 
-    }
-
-    @Test
-    void getUploadException() {
-        assertThrows(FileNotFoundException.class, () -> captionClient.upload("viSuccess", new File("error"), "en"));
     }
 
     @Test

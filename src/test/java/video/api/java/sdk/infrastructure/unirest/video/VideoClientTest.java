@@ -10,12 +10,12 @@ import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
-import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.asset.AssetsJsonSerializer;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,17 +32,17 @@ class VideoClientTest {
         TestRequestExecutor testRequestExecutor = new TestRequestExecutor();
         testRequestExecutor.exception  = new ResponseException("foo", testRequestExecutor.responseFailure(), 400);
         videoClientResponseException   = new VideoClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
                 testRequestExecutor
         );
         videoClient                    = new VideoClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new VideoJsonSerializer(new AssetsJsonSerializer()),
                 new TestRequestExecutor()
         );
         videoClientSerializerException = new VideoClient(
-                new RequestBuilder(""),
+                new RequestBuilderFactory(""),
                 new JsonSerializer<Video>() {
                     @Override
                     public Video deserialize(JSONObject data) throws JSONException {
@@ -112,7 +112,7 @@ class VideoClientTest {
     @Test
     void uploadThumbnailFailure() {
         testVideo.videoId = "viSuccess";
-        assertThrows(FileNotFoundException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
+        assertThrows(IOException.class, () -> videoClient.uploadThumbnail(testVideo, new File("foo")));
     }
 
     @Test

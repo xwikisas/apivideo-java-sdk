@@ -1,14 +1,14 @@
 package video.api.java.sdk.infrastructure.unirest.video;
 
-import kong.unirest.*;
+import kong.unirest.HttpRequest;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.exception.ClientException;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
 
 public class TestRequestExecutor implements RequestExecutor {
 
@@ -21,7 +21,7 @@ public class TestRequestExecutor implements RequestExecutor {
     private static final HttpRequest<?>    getVideoSuccess                    = Unirest.get("/videos/viSuccess");
     private static final HttpRequest<?>    deleteVideoSuccess                 = Unirest.delete("/videos/viSuccess");
     private static final HttpRequest<?>    getStatusVideoSuccess              = Unirest.get("/videos/viSuccess/status");
-    private static final HttpRequest<?>    listVideosSuccess                  = Unirest.get("/videos?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    listVideosSuccess                  = Unirest.get("/videos?currentPage=1&pageSize=25");
     private static final HttpRequest<?>    getVideoServerException            = Unirest.get("/videos/viServerException");
     private static final HttpRequest<?>    getVideoClientException            = Unirest.get("/videos/viClientException");
     private static final HttpRequest<?>    createCaptionSuccess               = Unirest.post("/videos/viSuccess/captions/en");
@@ -30,31 +30,33 @@ public class TestRequestExecutor implements RequestExecutor {
     private static final HttpRequest<?>    getCaptionsSuccess                 = Unirest.get("/videos/viSuccess/captions");
     private static final HttpRequest<?>    deleteCaptionSuccess               = Unirest.delete("/videos/viSuccess/captions/en");
     private static final HttpRequest<?>    getCaptionFailure                  = Unirest.get("/videos/viFailure/captions/en");
+    // Players
     private static final HttpRequest<?>    createPlayerSuccess                = Unirest.post("/players");
     private static final HttpRequest<?>    updateLogoPlayerSuccess            = Unirest.post("/players/" + "plSuccess/logo");
     private static final HttpRequest<?>    updatePlayerSuccess                = Unirest.patch("/players/" + "plSuccess");
     private static final HttpRequest<?>    getPlayerSuccess                   = Unirest.get("/players/plSuccess");
     private static final HttpRequest<?>    deletePlayerSuccess                = Unirest.delete("/players/plSuccess");
-    private static final HttpRequest<?>    listPlayersSuccess                 = Unirest.get("/players?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    listPlayersSuccess                 = Unirest.get("/players?currentPage=1&pageSize=25");
     private static final HttpRequest<?>    getPlayerFailure                   = Unirest.get("/players/plFailure");
+
     private static final HttpRequest<?>    createLiveSuccess                  = Unirest.post("/live-streams").body(new JSONObject().put("title", "tiSuccess"));
     private static final HttpRequest<?>    updateThumbnailLiveSuccess         = Unirest.post("/live-streams/" + "liSuccess" + "/thumbnail");
     private static final HttpRequest<?>    updateAddPlayerLiveSuccess         = Unirest.patch("/live-streams/" + "liSuccess");
     private static final HttpRequest<?>    updateLiveSuccess                  = Unirest.patch("/live-streams/" + "liSuccess");
     private static final HttpRequest<?>    getLiveSuccess                     = Unirest.get("/live-streams/liSuccess");
     private static final HttpRequest<?>    deleteLiveSuccess                  = Unirest.delete("/live-streams/liSuccess");
-    private static final HttpRequest<?>    getLivesSuccess                    = Unirest.get("/live-streams?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getLivesSuccess                    = Unirest.get("/live-streams?currentPage=1&pageSize=25");
     private static final HttpRequest<?>    getLiveServerException             = Unirest.get("/live-streams/liServerException");
     private static final HttpRequest<?>    getLiveClientException             = Unirest.get("/live-streams/liClientException");
     private static final HttpRequest<?>    getAnalyticVideosSuccess           = Unirest.get("/analytics/videos/viSuccess?period=2019");
-    private static final HttpRequest<?>    getAnalyticsVideosSuccess          = Unirest.get("/analytics/videos?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getAnalyticsVideosSuccess          = Unirest.get("/analytics/videos?currentPage=1&pageSize=25");
     private static final HttpRequest<?>    getAnalyticLivesSuccess            = Unirest.get("/analytics/live-streams/liSuccess?period=2019");
-    private static final HttpRequest<?>    getAnalyticsLivesSuccess           = Unirest.get("/analytics/live-streams?pageSize=25&currentPage=1");
-    private static final HttpRequest<?>    getAnalyticsEventsSuccess          = Unirest.get("/analytics/sessions/sessionId/events?pageSize=25&currentPage=1");
+    private static final HttpRequest<?>    getAnalyticsLivesSuccess           = Unirest.get("/analytics/live-streams?currentPage=1&pageSize=25");
+    private static final HttpRequest<?>    getAnalyticsEventsSuccess          = Unirest.get("/analytics/sessions/sessionId/events?currentPage=1&pageSize=25");
     public               ResponseException exception;
 
     @Override
-    public JsonNode executeJson(HttpRequest<?> request) throws ResponseException {
+    public JsonNode executeJson(RequestBuilder request) throws ResponseException {
         if (exception != null) {
             throw exception;
         }
@@ -158,6 +160,7 @@ public class TestRequestExecutor implements RequestExecutor {
                         "            \"public\": true,\n" +
                         "            \"panoramic\": false,\n" +
                         "            \"publishedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
+                        "            \"updatedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
                         "            \"tags\": [],\n" +
                         "            \"metadata\": [],\n" +
                         "            \"source\": {\n" +
@@ -858,6 +861,7 @@ public class TestRequestExecutor implements RequestExecutor {
                         "            \"public\": true,\n" +
                         "            \"panoramic\": false,\n" +
                         "            \"publishedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
+                        "            \"updatedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
                         "            \"tags\": [],\n" +
                         "            \"metadata\": [],\n" +
                         "            \"source\": {\n" +
@@ -878,6 +882,7 @@ public class TestRequestExecutor implements RequestExecutor {
                         "            \"public\": true,\n" +
                         "            \"panoramic\": false,\n" +
                         "            \"publishedAt\": \"2019-08-29T08:54:13+02:00\",\n" +
+                        "            \"updatedAt\": \"2019-08-29T08:54:13+02:00\",\n" +
                         "            \"tags\": [],\n" +
                         "            \"metadata\": [],\n" +
                         "            \"source\": {\n" +
@@ -898,6 +903,7 @@ public class TestRequestExecutor implements RequestExecutor {
                         "            \"public\": true,\n" +
                         "            \"panoramic\": false,\n" +
                         "            \"publishedAt\": \"2019-08-29T16:45:41+02:00\",\n" +
+                        "            \"updatedAt\": \"2019-08-29T16:45:41+02:00\",\n" +
                         "            \"tags\": [\n" +
                         "                \"tata\",\n" +
                         "                \"titi\"\n" +
@@ -960,9 +966,11 @@ public class TestRequestExecutor implements RequestExecutor {
         return new ClientException("foo", new JsonNode(""), 400);
     }
 
-    private boolean equals(HttpRequest<?> a, HttpRequest<?> b) {
-        return a.getUrl().equals(b.getUrl())
-                && a.getHttpMethod().equals(b.getHttpMethod());
+    private boolean equals(RequestBuilder a, HttpRequest<?> b) {
+        HttpRequest<?> areq = a.build();
+
+        return areq.getUrl().equals(b.getUrl())
+                && areq.getHttpMethod().equals(b.getHttpMethod());
 
     }
 }

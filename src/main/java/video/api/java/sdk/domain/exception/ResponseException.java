@@ -1,6 +1,5 @@
 package video.api.java.sdk.domain.exception;
 
-import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 
 public class ResponseException extends Exception {

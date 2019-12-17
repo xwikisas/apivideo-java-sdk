@@ -42,6 +42,8 @@ class VideoJsonSerializerTest {
         Video video = videoJsonSerializer.deserialize(new JSONObject() {
             {
                 put("videoId", "toto");
+                put("publishedAt", "2019-08-28T16:25:51+02:00");
+                put("updatedAt", "2019-08-28T16:25:51+02:00");
             }
         });
 
@@ -74,6 +76,8 @@ class VideoJsonSerializerTest {
                 put("title", "toto");
                 put("description", "desc");
                 put("isPublic", true);
+                put("publishedAt", "2019-08-28T16:25:51+02:00");
+                put("updatedAt", "2019-08-28T16:25:51+02:00");
                 put("panoramic", true);
                 put("tags", tags);
                 put("metadata", metadata);
@@ -106,6 +110,9 @@ class VideoJsonSerializerTest {
                 put("description", "desc");
                 put("isPublic", true);
                 put("panoramic", true);
+                put("publishedAt", "2019-08-28T16:25:51+02:00");
+                put("updatedAt", "2019-08-28T16:25:51+02:00");
+
                 // TODO
             }
 
@@ -129,6 +136,7 @@ class VideoJsonSerializerTest {
                                                       "            \"public\": true,\n" +
                                                       "            \"panoramic\": false,\n" +
                                                       "            \"publishedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
+                                                      "            \"updatedAt\": \"2019-08-28T16:25:51+02:00\",\n" +
                                                       "            \"tags\": [],\n" +
                                                       "            \"metadata\": [],\n" +
                                                       "            \"source\": {\n" +
@@ -151,6 +159,7 @@ class VideoJsonSerializerTest {
                                                        "            \"public\": true,\n" +
                                                        "            \"panoramic\": false,\n" +
                                                        "            \"publishedAt\": \"2019-08-29T08:54:13+02:00\",\n" +
+                                                       "            \"updatedAt\": \"2019-08-29T08:54:13+02:00\",\n" +
                                                        "            \"tags\": [],\n" +
                                                        "            \"metadata\": [],\n" +
                                                        "            \"source\": {\n" +
