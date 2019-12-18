@@ -4,7 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.xml.bind.DatatypeConverter;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,12 @@ public interface JsonDeserializer<T> {
     }
 
     default Calendar deserializeDateTime(String dateTime) {
-        return DatatypeConverter.parseDateTime(dateTime);
+        try {
+            return DatatypeFactory.newInstance()
+                    .newXMLGregorianCalendar(dateTime)
+                    .toGregorianCalendar();
+        } catch (DatatypeConfigurationException e) {
+            throw new JSONException(e);
+        }
     }
 }

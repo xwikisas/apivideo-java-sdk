@@ -4,9 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import video.api.java.sdk.domain.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
-import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
-
-import javax.xml.bind.DatatypeConverter;
 
 public class PlayerSessionDeserializer implements JsonDeserializer<PlayerSession> {
 
@@ -25,8 +22,8 @@ public class PlayerSessionDeserializer implements JsonDeserializer<PlayerSession
     private Info deserializeInfo(JSONObject object) {
         return new Info(
                 object.getString("sessionId"),
-                DatatypeConverter.parseDateTime(object.getString("endedAt")),
-                DatatypeConverter.parseDateTime(object.getString("loadedAt")),
+                deserializeDateTime(object.getString("endedAt")),
+                deserializeDateTime(object.getString("loadedAt")),
                 object.has("metadata") ? convertKeyValueJsonArrayToMap(object.getJSONArray("metadata")) : null
         );
     }

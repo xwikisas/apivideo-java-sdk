@@ -12,14 +12,21 @@ class LiveStreamDeserializerTest {
 
     @Test
     void deserializeMin() {
-        JSONObject json = new JSONObject()
-                .put("liveStreamId", "liSuccess")
-                .put("name", "test");
+        JSONObject json = createLiveStreamMinimal();
 
         LiveStream liveStream = deserializer.deserialize(json);
 
         assertEquals(json.getString("liveStreamId"), liveStream.liveStreamId);
         assertEquals(json.getString("name"), liveStream.name);
+        assertEquals(json.getString("streamKey"), liveStream.streamKey);
+    }
+
+    private JSONObject createLiveStreamMinimal() {
+        return new JSONObject()
+                .put("liveStreamId", "liSuccess")
+                .put("name", "test")
+                .put("streamKey", "xxx")
+                .put("broadcasting", true);
     }
 
     @Test
@@ -30,12 +37,8 @@ class LiveStreamDeserializerTest {
                 .put("hls", "...")
                 .put("thumbnail", "...");
 
-        JSONObject json = new JSONObject()
-                .put("liveStreamId", "liSuccess")
-                .put("name", "test")
-                .put("streamKey", "xxx")
+        JSONObject json = createLiveStreamMinimal()
                 .put("record", true)
-                .put("broadcasting", true)
                 .put("assets", assets);
 
         LiveStream liveStream = deserializer.deserialize(json);

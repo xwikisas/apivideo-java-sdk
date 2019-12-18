@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.caption.Caption;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -21,14 +23,8 @@ class CaptionDeserializerTest {
     @Test
     void deserializeMax() {
 
-
-        Caption caption = captionDeserializer.deserialize(new JSONObject("{\n" +
-                                                                                   "    \"uri\": \"tata\",\n" +
-                                                                                   "    \"src\": \"vtt\",\n" +
-                                                                                   "    \"srclang\": \"en\",\n" +
-                                                                                   "    \"default\": false\n" +
-                                                                                   "}"));
-        assertEquals("tata", caption.uri);
+        Caption caption = captionDeserializer.deserialize(createCaptionEn());
+        assertEquals("foo", caption.uri);
         assertEquals("vtt", caption.src);
         assertEquals("en", caption.language);
         assertFalse(caption.isDefault);
@@ -38,44 +34,56 @@ class CaptionDeserializerTest {
 
     @Test
     void deserializeMin() {
+        Caption caption = captionDeserializer.deserialize(createCaptionMinimal());
 
-
-        Caption caption = captionDeserializer.deserialize(new JSONObject("{\n" +
-                                                                                   "    \"uri\": \"tata\",\n" +
-                                                                                   "}"));
-        assertEquals("tata", caption.uri);
-
+        assertEquals("foo", caption.uri);
+        assertEquals("bar", caption.language);
+        assertEquals("baz", caption.src);
     }
 
+    private JSONObject createCaptionMinimal() {
+        return new JSONObject()
+                .put("uri", "foo")
+                .put("srclang", "bar")
+                .put("src", "baz");
+    }
 
     @Test
     void deserializeAll() {
-        JSONArray captions = new JSONArray();
-        JSONObject caption = new JSONObject("{\n" +
-                                                    "    \"uri\": \"tata\",\n" +
-                                                    "    \"src\": \"vtt\",\n" +
-                                                    "    \"srclang\": \"en\",\n" +
-                                                    "    \"default\": false\n" +
-                                                    "}");
-        JSONObject caption1 = new JSONObject("{\n" +
-                                                     "    \"uri\": \"tata\",\n" +
-                                                     "    \"src\": \"vtt\",\n" +
-                                                     "    \"srclang\": \"fr\",\n" +
-                                                     "    \"default\": false\n" +
-                                                     "}");
-        JSONObject caption2 = new JSONObject("{\n" +
-                                                     "    \"uri\": \"tata\",\n" +
-                                                     "    \"src\": \"vtt\",\n" +
-                                                     "    \"srclang\": \"esp\",\n" +
-                                                     "    \"default\": false\n" +
-                                                     "}");
+        JSONArray captions = new JSONArray()
+                .put(createCaptionEn())
+                .put(createCaptionFr())
+                .put(createCaptionEs());
 
-        captions.put(caption);
-        captions.put(caption1);
-        captions.put(caption2);
-        assertEquals(captionDeserializer.deserialize(captions).get(0).language, "en");
-        assertEquals(captionDeserializer.deserialize(captions).get(1).language, "fr");
-        assertEquals(captionDeserializer.deserialize(captions).get(2).language, "esp");
+        List<Caption> deserialized = captionDeserializer.deserialize(captions);
+
+        assertEquals(deserialized.get(0).language, "en");
+        assertEquals(deserialized.get(1).language, "fr");
+        assertEquals(deserialized.get(2).language, "es");
+    }
+
+    private JSONObject createCaptionEn() {
+        return new JSONObject()
+                .put("uri", "foo")
+                .put("src", "vtt")
+                .put("srclang", "en")
+                .put("default", false);
+    }
+
+    private JSONObject createCaptionEs() {
+        return new JSONObject()
+                .put("uri", "bar")
+                .put("src", "vtt")
+                .put("srclang", "es")
+                .put("default", false);
+    }
+
+    private JSONObject createCaptionFr() {
+        return new JSONObject()
+                .put("uri", "baz")
+                .put("src", "vtt")
+                .put("srclang", "fr")
+                .put("default", false);
     }
 
 }
