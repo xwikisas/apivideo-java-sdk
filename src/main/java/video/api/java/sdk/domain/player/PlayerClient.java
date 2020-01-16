@@ -17,6 +17,8 @@ public interface PlayerClient {
 
     Player uploadLogo(String playerId, File file, String link) throws ResponseException, IOException;
 
+    void deleteLogo(String playerId) throws ResponseException;
+
     void delete(String playerId) throws ResponseException;
 
     Iterable<Player> list() throws ResponseException;

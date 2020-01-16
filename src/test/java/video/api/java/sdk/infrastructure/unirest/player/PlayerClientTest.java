@@ -12,8 +12,7 @@ import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("WeakerAccess")
 class PlayerClientTest {
@@ -60,6 +59,13 @@ class PlayerClientTest {
     @Test
     void uploadFailureLogo() {
         assertThrows(IOException.class, () -> playerClient.uploadLogo("plSuccess", new File("Failure Source"), "test.fr"));
+    }
+
+    @Test
+    void deleteLogo() {
+        assertDoesNotThrow(
+                () -> playerClient.deleteLogo("plSuccess")
+        );
     }
 
     @Test

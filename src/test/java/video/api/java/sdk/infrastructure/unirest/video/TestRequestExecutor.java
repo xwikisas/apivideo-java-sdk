@@ -33,6 +33,7 @@ public class TestRequestExecutor implements RequestExecutor {
     // Players
     private static final HttpRequest<?>    createPlayerSuccess                = Unirest.post("/players");
     private static final HttpRequest<?>    updateLogoPlayerSuccess            = Unirest.post("/players/" + "plSuccess/logo");
+    private static final HttpRequest<?>    deleteLogoPlayerSuccess            = Unirest.delete("/players/" + "plSuccess/logo");
     private static final HttpRequest<?>    updatePlayerSuccess                = Unirest.patch("/players/" + "plSuccess");
     private static final HttpRequest<?>    getPlayerSuccess                   = Unirest.get("/players/plSuccess");
     private static final HttpRequest<?>    deletePlayerSuccess                = Unirest.delete("/players/plSuccess");
@@ -106,6 +107,8 @@ public class TestRequestExecutor implements RequestExecutor {
             return playerResponseSuccess();
         } else if (equals(request, updateLogoPlayerSuccess)) {
             return playerResponseSuccess();
+        } else if (equals(request, deleteLogoPlayerSuccess)) {
+            return playerResponseSuccess();
         } else if (equals(request, getPlayerSuccess)) {
             return playerResponseSuccess();
         } else if (equals(request, deletePlayerSuccess)) {
@@ -148,7 +151,7 @@ public class TestRequestExecutor implements RequestExecutor {
             return analyticEventsResponseSuccess();
         }
 
-        return null;
+        throw new RuntimeException("Method not handled");
     }
 
     private JsonNode videoResponseSuccess() {

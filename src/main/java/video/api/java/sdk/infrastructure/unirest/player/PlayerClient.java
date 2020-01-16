@@ -72,6 +72,13 @@ public class PlayerClient implements video.api.java.sdk.domain.player.PlayerClie
         return deserializer.deserialize(responseBody.getObject());
     }
 
+    public void deleteLogo(String playerId) throws ResponseException {
+        RequestBuilder request = requestBuilderFactory
+                .create(DELETE, "/players/" + playerId + "/logo");
+
+        requestExecutor.executeJson(request);
+    }
+
     public void delete(String playerId) throws ResponseException {
         RequestBuilder request = requestBuilderFactory
                 .create(DELETE, "/players/" + playerId);
