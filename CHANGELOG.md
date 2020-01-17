@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2020-01-17
+
+### Added
+- `Client.players.deleteLogo()` method (https://docs.api.video/5.1/players/delete-logo)
+- `Client.chapters(videoId)` subclient (https://docs.api.video/5.1/chapters)
+
 ## [0.3.0] - 2019-12-17
 
 ### Added

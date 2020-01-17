@@ -6,6 +6,8 @@ import video.api.java.sdk.infrastructure.unirest.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionDeserializer;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionInputSerializer;
+import video.api.java.sdk.infrastructure.unirest.chapter.ChapterDeserializer;
+import video.api.java.sdk.infrastructure.unirest.chapter.UnirestChapterClientFactory;
 import video.api.java.sdk.infrastructure.unirest.live.LiveStreamClient;
 import video.api.java.sdk.infrastructure.unirest.live.LiveStreamDeserializer;
 import video.api.java.sdk.infrastructure.unirest.live.LiveStreamInputSerializer;
@@ -26,9 +28,9 @@ public class ClientFactory {
         return create(apiKey, "https://sandbox.api.video");
     }
 
-    private Client create(String apiKey, String baseUri) {
+    protected Client create(String apiKey, String baseUri) {
         RequestBuilderFactory requestBuilderFactory = new RequestBuilderFactory(baseUri);
-        AuthRequestExecutor   authRequestExecutor   = new AuthRequestExecutor(requestBuilderFactory, apiKey);
+        AuthRequestExecutor authRequestExecutor = new AuthRequestExecutor(requestBuilderFactory, apiKey);
 
         return new Client(
                 new CaptionClient(requestBuilderFactory, new CaptionInputSerializer(), new CaptionDeserializer(), authRequestExecutor),
@@ -37,8 +39,8 @@ public class ClientFactory {
                 new PlayerClient(requestBuilderFactory, new PlayerInputSerializer(), new PlayerDeserializer(), authRequestExecutor),
                 new PlayerSessionEventClient(requestBuilderFactory, new SessionEventJsonSerializer(), authRequestExecutor),
                 new VideoClient(requestBuilderFactory, new VideoInputSerializer(), new VideoDeserializer(), authRequestExecutor),
-                new VideoSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), authRequestExecutor)
+                new VideoSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), authRequestExecutor),
+                new UnirestChapterClientFactory(requestBuilderFactory, new ChapterDeserializer(), authRequestExecutor)
         );
     }
-
 }

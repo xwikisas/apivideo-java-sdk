@@ -15,13 +15,13 @@ import static kong.unirest.HttpMethod.POST;
 public class AuthRequestExecutor implements RequestExecutor {
 
     private final RequestBuilderFactory requestBuilderFactory;
-    private final String                apiKey;
-    private       String                accessToken;
-    private       String                refreshToken;
+    private final String apiKey;
+    private String accessToken;
+    private String refreshToken;
 
     public AuthRequestExecutor(RequestBuilderFactory requestBuilderFactory, String apiKey) {
         this.requestBuilderFactory = requestBuilderFactory;
-        this.apiKey                = apiKey;
+        this.apiKey = apiKey;
     }
 
     public JsonNode executeJson(RequestBuilder requestBuilder) throws ResponseException {
@@ -45,10 +45,19 @@ public class AuthRequestExecutor implements RequestExecutor {
         }
 
         if (response.getStatus() >= 400) {
-            throw new ClientException("A client issue occurred.", response.getBody(), response.getStatus());
+            String message = parseErrorBody(response.getBody());
+            throw new ClientException(message == null ? "A client issue occurred." : message, response.getBody(), response.getStatus());
         }
 
         return response.getBody();
+    }
+
+    private String parseErrorBody(JsonNode body) {
+        try {
+            return body.getObject().getString("title");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void requestAccessToken() throws ClientException {
@@ -78,7 +87,7 @@ public class AuthRequestExecutor implements RequestExecutor {
             throw new ClientException("Authentication failed.", response.getBody(), response.getStatus());
         }
 
-        this.accessToken  = responseBody.getString("access_token");
+        this.accessToken = responseBody.getString("access_token");
         this.refreshToken = responseBody.getString("refresh_token");
     }
 

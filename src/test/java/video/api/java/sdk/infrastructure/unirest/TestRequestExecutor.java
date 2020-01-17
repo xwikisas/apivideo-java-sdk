@@ -1,4 +1,4 @@
-package video.api.java.sdk.infrastructure.unirest.video;
+package video.api.java.sdk.infrastructure.unirest;
 
 import kong.unirest.HttpRequest;
 import kong.unirest.JsonNode;

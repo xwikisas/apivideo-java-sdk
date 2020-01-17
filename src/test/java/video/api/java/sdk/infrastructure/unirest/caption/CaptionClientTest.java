@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import video.api.java.sdk.domain.caption.CaptionInput;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.TestRequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

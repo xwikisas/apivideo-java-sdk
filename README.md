@@ -63,6 +63,7 @@ client.videos; // https://docs.api.video/5.1/videos
 client.players; // https://docs.api.video/5.1/players
 client.captions; // https://docs.api.video/5.1/captions
 client.liveStreams; // https://docs.api.video/5.1/live
+client.chapters(videoId); // https://docs.api.video/5.1/chapters
 
 // https://docs.api.video/5.1/analytics
 client.liveStreamAnalytics; 

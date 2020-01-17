@@ -7,7 +7,7 @@ import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.player.Player;
 import video.api.java.sdk.domain.player.PlayerInput;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.TestRequestExecutor;
 
 import java.io.File;
 import java.io.IOException;

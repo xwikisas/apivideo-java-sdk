@@ -11,9 +11,9 @@ import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.exception.ServerException;
 import video.api.java.sdk.domain.video.Video;
 import video.api.java.sdk.domain.video.VideoInput;
+import video.api.java.sdk.infrastructure.unirest.TestRequestExecutor;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
-import video.api.java.sdk.infrastructure.unirest.serializer.JsonSerializer;
 
 import java.io.File;
 import java.io.IOException;

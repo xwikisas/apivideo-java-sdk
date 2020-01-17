@@ -6,7 +6,7 @@ import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.domain.live.LiveStream;
 import video.api.java.sdk.domain.live.LiveStreamInput;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.video.TestRequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.TestRequestExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
