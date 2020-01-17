@@ -14,6 +14,7 @@ import java.net.URL;
 
 import static kong.unirest.HttpMethod.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UnirestChapterClientTest {
     @Test
@@ -39,7 +40,7 @@ public class UnirestChapterClientTest {
         HttpRequest request = inspector.buildRequest();
 
         assertEquals(GET, request.getHttpMethod());
-        assertEquals("/videos/viXXX/chapters", request.getUrl());
+        assertTrue(request.getUrl().startsWith("/videos/viXXX/chapters"));
     }
 
     @Test
