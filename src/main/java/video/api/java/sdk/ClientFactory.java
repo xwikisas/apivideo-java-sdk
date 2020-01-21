@@ -2,6 +2,8 @@ package video.api.java.sdk;
 
 
 import video.api.java.sdk.infrastructure.unirest.AuthRequestExecutor;
+import video.api.java.sdk.infrastructure.unirest.account.AccountClient;
+import video.api.java.sdk.infrastructure.unirest.account.AccountDeserializer;
 import video.api.java.sdk.infrastructure.unirest.analytics.*;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionClient;
 import video.api.java.sdk.infrastructure.unirest.caption.CaptionDeserializer;
@@ -30,17 +32,18 @@ public class ClientFactory {
 
     protected Client create(String apiKey, String baseUri) {
         RequestBuilderFactory requestBuilderFactory = new RequestBuilderFactory(baseUri);
-        AuthRequestExecutor authRequestExecutor = new AuthRequestExecutor(requestBuilderFactory, apiKey);
+        AuthRequestExecutor requestExecutor = new AuthRequestExecutor(requestBuilderFactory, apiKey);
 
         return new Client(
-                new CaptionClient(requestBuilderFactory, new CaptionInputSerializer(), new CaptionDeserializer(), authRequestExecutor),
-                new LiveStreamClient(requestBuilderFactory, new LiveStreamInputSerializer(), new LiveStreamDeserializer(), authRequestExecutor),
-                new LiveStreamSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), authRequestExecutor),
-                new PlayerClient(requestBuilderFactory, new PlayerInputSerializer(), new PlayerDeserializer(), authRequestExecutor),
-                new PlayerSessionEventClient(requestBuilderFactory, new SessionEventJsonSerializer(), authRequestExecutor),
-                new VideoClient(requestBuilderFactory, new VideoInputSerializer(), new VideoDeserializer(), authRequestExecutor),
-                new VideoSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), authRequestExecutor),
-                new UnirestChapterClientFactory(requestBuilderFactory, new ChapterDeserializer(), authRequestExecutor)
+                new AccountClient(requestBuilderFactory, new AccountDeserializer(), requestExecutor),
+                new CaptionClient(requestBuilderFactory, new CaptionInputSerializer(), new CaptionDeserializer(), requestExecutor),
+                new LiveStreamClient(requestBuilderFactory, new LiveStreamInputSerializer(), new LiveStreamDeserializer(), requestExecutor),
+                new LiveStreamSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), requestExecutor),
+                new PlayerClient(requestBuilderFactory, new PlayerInputSerializer(), new PlayerDeserializer(), requestExecutor),
+                new PlayerSessionEventClient(requestBuilderFactory, new SessionEventJsonSerializer(), requestExecutor),
+                new VideoClient(requestBuilderFactory, new VideoInputSerializer(), new VideoDeserializer(), requestExecutor),
+                new VideoSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), requestExecutor),
+                new UnirestChapterClientFactory(requestBuilderFactory, new ChapterDeserializer(), requestExecutor)
         );
     }
 }

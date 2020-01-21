@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## [0.5.0] - 2020-01-21
+
+### Added
+- `Client.account.get()` method (https://docs.api.video/5.1/account)
+
+
 ## [0.4.0] - 2020-01-17
 
 ### Added

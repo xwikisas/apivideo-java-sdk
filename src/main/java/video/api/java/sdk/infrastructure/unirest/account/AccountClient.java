@@ -4,13 +4,12 @@ import kong.unirest.JsonNode;
 import video.api.java.sdk.domain.account.Account;
 import video.api.java.sdk.domain.exception.ResponseException;
 import video.api.java.sdk.infrastructure.unirest.RequestExecutor;
-import video.api.java.sdk.infrastructure.unirest.request.RequestBuilder;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 
 import static kong.unirest.HttpMethod.GET;
 
-public class AccountClient {
+public class AccountClient implements video.api.java.sdk.domain.account.AccountClient {
     private final RequestBuilderFactory     requestBuilderFactory;
     private final JsonDeserializer<Account> deserializer;
     private final RequestExecutor           requestExecutor;
@@ -22,10 +21,9 @@ public class AccountClient {
     }
 
     public Account get() throws ResponseException {
-        RequestBuilder request = requestBuilderFactory
-                .create(GET, "/account");
-
-        JsonNode responseBody = requestExecutor.executeJson(request);
+        JsonNode responseBody = requestExecutor.executeJson(
+                requestBuilderFactory.create(GET, "/account")
+        );
 
         return deserializer.deserialize(responseBody.getObject());
     }

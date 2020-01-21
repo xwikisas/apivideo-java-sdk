@@ -7,12 +7,20 @@ import video.api.java.sdk.infrastructure.unirest.serializer.JsonDeserializer;
 
 public class AccountDeserializer implements JsonDeserializer<Account> {
     public Account deserialize(JSONObject data) throws JSONException {
+        JSONObject jsonQuota = data.getJSONObject("quota");
+
         return new Account(
-                data.has("quota") ? new Account.Quota(
-                        data.getJSONObject("quota").getInt("quotaRemaining"),
-                        data.getJSONObject("quota").getInt("quotaUsed"),
-                        data.getJSONObject("quota").getInt("quotaTotal")
-                ) : null
+                new Account.Quota(
+                        getIntOrNull(jsonQuota, "quotaRemaining"),
+                        getIntOrNull(jsonQuota, "quotaUsed"),
+                        getIntOrNull(jsonQuota, "quotaTotal")
+                ),
+                convertJsonArrayToStringList(data.getJSONArray("features"))
         );
     }
+
+    private Integer getIntOrNull(JSONObject data, String key) {
+        return data.has(key) && !data.isNull(key) ? data.getInt(key) : null;
+    }
+
 }
