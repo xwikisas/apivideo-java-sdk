@@ -34,7 +34,6 @@ class PlayerDeserializerTest {
                     "            \"backgroundTop\": \"rgba(172, 14, 145, .1)\",\n" +
                     "            \"backgroundBottom\": \"rgba(194, 195, 189, .11)\",\n" +
                     "            \"backgroundText\": \"rgba(25, 25, 25, .95)\",\n" +
-                    "            \"language\": \"en\",\n" +
                     "            \"enableApi\": true,\n" +
                     "            \"enableControls\": true,\n" +
                     "            \"forceAutoplay\": false,\n" +
@@ -64,7 +63,6 @@ class PlayerDeserializerTest {
         assertEquals("rgba(172, 14, 145, .10)", Colors.colorToString(player.backgroundTop));
         assertEquals("rgba(194, 195, 189, .11)", Colors.colorToString(player.backgroundBottom));
         assertEquals("rgba(25, 25, 25, .95)", Colors.colorToString(player.backgroundText));
-        assertEquals("en", player.language);
         assertTrue(player.enableApi);
         assertTrue(player.enableControls);
         assertFalse(player.forceAutoplay);
@@ -83,7 +81,6 @@ class PlayerDeserializerTest {
                                                  "            \"backgroundTop\": \"rgba(172, 14, 145, .1)\",\n" +
                                                  "            \"backgroundBottom\": \"rgba(194, 195, 189, 0.11)\",\n" +
                                                  "            \"backgroundText\": \"rgba(25, 25, 25, .95)\",\n" +
-                                                 "            \"language\": \"en\",\n" +
                                                  "            \"forceLoop\": false\n" +
                                                  "        }");
 
@@ -94,7 +91,6 @@ class PlayerDeserializerTest {
         assertEquals(Colors.colorToString(player.backgroundTop), "rgba(172, 14, 145, .10)");
         assertEquals(Colors.colorToString(player.backgroundBottom), "rgba(194, 195, 189, .11)");
         assertEquals(Colors.colorToString(player.backgroundText), "rgba(25, 25, 25, .95)");
-        assertEquals(player.language, "en");
         assertFalse(player.forceLoop);
 
 

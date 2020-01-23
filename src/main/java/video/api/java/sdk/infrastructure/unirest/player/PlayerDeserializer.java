@@ -78,10 +78,6 @@ public class PlayerDeserializer implements JsonDeserializer<Player> {
             player.backgroundText = parseColor(data.getString("backgroundText"));
         }
 
-        if (data.has("language")) {
-            player.language = data.getString("language");
-        }
-
         if (data.has("shapeMargin")) {
             player.shapeMargin = data.getInt("shapeMargin");
         }

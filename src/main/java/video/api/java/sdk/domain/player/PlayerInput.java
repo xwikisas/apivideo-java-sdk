@@ -19,7 +19,6 @@ public class PlayerInput {
     public Color   trackBackground       = new Color(10, 10, 10, (int) (.10 * 256));
     public Color   backgroundTop         = new Color(172, 14, 145, (int) (.1 * 256));
     public Color   backgroundBottom      = new Color(194, 195, 189, (int) (.11 * 256));
-    public String  language              = "en";
     public boolean enableApi             = true;
     public boolean enableControls        = true;
     public boolean forceAutoplay         = false;

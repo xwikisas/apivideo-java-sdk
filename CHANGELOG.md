@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2020-01-23
+
+### Removed
+- `Player.language` unsupported API property
+
 
 ## [0.5.0] - 2020-01-21
 
@@ -13,6 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `Client.players.deleteLogo()` method (https://docs.api.video/5.1/players/delete-logo)
 - `Client.chapters(videoId)` subclient (https://docs.api.video/5.1/chapters)
+
 
 ## [0.3.0] - 2019-12-17
 
@@ -36,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - `Client.videos.delete(Video video)` -> `Client.videos.delete(Identifier videoId)`
 - `Client.captions.updateDefault(String VideoId, String lang, boolean isDefault)` -> `Client.captions.update(String videoId, CaptionInput captionInput)`
 - `Client.captions.getAll(String VideoId)` -> `Client.captions.list(String videoId)`
+
 
 ## [0.2.0] - 2019-09-20
 

@@ -26,7 +26,6 @@ public class PlayerInputSerializer implements JsonSerializer<PlayerInput> {
         data.put("backgroundTop", Colors.colorToString(object.backgroundTop));
         data.put("backgroundBottom", Colors.colorToString(object.backgroundBottom));
         data.put("backgroundText", Colors.colorToString(object.backgroundText));
-        data.put("language", object.language);
         data.put("shapeMargin", object.shapeMargin);
         data.put("shapeRadius", object.shapeMargin);
         data.put("enableApi", object.enableApi);

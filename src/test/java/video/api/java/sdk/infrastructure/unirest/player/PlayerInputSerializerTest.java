@@ -26,7 +26,6 @@ class PlayerInputSerializerTest {
                     "            \"backgroundTop\": \"rgba(172, 14, 145, .1)\",\n" +
                     "            \"backgroundBottom\": \"rgba(194, 195, 189, .11)\",\n" +
                     "            \"backgroundText\": \"rgba(25, 25, 25, .95)\",\n" +
-                    "            \"language\": \"en\",\n" +
                     "            \"enableApi\": true,\n" +
                     "            \"enableControls\": true,\n" +
                     "            \"forceAutoplay\": false,\n" +
