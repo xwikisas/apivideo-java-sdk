@@ -17,7 +17,7 @@ import video.api.java.sdk.infrastructure.unirest.player.PlayerClient;
 import video.api.java.sdk.infrastructure.unirest.player.PlayerDeserializer;
 import video.api.java.sdk.infrastructure.unirest.player.PlayerInputSerializer;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
-import video.api.java.sdk.infrastructure.unirest.video.VideoClient;
+import video.api.java.sdk.infrastructure.unirest.video.UnirestVideoClient;
 import video.api.java.sdk.infrastructure.unirest.video.VideoDeserializer;
 import video.api.java.sdk.infrastructure.unirest.video.VideoInputSerializer;
 
@@ -41,7 +41,7 @@ public class ClientFactory {
                 new LiveStreamSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), requestExecutor),
                 new PlayerClient(requestBuilderFactory, new PlayerInputSerializer(), new PlayerDeserializer(), requestExecutor),
                 new PlayerSessionEventClient(requestBuilderFactory, new SessionEventJsonSerializer(), requestExecutor),
-                new VideoClient(requestBuilderFactory, new VideoInputSerializer(), new VideoDeserializer(), requestExecutor),
+                new UnirestVideoClient(requestBuilderFactory, new VideoInputSerializer(), new VideoDeserializer(), requestExecutor),
                 new VideoSessionClient(requestBuilderFactory, new PlayerSessionDeserializer(), requestExecutor),
                 new UnirestChapterClientFactory(requestBuilderFactory, new ChapterDeserializer(), requestExecutor)
         );

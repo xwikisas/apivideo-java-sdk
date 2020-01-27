@@ -8,6 +8,7 @@ import video.api.java.sdk.domain.pagination.PageQuery;
 import video.api.java.sdk.domain.video.Status;
 import video.api.java.sdk.domain.video.UploadProgressListener;
 import video.api.java.sdk.domain.video.Video;
+import video.api.java.sdk.domain.video.VideoClient;
 import video.api.java.sdk.domain.video.VideoInput;
 import video.api.java.sdk.infrastructure.pagination.IteratorIterable;
 import video.api.java.sdk.infrastructure.pagination.PageIterator;
@@ -23,7 +24,7 @@ import java.io.*;
 import static java.lang.Math.min;
 import static kong.unirest.HttpMethod.*;
 
-public class VideoClient implements video.api.java.sdk.domain.video.VideoClient {
+public class UnirestVideoClient implements VideoClient {
     private static final int CHUNK_SIZE = 128 * 1024 * 1024; // 128 MB
 
     private final RequestBuilderFactory      requestBuilderFactory;
@@ -32,7 +33,7 @@ public class VideoClient implements video.api.java.sdk.domain.video.VideoClient 
     private final RequestExecutor    requestExecutor;
     private final StatusDeserializer statusDeserializer = new StatusDeserializer();
 
-    public VideoClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<VideoInput> serializer, JsonDeserializer<Video> deserializer, RequestExecutor requestExecutor) {
+    public UnirestVideoClient(RequestBuilderFactory requestBuilderFactory, JsonSerializer<VideoInput> serializer, JsonDeserializer<Video> deserializer, RequestExecutor requestExecutor) {
         this.requestBuilderFactory = requestBuilderFactory;
         this.serializer            = serializer;
         this.deserializer          = deserializer;
