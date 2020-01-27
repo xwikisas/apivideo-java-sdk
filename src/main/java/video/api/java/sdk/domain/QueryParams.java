@@ -8,13 +8,13 @@ import java.util.*;
 
 public class QueryParams {
 
-    public String              sortBy;
-    public String              sortOrder;
-    public String              title;
-    public String              description;
-    public String              period;
-    public List<String>        tags      = new ArrayList<>();
-    public Map<String, String> metadata  = new HashMap<>();
+    public String sortBy;
+    public String sortOrder;
+    public String title;
+    public String description;
+    public String period;
+    public List<String> tags = new ArrayList<>();
+    public Map<String, String> metadata = new HashMap<>();
 
     public Map<String, Object> toMap() {
 
@@ -29,10 +29,12 @@ public class QueryParams {
         if (this.description != null) {
             param.put("description", this.description);
         }
-        if (this.sortBy != null && (this.sortBy.equals("title") || this.sortBy.equals("emitted_at"))) {
+
+        if (this.sortBy != null) {
             param.put("sortBy", this.sortBy);
         }
-        if (this.sortOrder != null && (this.sortBy.equals("asc") || this.sortBy.equals("desc"))) {
+
+        if ("asc".equals(this.sortOrder) || "desc".equals(this.sortOrder)) {
             param.put("sortOrder", this.sortOrder);
         }
 

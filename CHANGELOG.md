@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.2] - 2020-01-27
+
+### Fixed
+- Valid `QueryParams.sortBy` parameter is not in query string (`publishedAt`)
+- `QueryParams.sortOrder` parameter is not in query string
+
 ## [0.5.1] - 2020-01-23
 
 ### Removed
