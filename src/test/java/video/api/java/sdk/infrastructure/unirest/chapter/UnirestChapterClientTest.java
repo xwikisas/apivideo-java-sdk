@@ -2,9 +2,9 @@ package video.api.java.sdk.infrastructure.unirest.chapter;
 
 import kong.unirest.HttpRequest;
 import org.junit.jupiter.api.Test;
+import video.api.java.sdk.domain.chapter.Chapter;
 import video.api.java.sdk.domain.chapter.ChapterClient;
 import video.api.java.sdk.domain.exception.ResponseException;
-import video.api.java.sdk.infrastructure.unirest.NullDeserializer;
 import video.api.java.sdk.infrastructure.unirest.RequestBuilderInspector;
 import video.api.java.sdk.infrastructure.unirest.request.RequestBuilderFactory;
 
@@ -74,7 +74,7 @@ public class UnirestChapterClientTest {
     private UnirestChapterClient createClient(RequestBuilderInspector inspector) {
         return new UnirestChapterClient(
                 new RequestBuilderFactory(""),
-                new NullDeserializer<>(),
+                data -> new Chapter("en", "", ""),
                 inspector,
                 "viXXX"
         );
