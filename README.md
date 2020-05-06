@@ -44,10 +44,10 @@ public class Main {
 # More examples
 ```java
 // Upload a video with properties
-Video video = new Video();
-video.title = "My title";
-video.tags.add("my tag");
-video = client.videos.upload(new File("/path/to/file.mp4"), video);
+VideoInput videoInput = new VideoInput();
+videoInput.title = "My title";
+videoInput.tags.add("my tag");
+videoInput = client.videos.upload(new File("/path/to/file.mp4"), videoInput);
 
 // Iterate over videos (paging is handled by the client)
 for (Video v : client.videos.list()) {
