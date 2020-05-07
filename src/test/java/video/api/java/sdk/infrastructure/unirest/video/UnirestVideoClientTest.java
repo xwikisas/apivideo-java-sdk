@@ -87,7 +87,7 @@ class UnirestVideoClientTest {
         Video videoInput = new Video();
         videoInput.title = "foo";
 
-        client.create(videoInput);
+        client.createVideoContainer(videoInput);
 
         HttpRequest request = inspector.buildRequest();
 

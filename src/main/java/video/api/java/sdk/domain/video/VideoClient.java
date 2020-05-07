@@ -17,7 +17,7 @@ public interface VideoClient {
 
     Status getStatus(String videoId) throws ResponseException;
 
-    UploadedVideo create(Video videoInput) throws ResponseException;
+    UploadedVideo createVideoContainer(Video video) throws ResponseException;
 
     UploadedVideo upload(File file) throws ResponseException;
 

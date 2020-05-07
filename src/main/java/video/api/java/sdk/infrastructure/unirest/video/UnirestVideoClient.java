@@ -55,17 +55,11 @@ public class UnirestVideoClient implements VideoClient {
         return statusDeserializer.deserialize(responseBody.getObject());
     }
 
-    public UploadedVideo create(Video videoInput) throws ResponseException {
-        if (videoInput.title == null) {
-            videoInput.title = "";
-        }
-
+    public UploadedVideo createVideoContainer(Video video) throws ResponseException {
         RequestBuilder request = requestBuilderFactory
                 .create(POST, "/videos")
-                .withJson(serializer.serialize(videoInput));
-
+                .withJson(serializer.serialize(video));
         JsonNode responseBody = requestExecutor.executeJson(request);
-
         return deserializer.deserialize(responseBody.getObject());
     }
 
@@ -77,29 +71,24 @@ public class UnirestVideoClient implements VideoClient {
         return upload(file, new Video(), listener);
     }
 
-    public UploadedVideo upload(File file, Video videoInput) throws ResponseException {
-        if (videoInput.title == null) {
-            return upload(file);
-        }
+    public UploadedVideo upload(File file, Video video) throws ResponseException {
 
-        return upload(file, videoInput, null);
+        return upload(file, video, null);
     }
 
-    public UploadedVideo upload(File file, Video videoInput, UploadProgressListener listener) throws ResponseException {
+    public UploadedVideo upload(File file, Video video, UploadProgressListener listener) throws ResponseException {
         if (!file.exists() || !file.isFile()) {
             throw new IllegalArgumentException("Can't open file.");
         }
-        String videoId;
-        if (videoInput instanceof UploadedVideo) {
-            videoId = ((UploadedVideo) videoInput).videoId;
-        }
-        else {
-            if (videoInput.title == null) {
-                videoInput.title = file.getName();
+
+        if (isNewVideo(video)) {
+            if (video.title == null) {
+                video.title = file.getName();
             }
-            videoId = create(videoInput).videoId;
+            video = createVideoContainer(video);
         }
 
+        String videoId = ((UploadedVideo) video).videoId;
         int fileLength = (int) file.length();
 
         try {
@@ -179,6 +168,10 @@ public class UnirestVideoClient implements VideoClient {
                 requestExecutor,
                 deserializer
         ), new PageQuery()));
+    }
+
+    private boolean isNewVideo(Video video) {
+        return !(video instanceof UploadedVideo);
     }
 
     /////////////////////////Iterators//////////////////////////////
