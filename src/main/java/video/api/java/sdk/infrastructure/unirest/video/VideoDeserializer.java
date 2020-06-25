@@ -32,6 +32,10 @@ public class VideoDeserializer implements JsonDeserializer<Video> {
             video.panoramic = data.getBoolean("panoramic");
         }
 
+        if (data.has("mp4Support")) {
+            video.mp4Support = data.getBoolean("mp4Support");
+        }
+
         if (data.has("tags")) {
             video.tags.addAll(convertJsonArrayToStringList(data.getJSONArray("tags")));
         }
@@ -50,7 +54,7 @@ public class VideoDeserializer implements JsonDeserializer<Video> {
     private Video.SourceInfo deserializeSourceInfo(JSONObject data) {
         return new Video.SourceInfo(
                 data.getString("type"),
-                data.getString("uri")
+                data.has("uri") ? data.getString("uri") : null
         );
     }
 }

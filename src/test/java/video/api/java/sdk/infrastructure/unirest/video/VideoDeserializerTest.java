@@ -39,6 +39,7 @@ class VideoDeserializerTest {
         assertEquals("toto", video.title);
         assertTrue(video.isPublic);
         assertTrue(video.panoramic);
+        assertTrue(video.mp4Support);
         assertEquals("upload", video.sourceInfo.type);
         assertEquals("/videos/vi2SRWJ6ipruaD9K73CJbP0V/source", video.sourceInfo.uri);
     }
@@ -51,6 +52,7 @@ class VideoDeserializerTest {
                 .put("title", "toto")
                 .put("isPublic", true)
                 .put("panoramic", true)
+                .put("mp4Support", true)
                 .put("source", new JSONObject()
                         .put("type", "upload")
                         .put("uri", "/videos/vi2SRWJ6ipruaD9K73CJbP0V/source")

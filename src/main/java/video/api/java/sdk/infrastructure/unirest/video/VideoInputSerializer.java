@@ -11,7 +11,8 @@ public class VideoInputSerializer implements JsonSerializer<VideoInput> {
     public JSONObject serialize(VideoInput object) throws JSONException {
         JSONObject data = new JSONObject();
         data.put("description", object.description);
-        data.put("isPublic", object.isPublic);
+        data.put("public", object.isPublic);
+        data.put("mp4Support", object.mp4Support);
         if (!object.metadata.isEmpty()) {
             data.put("metadata", convertMapToKeyValueJson(object.metadata));
         }
