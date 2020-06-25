@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.3] - 2020-06-25
+
+### Added
+- Video `mp4Support` property defaulting to true
+
+### Fixed
+- Missing `source.uri` in video response throws exception
+
 ## [0.5.2] - 2020-01-27
 
 ### Fixed
