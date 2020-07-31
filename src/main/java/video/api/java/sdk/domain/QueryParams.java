@@ -1,10 +1,9 @@
 package video.api.java.sdk.domain;
 
-import org.apache.http.client.utils.URIBuilder;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QueryParams {
 
@@ -13,6 +12,7 @@ public class QueryParams {
     public String title;
     public String description;
     public String period;
+    public String liveStreamId;
     public List<String> tags = new ArrayList<>();
     public Map<String, String> metadata = new HashMap<>();
 
@@ -23,11 +23,17 @@ public class QueryParams {
         if (this.period != null) {
             param.put("period", this.period);
         }
+
         if (this.title != null) {
             param.put("title", this.title);
         }
+
         if (this.description != null) {
             param.put("description", this.description);
+        }
+
+        if (this.liveStreamId != null) {
+            param.put("liveStreamId", this.liveStreamId);
         }
 
         if (this.sortBy != null) {
@@ -49,22 +55,5 @@ public class QueryParams {
 
         return param;
     }
-
-
-    public String queryBuilder(JSONObject parameters, String url) throws IllegalArgumentException {
-        try {
-
-
-            URIBuilder urlBuilder = new URIBuilder(url);
-            for (Iterator iterator = parameters.keys(); iterator.hasNext(); ) {
-                Object key = iterator.next();
-                urlBuilder.addParameter(String.valueOf(key), parameters.get(String.valueOf(key)).toString());
-            }
-            return urlBuilder.build().toString();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(" QueryBuilder --> URISyntaxException. \n Message : " + e.getMessage());
-        }
-    }
-
 
 }

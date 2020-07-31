@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## [0.5.4] - 2020-07-31
+
+### Added
+- QueryParams `liveStreamId` filter
+
+
 ## [0.5.3] - 2020-06-25
 
 ### Added
