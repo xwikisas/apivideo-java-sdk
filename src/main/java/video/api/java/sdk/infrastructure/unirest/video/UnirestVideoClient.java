@@ -149,22 +149,26 @@ public class UnirestVideoClient implements VideoClient {
                 chunkStream.skip(from);
 
                 byte[] b         = new byte[chunkFileSize];
+
                 File   chunkFile = File.createTempFile(tmpdir, chunkFileName);
 
-                RandomAccessFile randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
-                randomAccessFile.readFully(b);
-                randomAccessChunk.write(b, 0, chunkFileSize);
-                final InputStream inputStream = new FileInputStream(chunkFile);
-                String            rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
+                try {
+                    RandomAccessFile randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
+                    randomAccessFile.readFully(b);
+                    randomAccessChunk.write(b, 0, chunkFileSize);
+                    final InputStream inputStream = new FileInputStream(chunkFile);
+                    String            rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
 
-                RequestBuilder request = requestBuilderFactory
+                    RequestBuilder request = requestBuilderFactory
                         .create(POST, "/videos/" + videoId + "/source")
                         .withChunk(file.getName(), inputStream, chunkCount, chunkNum, listener)
                         .withHeader("Content-Range", rangeHeader);
 
-                responseBody = requestExecutor.executeJson(request);
-
-                chunkFile.deleteOnExit();
+                    responseBody = requestExecutor.executeJson(request);
+                } finally {
+                    chunkStream.close();
+                    chunkFile.delete();
+                }
             }
         }
 
