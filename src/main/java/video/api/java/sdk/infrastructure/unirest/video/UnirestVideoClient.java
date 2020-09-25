@@ -102,7 +102,7 @@ public class UnirestVideoClient implements VideoClient {
             videoId = create(videoInput).videoId;
         }
 
-        int fileLength = (int) file.length();
+        long fileLength = file.length();
 
         try {
             Thread.sleep(150);
@@ -130,17 +130,19 @@ public class UnirestVideoClient implements VideoClient {
 
     }
 
-    private JsonNode uploadMultipleRequests(File file, UploadProgressListener listener, String videoId, int fileLength) throws IOException, ResponseException {
+    private JsonNode uploadMultipleRequests(File file, UploadProgressListener listener, String videoId,
+        long fileLength) throws IOException, ResponseException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-        int              copiedBytes      = 0;
+        long             copiedBytes      = 0;
         int              chunkCount       = (int) Math.ceil((double) fileLength / CHUNK_SIZE);
         JsonNode         responseBody     = null;
         for (int chunkNum = 0; chunkNum < chunkCount; chunkNum++) {
 
             String chunkFileName = "upload-chunk-";
-            int    from          = copiedBytes;
+            long    from          = copiedBytes;
             copiedBytes = min(copiedBytes + CHUNK_SIZE, fileLength);
-            int chunkFileSize = copiedBytes - from;
+            // The chunk file size should not go over 128M, so we can cast it to an integer
+            int chunkFileSize = (int) (copiedBytes - from);
 
             String tmpdir = System.getProperty("java.io.tmpdir");
 
