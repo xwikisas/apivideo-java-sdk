@@ -136,42 +136,55 @@ public class UnirestVideoClient implements VideoClient {
         long             copiedBytes      = 0;
         int              chunkCount       = (int) Math.ceil((double) fileLength / CHUNK_SIZE);
         JsonNode         responseBody     = null;
-        for (int chunkNum = 0; chunkNum < chunkCount; chunkNum++) {
 
-            String chunkFileName = "upload-chunk-";
-            long    from          = copiedBytes;
-            copiedBytes = min(copiedBytes + CHUNK_SIZE, fileLength);
-            // The chunk file size should not go over 128M, so we can cast it to an integer
-            int chunkFileSize = (int) (copiedBytes - from);
+        try {
+            for (int chunkNum = 0; chunkNum < chunkCount; chunkNum++) {
 
-            String tmpdir = System.getProperty("java.io.tmpdir");
+                String chunkFileName = "upload-chunk-";
+                long from = copiedBytes;
+                copiedBytes = min(copiedBytes + CHUNK_SIZE, fileLength);
+                // The chunk file size should not go over 128M, so we can cast it to an integer
+                int chunkFileSize = (int) (copiedBytes - from);
 
-            try (FileInputStream chunkStream = new FileInputStream(file)) {
-                //noinspection ResultOfMethodCallIgnored
-                chunkStream.skip(from);
+                String tmpdir = System.getProperty("java.io.tmpdir");
 
-                byte[] b         = new byte[chunkFileSize];
+                try (FileInputStream chunkStream = new FileInputStream(file)) {
+                    //noinspection ResultOfMethodCallIgnored
+                    chunkStream.skip(from);
 
-                File   chunkFile = File.createTempFile(tmpdir, chunkFileName);
+                    byte[] b = new byte[chunkFileSize];
 
-                try {
-                    RandomAccessFile randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
-                    randomAccessFile.readFully(b);
-                    randomAccessChunk.write(b, 0, chunkFileSize);
-                    final InputStream inputStream = new FileInputStream(chunkFile);
-                    String            rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
+                    File chunkFile = File.createTempFile(tmpdir, chunkFileName);
+                    InputStream inputStream = null;
+                    RandomAccessFile randomAccessChunk = null;
 
-                    RequestBuilder request = requestBuilderFactory
-                        .create(POST, "/videos/" + videoId + "/source")
-                        .withChunk(file.getName(), inputStream, chunkCount, chunkNum, listener)
-                        .withHeader("Content-Range", rangeHeader);
+                    try {
+                        randomAccessChunk = new RandomAccessFile(chunkFile, "rw");
+                        randomAccessFile.readFully(b);
+                        randomAccessChunk.write(b, 0, chunkFileSize);
+                        inputStream = new FileInputStream(chunkFile);
+                        String rangeHeader = "bytes " + from + "-" + (copiedBytes - 1) + "/" + fileLength;
 
-                    responseBody = requestExecutor.executeJson(request);
-                } finally {
-                    chunkStream.close();
-                    chunkFile.delete();
+                        RequestBuilder request = requestBuilderFactory
+                            .create(POST, "/videos/" + videoId + "/source")
+                            .withChunk(file.getName(), inputStream, chunkCount, chunkNum, listener)
+                            .withHeader("Content-Range", rangeHeader);
+
+                        responseBody = requestExecutor.executeJson(request);
+                    } finally {
+                        if (randomAccessChunk != null) {
+                            randomAccessChunk.close();
+                        }
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                        chunkStream.close();
+                        chunkFile.delete();
+                    }
                 }
             }
+        } finally {
+            randomAccessFile.close();
         }
 
         return responseBody;
